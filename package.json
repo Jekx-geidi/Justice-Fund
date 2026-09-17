@@ -1,0 +1,39 @@
+{
+  "name": "iejf-website",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "oxlint src/app src/ui src/content",
+    "typecheck": "tsc --noEmit",
+    "test:ui": "node scripts/qa.mjs"
+  },
+  "dependencies": {
+    "@fontsource/marcellus": "^5.3.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "bcryptjs": "^3.0.3",
+    "lucide-react": "^1.47.0",
+    "next": "^16.3.5",
+    "postcss": "^8.5.28",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sanitize-html": "^2.17.7",
+    "server-only": "^0.0.1",
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.20.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@types/sanitize-html": "^2.16.1",
+    "oxlint": "^1.81.0",
+    "typescript": "^7.0.2"
+  }
+}

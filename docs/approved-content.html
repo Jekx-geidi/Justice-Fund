@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Intergenerational Justice Fund — Website Mockup v2 (Confirmed 4-Page Scope)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#231F20;
+    --charcoal:#231F20;
+    --charcoal-deep:#1A1717;
+    --paper:#F5F3F1;
+    --line:#E3E0DD;
+    --gold:#C9A15A;
+    --slate:#5B5758;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Poppins',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--white); line-height:1.55;
+  }
+  a{ color:inherit; }
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50; background:var(--white);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between;
+    padding:20px 5%;
+  }
+  .brand{ font-weight:700; font-size:1.02rem; letter-spacing:0.01em; }
+  .brand .small{ display:block; font-weight:400; font-size:0.66rem; color:var(--slate); letter-spacing:0.03em; margin-top:2px;}
+  nav.tabs{ display:flex; gap:2px; }
+  nav.tabs button{
+    font-family:'Poppins',sans-serif; background:none; border:none; cursor:pointer;
+    font-size:0.92rem; padding:10px 16px; color:var(--slate); border-bottom:2px solid transparent;
+  }
+  nav.tabs button.active{ color:var(--charcoal); font-weight:600; border-bottom:2px solid var(--gold); }
+  nav.tabs button:hover{ color:var(--charcoal); }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 5%; }
+  .page{ display:none; padding:64px 0 90px; }
+  .page.active{ display:block; }
+
+  .eyebrow{ color:var(--gold); font-size:0.85rem; font-weight:600; margin-bottom:14px; }
+  h1{ font-size:2.5rem; font-weight:700; line-height:1.15; max-width:820px; }
+  h2{ font-size:1.7rem; font-weight:600; line-height:1.3; }
+  .lead{ font-size:1.12rem; color:var(--slate); max-width:640px; margin-top:18px; }
+
+  /* HOME */
+  .hero-home{
+    background:var(--charcoal); color:var(--white); margin:0 -5%; padding:90px 5% 70px;
+  }
+  .hero-home .inner{ max-width:1100px; margin:0 auto; }
+  .hero-home h1{ color:var(--white); }
+  .hero-home .lead{ color:#D8D4D1; }
+  .hero-actions{ margin-top:34px; display:flex; gap:16px; }
+  .btn{
+    font-size:0.92rem; padding:13px 26px; border-radius:2px; text-decoration:none; display:inline-block;
+    font-weight:500;
+  }
+  .btn-gold{ background:var(--gold); color:var(--charcoal-deep); }
+  .btn-line{ border:1px solid rgba(255,255,255,0.55); color:var(--white); }
+  .btn-dark{ background:var(--charcoal); color:var(--white); }
+  .btn-outline{ border:1px solid var(--charcoal); color:var(--charcoal); }
+
+  .quote-wall{ padding:70px 0; }
+  .quote-wall .kicker{ color:var(--gold); font-weight:600; font-size:0.85rem; margin-bottom:26px; }
+  .quote-block{ border-top:1px solid var(--line); padding:34px 0; }
+  .quote-block h3{ font-size:1.3rem; font-weight:500; line-height:1.5; max-width:820px; }
+  .quote-block .attr{ margin-top:14px; font-size:0.88rem; color:var(--slate); }
+
+  .home-cta{
+    background:var(--paper); margin:0 -5%; padding:70px 5%; text-align:center;
+  }
+  .home-cta h2{ max-width:600px; margin:0 auto; }
+  .home-cta p{ color:var(--slate); max-width:520px; margin:16px auto 0; }
+
+  /* ABOUT */
+  .about-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:60px; margin-top:50px; }
+  .about-grid p{ color:var(--slate); margin-bottom:16px; max-width:52ch; }
+
+  /* TEAM */
+  .tbc-banner{
+    background:#EDE6D2; border:1px solid #DFCF9F; padding:16px 20px; border-radius:2px;
+    font-size:0.92rem; color:#5C4B1E; margin-top:26px; max-width:640px;
+  }
+  .team-grid{ margin-top:44px; display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
+  .team-card{ border:1px dashed var(--line); padding:26px; text-align:center; color:var(--slate); }
+  .team-avatar{
+    width:72px; height:72px; border-radius:50%; background:var(--paper); margin:0 auto 16px;
+    display:flex; align-items:center; justify-content:center; color:#B7B2B0; font-size:0.75rem;
+  }
+
+  /* CASES */
+  .case-list{ margin-top:44px; }
+  .case-item{ border-top:1px solid var(--line); padding:28px 0; }
+  .case-item h3{ font-size:1.2rem; font-weight:600; }
+  .case-item p{ color:var(--slate); margin-top:10px; max-width:70ch; }
+  .case-tag{ display:inline-block; font-size:0.75rem; color:var(--gold); font-weight:600; margin-bottom:10px; }
+
+  /* ENVIRONMENT */
+  .focus-grid{ margin-top:48px; display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .focus-card{ background:var(--white); padding:32px 28px; }
+  .focus-card h3{ font-size:1.1rem; font-weight:600; margin-bottom:10px; }
+  .focus-card p{ color:var(--slate); font-size:0.94rem; }
+  .stat-row{ margin-top:50px; background:var(--charcoal-deep); color:var(--white); padding:44px 40px; display:grid; grid-template-columns:repeat(4,1fr); gap:26px; }
+  .stat-num{ font-size:2.3rem; font-weight:700; color:var(--gold); }
+  .stat-label{ font-size:0.85rem; color:#C9C5C3; margin-top:6px; }
+
+  /* CONTACT */
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; margin-top:44px; }
+  .field{ margin-bottom:18px; }
+  .field label{ display:block; font-size:0.85rem; color:var(--slate); margin-bottom:6px; }
+  .field input, .field textarea{
+    width:100%; border:1px solid var(--line); padding:11px 12px; font-family:inherit; font-size:0.95rem; border-radius:2px;
+  }
+  .contact-details p{ margin-bottom:10px; color:var(--slate); }
+  .contact-details h3{ font-size:1rem; margin-bottom:14px; }
+
+  footer{ background:var(--charcoal-deep); color:#B7B2B0; padding:50px 5% 30px; margin-top:0; }
+  .footer-inner{ max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; font-size:0.85rem; }
+
+  @media (max-width:860px){
+    .about-grid, .team-grid, .focus-grid, .stat-row, .contact-grid{ grid-template-columns:1fr; }
+    nav.tabs{ display:none; }
+    h1{ font-size:1.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="brand">Intergenerational Justice Fund<span class="small">CHARITY &middot; PERTH, WA</span></div>
+    <nav class="tabs">
+      <button data-page="home" class="active">Home</button>
+      <button data-page="about">About</button>
+      <button data-page="insights">Insights</button>
+      <button data-page="contact">Contact</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="page active" id="home">
+    <div class="hero-home">
+      <div class="inner">
+        <div class="eyebrow" style="color:#D8C9A0">A NOT-FOR-PROFIT CHARITY</div>
+        <h1>Intergenerational Justice Fund</h1>
+        <p class="lead">We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed.</p>
+        <!-- CONFIRMED: IEJF asked to remove the "Support our work" / "About IEJF" hero buttons — no CTA row here per their content doc. -->
+
+      </div>
+    </div>
+
+    <div class="quote-wall">
+      <div class="kicker">IN THE NEWS &mdash; PLACEHOLDER QUOTES</div>
+      <div class="quote-block">
+        <h3>"This case shows what's possible when a small legal team takes on a question no one else will ask."</h3>
+        <div class="attr">The Guardian, on a matter supported by IEJF</div>
+      </div>
+      <div class="quote-block">
+        <h3>"A landmark moment for how courts weigh the interests of people who aren't born yet."</h3>
+        <div class="attr">The Conversation</div>
+      </div>
+      <div class="quote-block">
+        <h3>"It's Mabo for the climate &mdash; a case young Australians will point back to."</h3>
+        <div class="attr">Sydney Morning Herald</div>
+      </div>
+    </div>
+
+    <!-- TBC: IEJF's content doc says to remove the "Get in touch" CTA box — unclear if that means this whole
+         section or just the button below. Flagged in the build brief's open questions; confirm before build. -->
+    <div class="home-cta">
+      <h2>Help us act for the generations who aren't in the room yet.</h2>
+      <p>Your support funds the legal work, research and advocacy that protects the environment for the long term.</p>
+      <div class="hero-actions" style="justify-content:center">
+        <a class="btn btn-dark" href="#" onclick="return false;">Donate now</a>
+      </div>
+    </div>
+
+    <p style="text-align:center; color:var(--slate); font-size:0.82rem; margin-top:40px;">Intergenerational Environment Justice Fund (ABN 51 656 623 719)</p>
+  </section>
+  <section class="page" id="about">
+    <div class="eyebrow">ABOUT US</div>
+    <h1>Standing between short-term decisions and long-term harm.</h1>
+    <div class="about-grid">
+      <div>
+        <p>Intergenerational Justice Fund Limited is an Australian charity dedicated to advancing charitable purposes for the public benefit that carry an intergenerational impact.</p>
+      </div>
+      <div>
+        <p>We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed. To that end, we build and fund strategic collaborations in Australia and overseas on charitable projects spanning strategic litigation, advocacy for legislative and regulatory reform, research and investigations, shareholder action, communication and education.</p>
+      </div>
+    </div>
+    <h2 style="margin-top:56px;">Our work is anchored in three complementary focus areas</h2>
+    <div class="focus-grid" style="margin-top:30px;">
+      <div class="focus-card">
+        <h3>Environment</h3>
+        <p>We advance the protection, promotion and enhancement of the natural environment through our own research and by funding research and legal action.</p>
+        <p style="font-size:0.78rem; color:var(--slate); margin-top:14px;">Intergenerational Environment Justice Fund Ltd &middot; ABN 51 656 623 719</p>
+      </div>
+      <div class="focus-card">
+        <h3>Health</h3>
+        <p>Our focus is promoting the prevention or control of human diseases through our own research and by funding research and legal action.</p>
+        <p style="font-size:0.78rem; color:var(--slate); margin-top:14px;">Intergenerational Health Justice Fund Ltd &middot; ABN 28 658 260 194</p>
+      </div>
+      <div class="focus-card">
+        <h3>Human Rights</h3>
+        <p>Our purpose is to prevent and control behaviours that harm people, with a focus on emotional abuse, physical abuse, suicide and self-harm. We address these harms through education, research, legal action and advocacy.</p>
+        <p style="font-size:0.78rem; color:var(--slate); margin-top:14px;">Intergenerational Human Rights Justice Fund Ltd &middot; ABN 23 659 732 331</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSIGHTS (replaces Team, Cases and Environment per quote AI-847213 — a single growing page) -->
+  <section class="page" id="insights">
+    <div class="eyebrow">INSIGHTS</div>
+    <h1>Case updates and our environmental focus, in one place.</h1>
+    <div class="tbc-banner">Placeholder page &mdash; IEJF has asked to leave this blank for now. This page is built as a simple, growing list/card format so entries can be added later (via the admin CMS) without a rebuild.</div>
+    <div class="case-list">
+      <div class="case-item">
+        <div class="case-tag">EXAMPLE ENTRY</div>
+        <h3>Insights entry title goes here</h3>
+        <p>A short summary of a case update, research brief or advocacy item — added and edited by IEJF's own team once the CMS is live.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="page" id="contact">
+    <div class="eyebrow">CONTACT</div>
+    <h1>Get in touch.</h1>
+    <div class="contact-grid">
+      <div>
+        <div class="field"><label>Name</label><input type="text" placeholder="Your name"></div>
+        <div class="field"><label>Email</label><input type="email" placeholder="you@email.com"></div>
+        <div class="field"><label>Message</label><textarea rows="5" placeholder="How can we help?"></textarea></div>
+        <a class="btn btn-dark" href="#" onclick="return false;">Send message</a>
+      </div>
+      <div class="contact-details">
+        <h3>Intergenerational Justice Fund</h3>
+        <p>Perth, WA</p>
+        <p>hello@justicefund.org.au</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>&copy; 2026 Intergenerational Justice Fund</span>
+    <span>ABN placeholder &middot; Privacy Policy</span>
+  </div>
+</footer>
+
+<script>
+  const buttons = document.querySelectorAll('nav.tabs button');
+  const pages = document.querySelectorAll('.page');
+  function goTo(name){
+    buttons.forEach(b => b.classList.toggle('active', b.dataset.page === name));
+    pages.forEach(p => p.classList.toggle('active', p.id === name));
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  buttons.forEach(b => b.addEventListener('click', () => goTo(b.dataset.page)));
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', (e) => { e.preventDefault(); goTo(el.dataset.goto); });
+  });
+</script>
+
+</body>
+</html>
