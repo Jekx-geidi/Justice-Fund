@@ -3,10 +3,11 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
-import type { MediaReference } from '../content/types';
+import { createClient } from '@supabase/supabase-js';
 
 export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8MB (Admin.md open question #13; adjust when confirmed)
 
+const BUCKET = 'IMAGES IEJF';
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 
 type SniffedType = 'jpeg' | 'png' | 'webp';
@@ -33,7 +34,43 @@ function sniffImageType(bytes: Buffer): SniffedType | null {
 
 export class UploadRejectedError extends Error {}
 
-export async function saveUploadedImage(file: File, alt: string): Promise<MediaReference> {
+export interface UploadedImage {
+  id: string;
+  path: string;
+  url: string;
+  alt: string;
+  mimeType: string;
+  size: number;
+  width?: number;
+  height?: number;
+}
+
+function isSupabaseConfigured(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
+async function uploadToSupabase(filename: string, data: Buffer, mimeType: string): Promise<string> {
+  const client = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: { persistSession: false },
+  });
+
+  const { error } = await client.storage.from(BUCKET).upload(filename, data, {
+    contentType: mimeType,
+    cacheControl: '31536000',
+  });
+  if (error) throw new Error(`Supabase Storage upload failed: ${error.message}`);
+
+  const { data: publicUrl } = client.storage.from(BUCKET).getPublicUrl(filename);
+  return publicUrl.publicUrl;
+}
+
+async function uploadToLocalDisk(filename: string, data: Buffer): Promise<string> {
+  await mkdir(UPLOAD_DIR, { recursive: true });
+  await writeFile(path.join(UPLOAD_DIR, filename), data);
+  return `/uploads/${filename}`;
+}
+
+export async function saveUploadedImage(file: File, alt: string): Promise<UploadedImage> {
   if (file.size <= 0 || file.size > MAX_UPLOAD_BYTES) {
     throw new UploadRejectedError(`Image must be smaller than ${MAX_UPLOAD_BYTES / (1024 * 1024)}MB.`);
   }
@@ -52,16 +89,22 @@ export async function saveUploadedImage(file: File, alt: string): Promise<MediaR
 
   const output = await pipeline.toBuffer({ resolveWithObject: true });
   const extension = sniffed === 'png' ? 'png' : 'webp';
+  const mimeType = sniffed === 'png' ? 'image/png' : 'image/webp';
 
-  await mkdir(UPLOAD_DIR, { recursive: true });
   const id = randomUUID();
   const filename = `${id}.${extension}`;
-  await writeFile(path.join(UPLOAD_DIR, filename), output.data);
+
+  const url = isSupabaseConfigured()
+    ? await uploadToSupabase(filename, output.data, mimeType)
+    : await uploadToLocalDisk(filename, output.data);
 
   return {
     id,
-    url: `/uploads/${filename}`,
+    path: filename,
+    url,
     alt,
+    mimeType,
+    size: output.data.byteLength,
     width: output.info.width,
     height: output.info.height,
   };
