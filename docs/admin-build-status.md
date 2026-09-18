@@ -49,7 +49,6 @@ Tracking progress against `IEJF_Frontend_Documentation_Package/Admin.md`. Core b
 - **No MediaPicker gallery yet** — block image fields take a pasted URL + alt text (copy the URL from the Media Library page after uploading) rather than a visual picker.
 - **Home hero heading** (`home.heading` field) is stored/editable but not actually wired into the rendered `<h1>` yet — the hero's two-line "Intergenerational / Justice Fund." markup is still hardcoded in `(public)/page.tsx` because of its special-cased styling (line break + gold "."). Low priority; the eyebrow, mission, quotes, and bottom line are all live-editable already.
 - **Admin pages list table** is a bit tight at 390px (no horizontal overflow, but a card-based mobile layout per Admin.md §44 would be nicer). Functional, not polished.
-- **Insights entries have no image upload UI wired in the entry editor itself** — the `image` field exists on `InsightEntry` but isn't exposed in `InsightsManagerClient` yet.
 - Rate limiting and audit logging are in-memory/stdout — correct for the spec's single-Cloud-Run-instance Phase 1 assumption, would need a shared store if instance count ever goes above 1.
 
 ## Explicitly deferred — needs real infra access, not buildable here
