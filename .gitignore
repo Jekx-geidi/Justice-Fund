@@ -36,3 +36,6 @@ next-env.d.ts
 # Runtime-editable content and uploads (admin portal), not source
 /data/
 /public/uploads/
+
+# Per-machine Claude Code settings, not shared with the team
+.claude/settings.local.json

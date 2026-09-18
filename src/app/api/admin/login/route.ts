@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { loginSchema } from '@/lib/content/schemas';
-import { getAdminCredentials } from '@/lib/auth/admin';
+import { findAdminByEmail } from '@/lib/auth/admin';
 import { verifyPassword } from '@/lib/auth/password';
 import { setSessionCookie } from '@/lib/auth/session';
 import { isRateLimited, recordFailure, recordSuccess } from '@/lib/auth/rateLimit';
@@ -12,6 +12,9 @@ function clientKey(request: Request): string {
 }
 
 const GENERIC_ERROR = { error: 'Invalid email or password.' };
+// Any well-formed bcrypt hash — compared against when no account matches
+// the email, so response timing doesn't reveal whether it exists.
+const DUMMY_HASH = '$2b$12$cjmLWW7mAAfZlKcEHIMlleJ2BonzCnKdAHzRNH9cwIIX68pM6kZqi';
 
 export async function POST(request: Request) {
   if (!isTrustedOrigin(request)) {
@@ -31,14 +34,13 @@ export async function POST(request: Request) {
   }
 
   const { email, password } = parsed.data;
-  const admin = getAdminCredentials();
+  const admin = await findAdminByEmail(email);
 
-  // Always run the hash comparison, even on email mismatch, so response
-  // timing doesn't reveal whether the email exists (Admin.md 17.1).
-  const passwordMatches = await verifyPassword(password, admin.passwordHash);
-  const emailMatches = email.toLowerCase() === admin.email.toLowerCase();
+  // Always run the hash comparison, even when no account matches, so
+  // response timing doesn't reveal whether the email exists (Admin.md 17.1).
+  const passwordMatches = await verifyPassword(password, admin?.passwordHash ?? DUMMY_HASH);
 
-  if (!emailMatches || !passwordMatches) {
+  if (!admin || !passwordMatches) {
     recordFailure(key);
     audit({ event: 'login_failure', admin: email, result: 'failure' });
     return NextResponse.json(GENERIC_ERROR, { status: 401 });

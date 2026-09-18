@@ -1,12 +1,15 @@
 import 'server-only';
 import type { ContentVersion, SitePage, SiteContent } from './types';
 import { localFileStorage } from './storage-local';
+import { supabaseStorage, isSupabaseConfigured } from './storage-supabase';
 
 /**
  * Single content service used by every public page and every admin route.
- * No component should read `data/*.json` (or a future GCS bucket) directly.
+ * No component should read `data/*.json` or query Supabase directly.
+ * Supabase is used whenever it's configured (real persistence, survives
+ * redeploys); local JSON is the zero-setup fallback for a fresh checkout.
  */
-const storage = localFileStorage;
+const storage = isSupabaseConfigured() ? supabaseStorage : localFileStorage;
 
 export async function getSiteContent(version: ContentVersion): Promise<SiteContent> {
   return version === 'live' ? storage.readLive() : storage.readDraft();
