@@ -5,6 +5,9 @@ import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import type { InsightEntry } from '@/lib/content/types';
 import { PublishBar } from './PublishBar';
 import { UnsavedChangesGuard } from './UnsavedChangesGuard';
+import { AdminEditorLayout } from './live-preview/AdminEditorLayout';
+import { LivePreviewPane } from './live-preview/LivePreviewPane';
+import { InsightsPageView } from '@/ui/pages/InsightsPageView';
 
 function newEntry(order: number): InsightEntry {
   return {
@@ -69,9 +72,8 @@ export function InsightsManagerClient({ entries: initial }: { entries: InsightEn
     return { ok: true };
   }
 
-  return (
-    <div className="max-w-3xl">
-      <UnsavedChangesGuard dirty={dirty} />
+  const editor = (
+    <div>
       <p className="text-sm text-[var(--slate)] mb-6">
         Insights launches blank by design. Entries you publish here appear on the public Insights page in the
         approved card layout.
@@ -149,6 +151,19 @@ export function InsightsManagerClient({ entries: initial }: { entries: InsightEn
       </button>
 
       <PublishBar onSaveDraft={saveDraft} onPublish={publish} dirty={dirty} previewHref="/insights?preview=1" />
+    </div>
+  );
+
+  const preview = (
+    <LivePreviewPane dirty={dirty} fullPreviewHref="/insights?preview=1" resetKey={JSON.stringify(entries)}>
+      <InsightsPageView entries={entries} />
+    </LivePreviewPane>
+  );
+
+  return (
+    <div>
+      <UnsavedChangesGuard dirty={dirty} />
+      <AdminEditorLayout editor={editor} preview={preview} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getPageById } from '@/lib/content/content';
+import { getPageById, getSiteContent } from '@/lib/content/content';
 import { PageEditorClient } from '@/ui/admin/PageEditorClient';
 
 interface PageProps {
@@ -13,5 +13,12 @@ export default async function EditPage({ params }: PageProps) {
   const page = await getPageById(id, 'draft');
   if (!page) notFound();
 
-  return <PageEditorClient page={page} />;
+  // Home's preview reuses About's copy, same as the public page — fetch the
+  // current draft About content once so that preview matches reality.
+  const aboutForHomePreview =
+    page.coreKey === 'home'
+      ? (await getSiteContent('draft')).pages.find((p) => p.coreKey === 'about')?.about
+      : undefined;
+
+  return <PageEditorClient page={page} aboutForHomePreview={aboutForHomePreview} />;
 }

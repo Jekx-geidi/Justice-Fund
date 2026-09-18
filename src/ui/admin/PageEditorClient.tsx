@@ -2,19 +2,37 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { SitePage } from '@/lib/content/types';
+import type { AboutFields, SitePage } from '@/lib/content/types';
 import { HomeFieldsEditor, AboutFieldsEditor, ContactFieldsEditor } from './CoreContentEditors';
 import { BlockEditor } from './BlockEditor';
 import { PublishBar } from './PublishBar';
 import { UnsavedChangesGuard } from './UnsavedChangesGuard';
 import { ConfirmDialog } from './ConfirmDialog';
+import { AdminEditorLayout } from './live-preview/AdminEditorLayout';
+import { LivePreviewPane } from './live-preview/LivePreviewPane';
+import { HomePageView } from '@/ui/pages/HomePageView';
+import { AboutPageView } from '@/ui/pages/AboutPageView';
+import { ContactPageView } from '@/ui/pages/ContactPageView';
+import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
 function previewHrefFor(page: SitePage): string {
   const base = page.coreKey === 'home' ? '/' : `/${page.slug}`;
   return `${base}${base.includes('?') ? '&' : '?'}preview=1`;
 }
 
-export function PageEditorClient({ page: initialPage }: { page: SitePage }) {
+export function PageEditorClient({
+  page: initialPage,
+  aboutForHomePreview,
+}: {
+  page: SitePage;
+  /**
+   * Home's preview reuses About's intro/focus-area copy (same as the public
+   * page). Not editable here — just the current draft About content, fetched
+   * once alongside Home, so the Home preview matches what the public page
+   * will actually show.
+   */
+  aboutForHomePreview?: AboutFields;
+}) {
   const [page, setPage] = useState(initialPage);
   const [dirty, setDirty] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -101,10 +119,8 @@ export function PageEditorClient({ page: initialPage }: { page: SitePage }) {
     window.location.href = '/admin/pages';
   }
 
-  return (
-    <div className="max-w-3xl">
-      <UnsavedChangesGuard dirty={dirty} />
-
+  const editor = (
+    <div>
       <p className="eyebrow">{page.isCore ? 'CORE PAGE' : 'CUSTOM PAGE'}</p>
       <h1 className="text-3xl mt-2 mb-6">{page.title}</h1>
 
@@ -206,6 +222,47 @@ export function PageEditorClient({ page: initialPage }: { page: SitePage }) {
           {deleteError && <p className="text-sm text-red-700 mt-2">{deleteError}</p>}
         </div>
       )}
+    </div>
+  );
+
+  const previewContent =
+    page.coreKey === 'home' && page.home ? (
+      <HomePageView home={page.home} about={aboutForHomePreview ?? page.about!} />
+    ) : page.coreKey === 'about' && page.about ? (
+      <AboutPageView about={page.about} />
+    ) : page.coreKey === 'contact' && page.contact ? (
+      <ContactPageView contact={page.contact} />
+    ) : page.coreKey === 'insights' ? (
+      <div className="p-10 text-center text-sm text-[var(--slate)]">
+        Insights doesn&rsquo;t have page-level content to preview — see{' '}
+        <Link href="/admin/insights" className="underline">
+          Insights
+        </Link>
+        .
+      </div>
+    ) : (
+      <>
+        {page.blocks.length === 0 ? (
+          <div className="wrap section block-section">
+            <h1>{page.title}</h1>
+            <p className="text-sm text-[var(--slate)] mt-4">Add a block to see it here.</p>
+          </div>
+        ) : (
+          <BlockRenderer blocks={page.blocks} />
+        )}
+      </>
+    );
+
+  const preview = (
+    <LivePreviewPane dirty={dirty} fullPreviewHref={previewHrefFor(page)} resetKey={JSON.stringify(page)}>
+      {previewContent}
+    </LivePreviewPane>
+  );
+
+  return (
+    <div>
+      <UnsavedChangesGuard dirty={dirty} />
+      <AdminEditorLayout editor={editor} preview={preview} />
 
       <ConfirmDialog
         open={confirmingDelete}

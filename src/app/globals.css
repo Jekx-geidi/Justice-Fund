@@ -85,6 +85,12 @@ h1,h2,h3 { font-weight:500; line-height:1.19; letter-spacing:-.045em; text-wrap:
 @media(max-width:699px) { .block-imagetext,.block-imagetext.image-right { grid-template-columns:1fr; direction:ltr; } .block-cards { grid-template-columns:1fr; } }
 .confirm-dialog { margin:auto; max-width:420px; width:calc(100% - 40px); border:0; padding:0; color:var(--ink); }
 .confirm-dialog::backdrop { background:#1a171780; }
+/* Admin Live Draft Preview (docs/project-brief/IEJF_Admin_Live_Preview_PRD.md) */
+.preview-viewport-outer { overflow:hidden; position:relative; }
+.preview-viewport-inner { margin-inline:auto; transform-origin:top center; background:white; box-shadow:0 0 0 1px var(--line); }
+.live-preview-pane { min-height:0; }
+@media(max-width:1023px) { .live-preview-pane { border-left:0; border-top:1px solid var(--line); } }
+
 @keyframes enter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 @media(min-width:700px) and (max-width:1099px) { .focus-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .focus-card:last-child { grid-column:1/-1; display:grid; grid-template-columns:1fr 1.4fr; column-gap:35px; } .focus-card:last-child>div:first-child { grid-column:1; } .focus-card:last-child h3 { grid-column:1; margin-top:20px; } .focus-card:last-child>p { grid-column:2; grid-row:1/3; margin:0; } .focus-card:last-child .entity { grid-column:1/-1; margin-top:25px; } .quote-grid { gap:22px; } .footer-top { gap:25px; grid-template-columns:1.1fr .6fr 1fr; } .hero-copy h1 { font-size:clamp(2rem,4.3vw,3rem); } .hero-copy .lead { font-size:14px; } .hero-grid { gap:20px; } .desktop-nav { gap:22px; } }
 @media(max-width:899px) { .menu-trigger { display:flex; } .desktop-nav { display:none; } .header-inner { min-height:86px; } }
