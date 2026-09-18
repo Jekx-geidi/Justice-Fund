@@ -97,11 +97,17 @@ export const contentBlockSchema = z.discriminatedUnion('type', [
   ctaBlockSchema,
 ]);
 
+export const homeQuoteSchema = z.object({
+  text: z.string().min(1).max(400),
+  attribution: z.string().max(150),
+});
+
 export const homeFieldsSchema = z.object({
   eyebrow: z.string().max(80),
   heading: z.string().min(1).max(200),
   mission: z.string().min(1).max(2000),
   heroImage: mediaReferenceSchema.nullish(),
+  quotes: z.array(homeQuoteSchema).max(12),
   bottomLine: z.string().max(300),
 });
 
@@ -139,6 +145,26 @@ export const pageWriteSchema = z.object({
   blocks: z.array(contentBlockSchema).max(30),
 });
 
+/** Partial edit of an existing page's content — never touches id/isCore/coreKey/slug structure. */
+export const pagePatchSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1).max(150).optional(),
+  navLabel: z.string().min(1).max(60).optional(),
+  showInNavigation: z.boolean().optional(),
+  navOrder: z.number().int().min(0).max(9999).optional(),
+  status: pageStatusSchema.optional(),
+  seo: z
+    .object({
+      title: z.string().max(160).optional(),
+      description: z.string().max(300).optional(),
+    })
+    .optional(),
+  blocks: z.array(contentBlockSchema).max(30).optional(),
+  home: homeFieldsSchema.optional(),
+  about: aboutFieldsSchema.optional(),
+  contact: contactFieldsSchema.optional(),
+});
+
 export const insightEntrySchema = z.object({
   id: z.string(),
   title: z.string().min(1).max(200),
@@ -149,6 +175,15 @@ export const insightEntrySchema = z.object({
   status: pageStatusSchema,
   order: z.number().int().min(0).max(9999),
   date: z.string().max(40).optional(),
+});
+
+export const draftPatchSchema = z.object({
+  pages: z.array(pagePatchSchema).max(200),
+  insights: z.array(insightEntrySchema).max(500).optional(),
+});
+
+export const reorderSchema = z.object({
+  orderedIds: z.array(z.string().min(1)).min(1).max(200),
 });
 
 export const loginSchema = z.object({

@@ -1,0 +1,135 @@
+'use client';
+
+import { useState } from 'react';
+import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
+import type { InsightEntry } from '@/lib/content/types';
+import { PublishBar } from './PublishBar';
+import { UnsavedChangesGuard } from './UnsavedChangesGuard';
+
+function newEntry(order: number): InsightEntry {
+  return {
+    id: crypto.randomUUID(),
+    title: '',
+    category: '',
+    summary: '',
+    status: 'draft',
+    order,
+  };
+}
+
+export function InsightsManagerClient({ entries: initial }: { entries: InsightEntry[] }) {
+  const [entries, setEntries] = useState(initial);
+  const [dirty, setDirty] = useState(false);
+
+  function update(id: string, patch: Partial<InsightEntry>) {
+    setEntries((prev) => prev.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
+    setDirty(true);
+  }
+
+  function remove(id: string) {
+    setEntries((prev) => prev.filter((entry) => entry.id !== id));
+    setDirty(true);
+  }
+
+  function move(index: number, direction: -1 | 1) {
+    const target = index + direction;
+    if (target < 0 || target >= entries.length) return;
+    const next = [...entries];
+    [next[index], next[target]] = [next[target], next[index]];
+    setEntries(next.map((entry, i) => ({ ...entry, order: i })));
+    setDirty(true);
+  }
+
+  function addEntry() {
+    setEntries((prev) => [...prev, newEntry(prev.length)]);
+    setDirty(true);
+  }
+
+  async function saveDraft(): Promise<{ ok: boolean; error?: string }> {
+    const response = await fetch('/api/admin/content/draft', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pages: [], insights: entries }),
+    }).catch(() => null);
+
+    if (!response || !response.ok) {
+      const body = await response?.json().catch(() => null);
+      return { ok: false, error: body?.error ?? 'Save failed.' };
+    }
+    setDirty(false);
+    return { ok: true };
+  }
+
+  async function publish(): Promise<{ ok: boolean; error?: string }> {
+    const response = await fetch('/api/admin/content/publish', { method: 'POST' }).catch(() => null);
+    if (!response || !response.ok) {
+      const body = await response?.json().catch(() => null);
+      return { ok: false, error: body?.error };
+    }
+    return { ok: true };
+  }
+
+  return (
+    <div className="max-w-3xl">
+      <UnsavedChangesGuard dirty={dirty} />
+      <p className="text-sm text-[var(--slate)] mb-6">
+        Insights launches blank by design. Entries you publish here appear on the public Insights page in the
+        approved card layout.
+      </p>
+
+      <div className="space-y-4">
+        {entries.map((entry, index) => (
+          <div key={entry.id} className="bg-white border border-[var(--line)] p-4">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-medium">Entry {index + 1}</p>
+              <div className="flex items-center gap-2">
+                <button type="button" aria-label="Move up" disabled={index === 0} onClick={() => move(index, -1)} className="disabled:opacity-30">
+                  <ArrowUp size={16} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Move down"
+                  disabled={index === entries.length - 1}
+                  onClick={() => move(index, 1)}
+                  className="disabled:opacity-30"
+                >
+                  <ArrowDown size={16} aria-hidden="true" />
+                </button>
+                <button type="button" aria-label="Remove entry" onClick={() => remove(entry.id)} className="text-red-700">
+                  <Trash2 size={16} aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <input placeholder="Title" value={entry.title} onChange={(event) => update(entry.id, { title: event.target.value })} maxLength={200} />
+              <input
+                placeholder="Category (e.g. LITIGATION)"
+                value={entry.category ?? ''}
+                onChange={(event) => update(entry.id, { category: event.target.value })}
+                maxLength={60}
+              />
+              <textarea
+                placeholder="Summary"
+                rows={3}
+                value={entry.summary}
+                onChange={(event) => update(entry.id, { summary: event.target.value })}
+                maxLength={2000}
+              />
+              <select value={entry.status} onChange={(event) => update(entry.id, { status: event.target.value as InsightEntry['status'] })}>
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="unpublished">Unpublished</option>
+              </select>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button type="button" className="button button-outline border border-[var(--ink)] text-[var(--ink)] mt-4" onClick={addEntry}>
+        + Add entry
+      </button>
+
+      <PublishBar onSaveDraft={saveDraft} onPublish={publish} dirty={dirty} previewHref="/insights?preview=1" />
+    </div>
+  );
+}

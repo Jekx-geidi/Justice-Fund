@@ -33,6 +33,20 @@ export function buildSeedContent(): SiteContent {
           mission:
             'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed.',
           heroImage: null,
+          quotes: [
+            {
+              text: "This case shows what's possible when a small legal team takes on a question no one else will ask.",
+              attribution: 'The Guardian, on a matter supported by IEJF',
+            },
+            {
+              text: "A landmark moment for how courts weigh the interests of people who aren't born yet.",
+              attribution: 'The Conversation',
+            },
+            {
+              text: "It's Mabo for the climate — a case young Australians will point back to.",
+              attribution: 'Sydney Morning Herald',
+            },
+          ],
           bottomLine: 'Intergenerational Environment Justice Fund (ABN 51 656 623 719)',
         },
         blocks: [],

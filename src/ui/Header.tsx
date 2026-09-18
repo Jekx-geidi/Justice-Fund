@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
-import { navigation } from '@/content/site';
+import type { NavItem } from '@/lib/content/content';
 
-export default function Header() {
+export default function Header({ navigation }: { navigation: NavItem[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);

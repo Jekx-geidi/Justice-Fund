@@ -52,6 +52,39 @@ h1,h2,h3 { font-weight:500; line-height:1.19; letter-spacing:-.045em; text-wrap:
 .form-status { display:flex; gap:10px; font-size:12px; color:var(--slate); margin-top:20px; } .form-status svg { flex-shrink:0; } .form-status a { text-decoration:underline; overflow-wrap:anywhere; }
 .contact-details { background:var(--paper); padding:clamp(26px,4vw,54px); position:relative; overflow:hidden; align-self:start; } .contact-details h2 { font-size:clamp(1.6rem,2.5vw,2.4rem); margin-top:25px; } .contact-location { margin-top:36px; } .contact-location>span,.contact-email>span { display:block; font-size:9px; color:var(--slate); letter-spacing:.15em; margin-bottom:7px; } .contact-location p { font-size:14px; } .contact-email { margin-top:28px; } .contact-email a { display:flex; align-items:center; gap:12px; min-height:44px; font-size:clamp(11px,1.25vw,15px); overflow-wrap:anywhere; } .contact-email svg { flex-shrink:0; }
 .contact-decoration { height:90px; position:relative; margin-top:40px; } .contact-decoration span { width:140px; height:140px; border:1px solid #c9a15a70; border-radius:50%; position:absolute; left:0; top:5px; } .contact-decoration span:nth-child(2) { left:50px; } .contact-decoration span:nth-child(3) { left:100px; }
+/* Generic block system (custom admin-created pages) — reuses the site's
+   tokens/eyebrow/button classes rather than inventing a new visual language. */
+.block-section { border-top:1px solid var(--line); }
+.block-section:first-child { border-top:0; }
+.block-hero { text-align:left; }
+.block-hero.align-center { text-align:center; }
+.block-hero h1 { margin-top:22px; }
+.block-hero .lead { margin-top:20px; }
+.block-hero-media { margin-top:28px; }
+.block-hero.align-center .lead { margin-inline:auto; }
+.block-richtext { max-width:70ch; }
+.block-richtext h2 { margin-bottom:18px; }
+.block-richtext :is(p,ul,ol) { color:var(--slate); font-size:16px; line-height:1.9; margin-top:14px; }
+.block-richtext a { text-decoration:underline; text-decoration-color:var(--gold); }
+.block-imagetext { display:grid; grid-template-columns:1fr 1fr; gap:clamp(30px,6vw,80px); align-items:center; }
+.block-imagetext.image-right { direction:rtl; } .block-imagetext.image-right>* { direction:ltr; }
+.block-imagetext-media { position:relative; aspect-ratio:1.3; background:var(--paper); }
+.block-imagetext h2 { margin-bottom:16px; } .block-imagetext p { color:var(--slate); font-size:15px; line-height:1.85; }
+.block-cards-heading { margin-bottom:30px; }
+.block-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
+.block-card { padding:clamp(24px,3vw,36px); background:white; border:1px solid var(--line); }
+.block-card-media { margin-bottom:16px; }
+.block-card h3 { margin-bottom:12px; } .block-card p { color:var(--slate); font-size:14px; line-height:1.8; }
+.block-quote { border-top:1px solid var(--line); padding-top:23px; max-width:70ch; }
+.block-quote .quote-symbol { font-family:Georgia,serif; color:var(--gold); font-size:52px; line-height:1; }
+.block-quote blockquote { margin:8px 0 16px; font-size:clamp(1.1rem,1.8vw,1.4rem); letter-spacing:-.02em; line-height:1.6; }
+.block-quote figcaption { font-size:12px; font-weight:500; color:var(--slate); }
+.block-cta { background:var(--ink); color:white; padding:clamp(40px,6vw,64px); text-align:center; }
+.block-cta h2 { color:white; margin-bottom:14px; } .block-cta p { color:#d5d0ce; max-width:60ch; margin-inline:auto; }
+.block-cta .button { margin-top:22px; }
+@media(max-width:699px) { .block-imagetext,.block-imagetext.image-right { grid-template-columns:1fr; direction:ltr; } .block-cards { grid-template-columns:1fr; } }
+.confirm-dialog { margin:auto; max-width:420px; width:calc(100% - 40px); border:0; padding:0; color:var(--ink); }
+.confirm-dialog::backdrop { background:#1a171780; }
 @keyframes enter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 @media(min-width:700px) and (max-width:1099px) { .focus-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .focus-card:last-child { grid-column:1/-1; display:grid; grid-template-columns:1fr 1.4fr; column-gap:35px; } .focus-card:last-child>div:first-child { grid-column:1; } .focus-card:last-child h3 { grid-column:1; margin-top:20px; } .focus-card:last-child>p { grid-column:2; grid-row:1/3; margin:0; } .focus-card:last-child .entity { grid-column:1/-1; margin-top:25px; } .quote-grid { gap:22px; } .footer-top { gap:25px; grid-template-columns:1.1fr .6fr 1fr; } .hero-copy h1 { font-size:clamp(2rem,4.3vw,3rem); } .hero-copy .lead { font-size:14px; } .hero-grid { gap:20px; } .desktop-nav { gap:22px; } }
 @media(max-width:899px) { .menu-trigger { display:flex; } .desktop-nav { display:none; } .header-inner { min-height:86px; } }

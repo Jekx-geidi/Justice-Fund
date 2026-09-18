@@ -73,11 +73,17 @@ export type ContentBlock =
   | CtaBlock;
 
 /** Page-specific structured fields for the four protected core pages (section 8.1). */
+export interface HomeQuote {
+  text: string;
+  attribution: string;
+}
+
 export interface HomeFields {
   eyebrow: string;
   heading: string;
   mission: string;
   heroImage?: MediaReference | null;
+  quotes: HomeQuote[];
   bottomLine: string;
 }
 
