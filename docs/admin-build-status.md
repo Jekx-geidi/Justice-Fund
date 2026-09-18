@@ -1,16 +1,22 @@
 # Admin Portal Build Status
 
-Tracking progress against `IEJF_Frontend_Documentation_Package/Admin.md`. Core build finished and verified end-to-end on 18 September 2026.
+Tracking progress against `IEJF_Frontend_Documentation_Package/Admin.md`. Core build finished and verified end-to-end on 18 September 2026. Persistence migrated from local JSON to Supabase the same day — see "Supabase persistence" below.
 
 ## Done and verified
 
 **Content architecture**
-- `src/lib/content/` — full dynamic `pages[]` model (`types.ts`, `schemas.ts`), seeded from IEJF's confirmed copy (`seed.ts`), local JSON storage behind a swappable `ContentStorage` interface (`storage.ts` / `storage-local.ts`), and the single content service everything reads through (`content.ts`).
+- `src/lib/content/` — full dynamic `pages[]` model (`types.ts`, `schemas.ts`), seeded from IEJF's confirmed copy (`seed.ts`), behind a swappable `ContentStorage` interface (`storage.ts`), and the single content service everything reads through (`content.ts`).
 - Home/About/Insights/Contact now read live content from this service instead of the old static `site.ts` (deleted). `Header`/`Footer` derive navigation the same way.
 - Insights is a real repeatable `insights[]` collection, launched empty per spec.
 
+**Supabase persistence** (resolves the "edits vanish on redeploy" gap flagged earlier)
+- `src/lib/content/storage-supabase.ts` implements `ContentStorage` against a `site_content` table (`supabase/migrations/0001_site_content.sql` — one row per version, whole `SiteContent` document as `jsonb`). `content.ts` picks this automatically whenever `NEXT_PUBLIC_SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` are set, falling back to the local JSON adapter (`storage-local.ts`) otherwise — no other file needed to change.
+- Admin credentials moved out of env vars into an `admin_users` table (`supabase/migrations/0002_admin_users.sql`), so more admin accounts can be added later without a redeploy (Admin.md §3.4). `src/lib/auth/admin.ts` (`findAdminByEmail`) queries this when Supabase is configured, with the same env-var fallback path for a Supabase-less checkout.
+- RLS is enabled on both tables with zero policies — only the server-side `service_role` key (which bypasses RLS) can read/write; the anon key gets nothing. Verified: valid login succeeds, wrong password and unknown email both 401, dashboard access works with the resulting session.
+- **Still local-only:** uploaded media (`public/uploads/` + `data/media.json` sidecar) hasn't been moved to Supabase Storage yet — same "vanishes on redeploy" problem as content used to have, just not yet fixed for images.
+
 **Auth & security**
-- `src/lib/auth/` — bcrypt password hashing, HMAC-signed session cookies (HttpOnly/Secure/SameSite=Strict, 8h), single-admin credential from env vars, login rate limiting (5/15min).
+- `src/lib/auth/` — bcrypt password hashing, HMAC-signed session cookies (HttpOnly/Secure/SameSite=Strict, 8h), login rate limiting (5/15min).
 - `src/lib/security/` — audit log (stdout, Cloud Logging-ready), Origin-based CSRF check, rich-text sanitizer.
 - `src/lib/media/upload.ts` — magic-byte sniffing (JPEG/PNG/WebP only), re-encoded via `sharp` (strips EXIF, neutralises polyglots), 8MB cap.
 - `next.config.ts` — CSP + security headers.
@@ -48,7 +54,8 @@ Tracking progress against `IEJF_Frontend_Documentation_Package/Admin.md`. Core b
 
 ## Explicitly deferred — needs real infra access, not buildable here
 
-- Actual GCS bucket / Cloud Run / Secret Manager provisioning. The storage/auth code is written behind the `ContentStorage` interface specifically so this swap doesn't touch the admin UI.
+- Actual Cloud Run deployment (the app itself still needs a real host — Supabase only solved the *persistence* half of Admin.md §12/§33, not deployment).
+- Supabase Storage for uploaded media (still local disk — see "Still local-only" above).
 - MFA (TOTP) — recommended, not launch-blocking per the spec.
 - OWASP ZAP baseline scan — needs a running staging deployment.
 - Rollback/version history beyond current draft+live (the spec itself calls this a Phase 1.1 enhancement).
@@ -59,8 +66,19 @@ Tracking progress against `IEJF_Frontend_Documentation_Package/Admin.md`. Core b
 cp .env.example .env.local
 node scripts/create-admin-hash.mjs "your-password"
 # paste the SECOND printed line (escaped $) into ADMIN_PASSWORD_HASH in .env.local —
-# Next's dotenv-expand mangles raw bcrypt hashes otherwise. Not an issue in
-# production, where Secret Manager injects the env var directly (no dotenv parsing).
+# Next's dotenv-expand mangles raw bcrypt hashes and JWT-style keys otherwise
+# (same rule applies below to the Supabase keys if they ever contain a literal $,
+# which real Supabase JWTs won't). Not an issue in production — Secret Manager /
+# Supabase env injection doesn't go through dotenv parsing.
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"  # → SESSION_SECRET
+
+# Supabase: from your project's Settings -> API Keys, then run the two
+# migrations in supabase/migrations/ via the SQL Editor (no exec-SQL RPC
+# available through the anon/service-role keys alone), then seed the
+# admin_users row once (see git history for the one-off seed script used here).
+# NEXT_PUBLIC_SUPABASE_URL=
+# NEXT_PUBLIC_SUPABASE_ANON_KEY=
+# SUPABASE_SERVICE_ROLE_KEY=
+
 npm run build && npm run start -- --port 3100
 ```
