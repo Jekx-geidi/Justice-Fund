@@ -8,6 +8,7 @@ import { UnsavedChangesGuard } from './UnsavedChangesGuard';
 import { AdminEditorLayout } from './live-preview/AdminEditorLayout';
 import { LivePreviewPane } from './live-preview/LivePreviewPane';
 import { InsightsPageView } from '@/ui/pages/InsightsPageView';
+import { MediaSlot } from './media/MediaSlot';
 
 function newEntry(order: number): InsightEntry {
   return {
@@ -122,25 +123,7 @@ export function InsightsManagerClient({ entries: initial }: { entries: InsightEn
                 <option value="published">Published</option>
                 <option value="unpublished">Unpublished</option>
               </select>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  placeholder="Image URL (/uploads/… or /images/…)"
-                  value={entry.image?.url ?? ''}
-                  onChange={(event) =>
-                    update(entry.id, {
-                      image: event.target.value
-                        ? { id: entry.image?.id ?? crypto.randomUUID(), url: event.target.value, alt: entry.image?.alt ?? '' }
-                        : null,
-                    })
-                  }
-                />
-                <input
-                  placeholder="Image alt text"
-                  value={entry.image?.alt ?? ''}
-                  disabled={!entry.image?.url}
-                  onChange={(event) => (entry.image?.url ? update(entry.id, { image: { ...entry.image, alt: event.target.value } }) : undefined)}
-                />
-              </div>
+              <MediaSlot image={entry.image} onChange={(image) => update(entry.id, { image })} />
             </div>
           </div>
         ))}

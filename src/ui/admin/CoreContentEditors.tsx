@@ -1,6 +1,7 @@
 'use client';
 
 import type { HomeFields, AboutFields, ContactFields } from '@/lib/content/types';
+import { MediaSlot } from './media/MediaSlot';
 
 export function HomeFieldsEditor({ value, onChange }: { value: HomeFields; onChange: (next: HomeFields) => void }) {
   function updateQuote(index: number, field: 'text' | 'attribution', text: string) {
@@ -38,6 +39,10 @@ export function HomeFieldsEditor({ value, onChange }: { value: HomeFields; onCha
           onChange={(event) => onChange({ ...value, bottomLine: event.target.value })}
           maxLength={300}
         />
+      </div>
+      <div className="field">
+        <label>Hero image</label>
+        <MediaSlot image={value.heroImage} onChange={(heroImage) => onChange({ ...value, heroImage })} />
       </div>
       <fieldset className="border border-[var(--line)] p-4">
         <legend className="text-sm font-medium px-1">News quotes (placeholder)</legend>

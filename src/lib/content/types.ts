@@ -6,6 +6,9 @@ export interface MediaReference {
   alt: string;
   width?: number;
   height?: number;
+  /** Normalized 0–1 focal point, applied as `object-position` when rendering. Omitted = default centring. */
+  focalX?: number;
+  focalY?: number;
 }
 
 export interface HeroBlock {

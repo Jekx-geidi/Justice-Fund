@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
-import type { ContentBlock, MediaReference } from '@/lib/content/types';
+import type { ContentBlock } from '@/lib/content/types';
+import { MediaSlot } from './media/MediaSlot';
 
 const BLOCK_LABELS: Record<ContentBlock['type'], string> = {
   hero: 'Hero',
@@ -31,31 +32,6 @@ function newBlock(type: ContentBlock['type']): ContentBlock {
   }
 }
 
-function ImageField({ image, onChange }: { image?: MediaReference | null; onChange: (image: MediaReference | null) => void }) {
-  return (
-    <div className="grid grid-cols-2 gap-2">
-      <div className="field">
-        <label>Image URL</label>
-        <input
-          value={image?.url ?? ''}
-          placeholder="/uploads/…"
-          onChange={(event) =>
-            onChange(event.target.value ? { id: image?.id ?? crypto.randomUUID(), url: event.target.value, alt: image?.alt ?? '' } : null)
-          }
-        />
-      </div>
-      <div className="field">
-        <label>Alt text</label>
-        <input
-          value={image?.alt ?? ''}
-          onChange={(event) => (image?.url ? onChange({ ...image, alt: event.target.value }) : undefined)}
-          disabled={!image?.url}
-        />
-      </div>
-    </div>
-  );
-}
-
 function BlockFields({ block, onChange }: { block: ContentBlock; onChange: (next: ContentBlock) => void }) {
   switch (block.type) {
     case 'hero':
@@ -73,7 +49,7 @@ function BlockFields({ block, onChange }: { block: ContentBlock; onChange: (next
             value={block.body ?? ''}
             onChange={(event) => onChange({ ...block, body: event.target.value })}
           />
-          <ImageField image={block.image} onChange={(image) => onChange({ ...block, image })} />
+          <MediaSlot image={block.image} onChange={(image) => onChange({ ...block, image })} />
         </div>
       );
     case 'richText':
@@ -102,7 +78,7 @@ function BlockFields({ block, onChange }: { block: ContentBlock; onChange: (next
             value={block.body}
             onChange={(event) => onChange({ ...block, body: event.target.value })}
           />
-          <ImageField image={block.image} onChange={(image) => onChange({ ...block, image })} />
+          <MediaSlot image={block.image} onChange={(image) => onChange({ ...block, image })} />
           <select value={block.imageSide} onChange={(event) => onChange({ ...block, imageSide: event.target.value as 'left' | 'right' })}>
             <option value="left">Image on left</option>
             <option value="right">Image on right</option>
@@ -135,6 +111,14 @@ function BlockFields({ block, onChange }: { block: ContentBlock; onChange: (next
                 onChange={(event) => {
                   const cards = [...block.cards];
                   cards[index] = { ...card, description: event.target.value };
+                  onChange({ ...block, cards });
+                }}
+              />
+              <MediaSlot
+                image={card.image}
+                onChange={(image) => {
+                  const cards = [...block.cards];
+                  cards[index] = { ...card, image };
                   onChange({ ...block, cards });
                 }}
               />

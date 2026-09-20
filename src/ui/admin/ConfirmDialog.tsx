@@ -12,7 +12,7 @@ export function ConfirmDialog({
 }: {
   open: boolean;
   title: string;
-  description: string;
+  description: React.ReactNode;
   confirmLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
@@ -30,7 +30,7 @@ export function ConfirmDialog({
     <dialog ref={ref} className="confirm-dialog" onCancel={onCancel}>
       <div className="p-6">
         <h2 className="text-lg mb-2">{title}</h2>
-        <p className="text-sm text-[var(--slate)] mb-6">{description}</p>
+        <div className="text-sm text-[var(--slate)] mb-6">{description}</div>
         <div className="flex justify-end gap-3">
           <button type="button" className="button button-outline border border-[var(--ink)] text-[var(--ink)]" onClick={onCancel}>
             Cancel

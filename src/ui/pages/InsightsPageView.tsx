@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { PageIntro } from '@/ui/Editorial';
 import type { InsightEntry } from '@/lib/content/types';
+import { focalPointStyle } from '@/ui/blocks/focalPoint';
 
 export function InsightsPageView({ entries }: { entries: InsightEntry[] }) {
   return (
@@ -18,7 +19,13 @@ export function InsightsPageView({ entries }: { entries: InsightEntry[] }) {
         <article className="insight-feature" key={entry.id}>
           {entry.image && (
             <div className="insight-visual">
-              <Image src={entry.image.url} alt={entry.image.alt} fill sizes="(max-width: 699px) 90vw, 40vw" />
+              <Image
+                src={entry.image.url}
+                alt={entry.image.alt}
+                fill
+                sizes="(max-width: 699px) 90vw, 40vw"
+                style={focalPointStyle(entry.image)}
+              />
             </div>
           )}
           <div className="insight-copy">

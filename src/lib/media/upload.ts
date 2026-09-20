@@ -1,5 +1,5 @@
 import 'server-only';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 
 export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8MB (Admin.md open question #13; adjust when confirmed)
 
-const BUCKET = 'IMAGES IEJF';
+export const BUCKET = 'IMAGES IEJF';
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 
 type SniffedType = 'jpeg' | 'png' | 'webp';
@@ -45,7 +45,7 @@ export interface UploadedImage {
   height?: number;
 }
 
-function isSupabaseConfigured(): boolean {
+export function isSupabaseConfigured(): boolean {
   return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
@@ -108,4 +108,16 @@ export async function saveUploadedImage(file: File, alt: string): Promise<Upload
     width: output.info.width,
     height: output.info.height,
   };
+}
+
+/** Used both by delete and by replace (to clean up the file a replacement superseded). */
+export async function removeStoredFile(filename: string): Promise<void> {
+  if (isSupabaseConfigured()) {
+    const client = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+      auth: { persistSession: false },
+    });
+    await client.storage.from(BUCKET).remove([filename]);
+    return;
+  }
+  await unlink(path.join(UPLOAD_DIR, filename)).catch(() => undefined);
 }

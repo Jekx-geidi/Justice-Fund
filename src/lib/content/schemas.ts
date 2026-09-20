@@ -26,6 +26,8 @@ export const mediaReferenceSchema = z.object({
   alt: z.string(),
   width: z.number().optional(),
   height: z.number().optional(),
+  focalX: z.number().min(0).max(1).optional(),
+  focalY: z.number().min(0).max(1).optional(),
 });
 
 const blockBase = { id: z.string() };

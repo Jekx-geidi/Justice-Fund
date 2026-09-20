@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import type { CardGridBlock } from '@/lib/content/types';
+import { focalPointStyle } from './focalPoint';
 
 export function CardGridBlockView({ block }: { block: CardGridBlock }) {
   return (
@@ -14,7 +15,13 @@ export function CardGridBlockView({ block }: { block: CardGridBlock }) {
           <article className="block-card" key={card.id}>
             {card.image && (
               <div className="block-imagetext-media block-card-media">
-                <Image src={card.image.url} alt={card.image.alt} fill sizes="(max-width: 699px) 90vw, 30vw" />
+                <Image
+                  src={card.image.url}
+                  alt={card.image.alt}
+                  fill
+                  sizes="(max-width: 699px) 90vw, 30vw"
+                  style={focalPointStyle(card.image)}
+                />
               </div>
             )}
             <h3>{card.title}</h3>

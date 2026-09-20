@@ -9,7 +9,12 @@ export type AuditEvent =
   | 'page_created'
   | 'page_deleted'
   | 'page_unpublished'
+  | 'media_upload_success'
   | 'media_upload_failure'
+  | 'media_update'
+  | 'media_replace'
+  | 'media_delete'
+  | 'media_delete_blocked'
   | 'authorisation_failure';
 
 interface AuditFields {

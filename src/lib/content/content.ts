@@ -2,6 +2,7 @@ import 'server-only';
 import type { ContentVersion, SitePage, SiteContent } from './types';
 import { localFileStorage } from './storage-local';
 import { supabaseStorage, isSupabaseConfigured } from './storage-supabase';
+import { resolveMediaReferences } from './resolveMedia';
 
 /**
  * Single content service used by every public page and every admin route.
@@ -12,7 +13,8 @@ import { supabaseStorage, isSupabaseConfigured } from './storage-supabase';
 const storage = isSupabaseConfigured() ? supabaseStorage : localFileStorage;
 
 export async function getSiteContent(version: ContentVersion): Promise<SiteContent> {
-  return version === 'live' ? storage.readLive() : storage.readDraft();
+  const content = version === 'live' ? await storage.readLive() : await storage.readDraft();
+  return resolveMediaReferences(content);
 }
 
 export async function saveDraft(content: SiteContent): Promise<void> {

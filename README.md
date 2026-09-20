@@ -8,6 +8,10 @@ Run `npm ci` then `npm run dev`.
 
 Production preview: `npm run build` then `npm run start -- --port 3100`.
 
+## Demo admin account
+
+`/admin/login` — `admin@justicefund.org.au` / `TestPass123!`
+
 ## Validation
 
 Run `npm run lint`, `npm run typecheck`, `npx playwright install chromium`, then `npm run test:ui` with the production preview running on port 3100. Override its URL with `QA_URL`.
