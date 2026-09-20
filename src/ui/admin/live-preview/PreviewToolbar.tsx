@@ -20,13 +20,13 @@ export function PreviewToolbar({
         <p className="text-xs font-medium tracking-[0.08em] uppercase text-[var(--gold)]">Live Draft Preview</p>
         <PreviewStatus dirty={dirty} />
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
         <DeviceToggle mode={mode} onChange={onModeChange} />
         <a
           href={fullPreviewHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs underline whitespace-nowrap"
+          className="flex min-h-11 items-center gap-1 text-xs underline whitespace-nowrap"
         >
           Open Full Preview
           <ArrowUpRight size={12} aria-hidden="true" />

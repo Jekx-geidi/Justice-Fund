@@ -1,6 +1,6 @@
 'use client';
 
-import { Monitor, Tablet, Smartphone } from 'lucide-react';
+import { ChevronDown, Monitor, Tablet, Smartphone } from 'lucide-react';
 import type { DeviceMode } from './PreviewViewport';
 
 const OPTIONS: { mode: DeviceMode; label: string; Icon: typeof Monitor }[] = [
@@ -10,22 +10,19 @@ const OPTIONS: { mode: DeviceMode; label: string; Icon: typeof Monitor }[] = [
 ];
 
 export function DeviceToggle({ mode, onChange }: { mode: DeviceMode; onChange: (mode: DeviceMode) => void }) {
+  const { Icon } = OPTIONS.find(option => option.mode === mode)!;
   return (
-    <div role="group" aria-label="Preview device size" className="flex items-center gap-1">
-      {OPTIONS.map(({ mode: optionMode, label, Icon }) => (
-        <button
-          key={optionMode}
-          type="button"
-          aria-pressed={mode === optionMode}
-          onClick={() => onChange(optionMode)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded ${
-            mode === optionMode ? 'bg-[var(--ink)] text-white' : 'text-[var(--slate)] hover:text-[var(--ink)]'
-          }`}
-        >
-          <Icon size={14} aria-hidden="true" />
-          {label}
-        </button>
-      ))}
-    </div>
+    <label className="relative inline-flex shrink-0 items-center">
+      <span className="sr-only">Preview device size</span>
+      <Icon size={16} aria-hidden="true" className="pointer-events-none absolute left-3 text-[var(--slate)]" />
+      <select
+        value={mode}
+        onChange={event => onChange(event.target.value as DeviceMode)}
+        className="min-h-11 w-36 cursor-pointer appearance-none rounded border border-[var(--line)] bg-white py-2 pl-9 pr-8 text-sm text-[var(--ink)] transition-colors hover:border-[var(--gold)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gold)] motion-reduce:transition-none"
+      >
+        {OPTIONS.map(({ mode: optionMode, label }) => <option key={optionMode} value={optionMode}>{label}</option>)}
+      </select>
+      <ChevronDown size={14} aria-hidden="true" className="pointer-events-none absolute right-3 text-[var(--slate)]" />
+    </label>
   );
 }
