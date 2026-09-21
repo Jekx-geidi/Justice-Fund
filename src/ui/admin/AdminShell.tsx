@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -43,6 +43,24 @@ export function AdminShell({
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!accountMenuOpen) return;
+    function handlePointerDown(event: MouseEvent) {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target as Node)) setAccountMenuOpen(false);
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setAccountMenuOpen(false);
+    }
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [accountMenuOpen]);
 
   useEffect(() => {
     try {
@@ -126,8 +144,33 @@ export function AdminShell({
           </button>
         </div>
 
-        <div className="px-3 pt-2 pb-1 border-t border-white/10 text-xs">
-          <div className={`flex items-center gap-2.5 px-3 pt-1 pb-2 ${collapsed ? 'md:justify-center' : ''}`}>
+        <div ref={accountMenuRef} className="relative px-3 pt-2 pb-2 border-t border-white/10 text-xs">
+          <div
+            role="menu"
+            aria-hidden={!accountMenuOpen}
+            className={`absolute bottom-full left-3 mb-2 w-44 bg-[var(--ink)] border border-white/10 rounded shadow-lg origin-bottom-left transition-all duration-150 ${
+              accountMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+            }`}
+          >
+            <button
+              type="button"
+              role="menuitem"
+              onClick={handleLogout}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded text-sm font-medium text-white/85 hover:text-white hover:bg-white/10"
+            >
+              <LogOut size={16} aria-hidden="true" className="shrink-0" />
+              <span>Log out</span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setAccountMenuOpen((open) => !open)}
+            aria-haspopup="menu"
+            aria-expanded={accountMenuOpen}
+            title={collapsed ? name || email : undefined}
+            className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-white/10 ${collapsed ? 'md:justify-center' : ''}`}
+          >
             <span className="w-8 h-8 rounded-full overflow-hidden bg-white/10 shrink-0 relative">
               {avatarUrl ? (
                 <Image src={avatarUrl} alt="" fill sizes="32px" className="object-cover" />
@@ -137,24 +180,12 @@ export function AdminShell({
                 </span>
               )}
             </span>
-            <div className={`min-w-0 ${collapsed ? 'md:hidden' : ''}`}>
+            <div className={`min-w-0 flex-1 text-left ${collapsed ? 'md:hidden' : ''}`}>
               <p className="truncate text-white/90 font-medium" title={email}>
                 {name || email}
               </p>
               <p className="text-white/50">Administrator</p>
             </div>
-          </div>
-          <button
-            type="button"
-            onClick={handleLogout}
-            title={collapsed ? 'Log out' : undefined}
-            aria-label="Log out"
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded text-sm font-medium text-white/85 hover:text-white hover:bg-white/10 ${
-              collapsed ? 'md:justify-center md:px-0' : ''
-            }`}
-          >
-            <LogOut size={16} aria-hidden="true" className="shrink-0" />
-            <span className={collapsed ? 'md:hidden' : ''}>Log out</span>
           </button>
         </div>
       </aside>
