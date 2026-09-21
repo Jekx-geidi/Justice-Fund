@@ -13,6 +13,7 @@ const EVENT_LABELS: Record<string, string> = {
   page_deleted: 'Page deleted',
   page_unpublished: 'Page unpublished',
   revision_restored: 'Revision restored',
+  settings_updated: 'Settings updated',
   media_upload_success: 'Media uploaded',
   media_upload_failure: 'Media upload failed',
   media_update: 'Media updated',

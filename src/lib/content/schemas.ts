@@ -186,6 +186,8 @@ export const draftPatchSchema = z.object({
 
 export const reorderSchema = z.object({
   orderedIds: z.array(z.string().min(1)).min(1).max(200),
+  /** DynamicNav.md Feature A — Save Navigation persists order and visibility together, one draft write. */
+  visibility: z.record(z.string(), z.boolean()).optional(),
 });
 
 export const loginSchema = z.object({

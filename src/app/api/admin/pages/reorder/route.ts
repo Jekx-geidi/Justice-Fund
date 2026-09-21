@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAdminSession } from '@/lib/auth/guard';
 import { getSiteContent, saveDraft } from '@/lib/content/content';
 import { reorderSchema } from '@/lib/content/schemas';
+import { audit } from '@/lib/security/log';
 
 export async function POST(request: Request) {
   const session = await requireAdminSession(request);
@@ -22,8 +23,15 @@ export async function POST(request: Request) {
   }
 
   const now = new Date().toISOString();
-  const pages = draft.pages.map((page) => ({ ...page, navOrder: orderIndex.get(page.id)!, updatedAt: now }));
+  const visibility = parsed.data.visibility ?? {};
+  const pages = draft.pages.map((page) => ({
+    ...page,
+    navOrder: orderIndex.get(page.id)!,
+    showInNavigation: page.id in visibility ? visibility[page.id] : page.showInNavigation,
+    updatedAt: now,
+  }));
 
   await saveDraft({ ...draft, pages, updatedAt: now });
+  audit({ event: 'page_updated', admin: session, result: 'success' });
   return NextResponse.json({ ok: true });
 }

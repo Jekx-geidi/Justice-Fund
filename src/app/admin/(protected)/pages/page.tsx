@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getSiteContent, pageRoute } from '@/lib/content/content';
-import { ReorderList } from '@/ui/admin/ReorderList';
+import { NavigationManager } from '@/ui/admin/navigation/NavigationManager';
 
 export const metadata = { title: 'Pages' };
 
@@ -20,11 +20,7 @@ export default async function AdminPagesList() {
         </Link>
       </div>
 
-      <p className="text-sm text-[var(--slate)] mb-4">
-        Drag isn&rsquo;t required — use the arrows to reorder navigation. Order is saved immediately.
-      </p>
-
-      <ReorderList
+      <NavigationManager
         pages={pages.map((page) => ({
           id: page.id,
           title: page.title,
@@ -32,6 +28,7 @@ export default async function AdminPagesList() {
           status: page.status,
           showInNavigation: page.showInNavigation,
           isCore: page.isCore,
+          navLabel: page.navLabel,
         }))}
       />
     </div>
