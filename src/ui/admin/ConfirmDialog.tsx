@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { MaterialButton } from './material/MaterialControls';
+import { useMaterialWeb } from './material/useMaterialWeb';
 
 export function ConfirmDialog({
   open,
@@ -18,6 +20,10 @@ export function ConfirmDialog({
   onCancel: () => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const materialReady = useMaterialWeb([
+    () => import('@material/web/button/filled-button.js'),
+    () => import('@material/web/button/outlined-button.js'),
+  ]);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -32,12 +38,12 @@ export function ConfirmDialog({
         <h2 className="text-lg mb-2">{title}</h2>
         <div className="text-sm text-[var(--slate)] mb-6">{description}</div>
         <div className="flex justify-end gap-3">
-          <button type="button" className="button button-outline border border-[var(--ink)] text-[var(--ink)]" onClick={onCancel}>
+          <MaterialButton ready={materialReady} variant="outlined" onClick={onCancel}>
             Cancel
-          </button>
-          <button type="button" className="button button-dark" onClick={onConfirm}>
+          </MaterialButton>
+          <MaterialButton ready={materialReady} variant="filled" onClick={onConfirm}>
             {confirmLabel}
-          </button>
+          </MaterialButton>
         </div>
       </div>
     </dialog>

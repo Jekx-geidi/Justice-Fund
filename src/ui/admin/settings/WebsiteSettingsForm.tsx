@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import type { SiteSettings } from '@/lib/settings/siteSettings';
+import { MaterialButton, MaterialTextField } from '../material/MaterialControls';
+import { useMaterialWeb } from '../material/useMaterialWeb';
 
 type Status = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -9,6 +11,10 @@ export function WebsiteSettingsForm({ initial }: { initial: SiteSettings }) {
   const [values, setValues] = useState(initial);
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
+  const materialReady = useMaterialWeb([
+    () => import('@material/web/textfield/outlined-text-field.js'),
+    () => import('@material/web/button/filled-button.js'),
+  ]);
 
   function set<K extends keyof SiteSettings>(key: K, value: SiteSettings[K]) {
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -46,48 +52,50 @@ export function WebsiteSettingsForm({ initial }: { initial: SiteSettings }) {
 
   return (
     <form onSubmit={handleSave} className="space-y-4">
-      <div className="field">
-        <label htmlFor="settings-org-name">Organisation Name</label>
-        <input id="settings-org-name" value={values.orgName} onChange={(event) => set('orgName', event.target.value)} maxLength={150} />
-      </div>
-      <div className="field">
-        <label htmlFor="settings-contact-email">Default Contact Email</label>
-        <input
-          id="settings-contact-email"
-          type="email"
-          value={values.contactEmail}
-          onChange={(event) => set('contactEmail', event.target.value)}
-          maxLength={200}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="settings-location">Location</label>
-        <input id="settings-location" value={values.location} onChange={(event) => set('location', event.target.value)} maxLength={200} />
-      </div>
-      <div className="field">
-        <label htmlFor="settings-footer-text">Footer Text</label>
-        <input id="settings-footer-text" value={values.footerText} onChange={(event) => set('footerText', event.target.value)} maxLength={300} />
-      </div>
-      <div className="field">
-        <label htmlFor="settings-seo-title">Default SEO Title</label>
-        <input id="settings-seo-title" value={values.seoTitle} onChange={(event) => set('seoTitle', event.target.value)} maxLength={160} />
-      </div>
-      <div className="field">
-        <label htmlFor="settings-seo-description">Default SEO Description</label>
-        <textarea
-          id="settings-seo-description"
-          rows={2}
-          value={values.seoDescription}
-          onChange={(event) => set('seoDescription', event.target.value)}
-          maxLength={300}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="settings-logo-url">Logo / Brand Mark URL</label>
-        <input
+      <MaterialTextField ready={materialReady} id="settings-org-name" label="Organisation Name" value={values.orgName} onChange={(value) => set('orgName', value)} maxLength={150} />
+      <MaterialTextField
+        ready={materialReady}
+        id="settings-contact-email"
+        label="Default Contact Email"
+        type="email"
+        value={values.contactEmail}
+        onChange={(value) => set('contactEmail', value)}
+        maxLength={200}
+      />
+      <MaterialTextField ready={materialReady} id="settings-location" label="Location" value={values.location} onChange={(value) => set('location', value)} maxLength={200} />
+      <MaterialTextField
+        ready={materialReady}
+        id="settings-footer-text"
+        label="Footer Text"
+        value={values.footerText}
+        onChange={(value) => set('footerText', value)}
+        maxLength={300}
+      />
+      <MaterialTextField
+        ready={materialReady}
+        id="settings-seo-title"
+        label="Default SEO Title"
+        value={values.seoTitle}
+        onChange={(value) => set('seoTitle', value)}
+        maxLength={160}
+      />
+      <MaterialTextField
+        ready={materialReady}
+        id="settings-seo-description"
+        label="Default SEO Description"
+        value={values.seoDescription}
+        onChange={(value) => set('seoDescription', value)}
+        multiline
+        rows={2}
+        maxLength={300}
+      />
+      <div>
+        <MaterialTextField
+          ready={materialReady}
           id="settings-logo-url"
+          label="Logo / Brand Mark URL"
           value={values.logoUrl}
-          onChange={(event) => set('logoUrl', event.target.value)}
+          onChange={(value) => set('logoUrl', value)}
           placeholder="/images/logo-iejf.svg"
           maxLength={500}
         />
@@ -101,9 +109,9 @@ export function WebsiteSettingsForm({ initial }: { initial: SiteSettings }) {
       )}
 
       <div className="flex items-center gap-3">
-        <button type="submit" className="button button-dark" disabled={status === 'saving'}>
+        <MaterialButton ready={materialReady} variant="filled" type="submit" disabled={status === 'saving'}>
           {status === 'saving' ? 'Saving…' : 'Save Changes'}
-        </button>
+        </MaterialButton>
         {status === 'saved' && <span className="text-sm text-green-700">Saved</span>}
       </div>
       <p className="text-xs text-[var(--slate)]">

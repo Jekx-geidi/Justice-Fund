@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, FileText, Newspaper, Image as ImageIcon, Settings as SettingsIcon } from 'lucide-react';
+import './material/theme.css';
 
 const NAV = [
   { href: '/admin', label: 'Dashboard', Icon: LayoutDashboard },
@@ -23,7 +24,7 @@ export function AdminShell({ email, children }: { email: string; children: React
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[var(--paper)]">
+    <div className="admin-shell min-h-screen flex flex-col md:flex-row bg-[var(--paper)]">
       <a href="#admin-main" className="skip-link">
         Skip to content
       </a>

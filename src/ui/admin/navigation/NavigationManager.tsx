@@ -6,10 +6,16 @@ import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-ki
 import { NavigationRow, type NavRow } from './NavigationRow';
 import { NavigationPreview } from './NavigationPreview';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { MaterialButton } from '../material/MaterialControls';
+import { useMaterialWeb } from '../material/useMaterialWeb';
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 export function NavigationManager({ pages }: { pages: (NavRow & { navLabel: string })[] }) {
+  const materialReady = useMaterialWeb([
+    () => import('@material/web/button/filled-button.js'),
+    () => import('@material/web/button/outlined-button.js'),
+  ]);
   const [rows, setRows] = useState(pages);
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState<SaveStatus>('idle');
@@ -128,16 +134,12 @@ export function NavigationManager({ pages }: { pages: (NavRow & { navLabel: stri
       )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" className="button button-dark" onClick={saveNavigation} disabled={!dirty || status === 'saving'}>
+        <MaterialButton ready={materialReady} variant="filled" onClick={saveNavigation} disabled={!dirty || status === 'saving'}>
           {status === 'saving' ? 'Saving…' : 'Save Navigation'}
-        </button>
-        <button
-          type="button"
-          className="button button-outline border border-[var(--ink)] text-[var(--ink)]"
-          onClick={() => setConfirmPublish(true)}
-        >
+        </MaterialButton>
+        <MaterialButton ready={materialReady} variant="outlined" onClick={() => setConfirmPublish(true)}>
           Publish Now
-        </button>
+        </MaterialButton>
         {status === 'saved' && <span className="text-sm text-green-700">Saved to draft</span>}
         {dirty && status !== 'saving' && <span className="text-sm text-[var(--slate)]">Unsaved changes</span>}
       </div>

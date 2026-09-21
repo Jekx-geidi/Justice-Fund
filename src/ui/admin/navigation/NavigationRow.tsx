@@ -5,6 +5,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, ArrowUp, ArrowDown } from 'lucide-react';
 import Link from 'next/link';
 import { StatusBadge } from '../StatusBadge';
+import { MaterialCheckbox } from '../material/MaterialControls';
+import { useMaterialWeb } from '../material/useMaterialWeb';
 import type { PageStatus } from '@/lib/content/types';
 
 export interface NavRow {
@@ -30,6 +32,7 @@ export function NavigationRow({
   onMove: (index: number, direction: -1 | 1) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: row.id });
+  const materialReady = useMaterialWeb([() => import('@material/web/checkbox/checkbox.js')]);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -82,10 +85,15 @@ export function NavigationRow({
 
       <div className="flex items-center gap-3 order-2 sm:order-none">
         <StatusBadge status={row.status} />
-        <label className="flex items-center gap-2 text-sm shrink-0 whitespace-nowrap">
-          <input type="checkbox" checked={row.showInNavigation} onChange={(event) => onToggleVisible(row.id, event.target.checked)} />
-          Show in Navigation
-        </label>
+        <div className="shrink-0 whitespace-nowrap">
+          <MaterialCheckbox
+            ready={materialReady}
+            id={`nav-visible-${row.id}`}
+            checked={row.showInNavigation}
+            onChange={(checked) => onToggleVisible(row.id, checked)}
+            label="Show in Navigation"
+          />
+        </div>
       </div>
 
       <Link href={`/admin/pages/${row.id}`} className="underline text-sm shrink-0 order-3 sm:order-none ml-auto sm:ml-0">

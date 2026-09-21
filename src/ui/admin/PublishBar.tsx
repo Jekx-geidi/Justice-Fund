@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
+import { MaterialButton } from './material/MaterialControls';
+import { useMaterialWeb } from './material/useMaterialWeb';
 
 type Status = 'idle' | 'saving' | 'saved' | 'publishing' | 'published' | 'error';
 
@@ -18,6 +20,10 @@ function PublishDirtyDialog({
   onSaveAndPublish: () => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const materialReady = useMaterialWeb([
+    () => import('@material/web/button/filled-button.js'),
+    () => import('@material/web/button/outlined-button.js'),
+  ]);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -34,15 +40,15 @@ function PublishDirtyDialog({
           Publish always publishes the saved draft. Choose whether to save these edits first.
         </p>
         <div className="flex flex-wrap justify-end gap-3">
-          <button type="button" className="button button-outline border border-[var(--ink)] text-[var(--ink)]" onClick={onCancel}>
+          <MaterialButton ready={materialReady} variant="outlined" onClick={onCancel}>
             Cancel
-          </button>
-          <button type="button" className="button button-outline border border-[var(--ink)] text-[var(--ink)]" onClick={onSaveOnly}>
+          </MaterialButton>
+          <MaterialButton ready={materialReady} variant="outlined" onClick={onSaveOnly}>
             Save Draft
-          </button>
-          <button type="button" className="button button-dark" onClick={onSaveAndPublish}>
+          </MaterialButton>
+          <MaterialButton ready={materialReady} variant="filled" onClick={onSaveAndPublish}>
             Save & Publish
-          </button>
+          </MaterialButton>
         </div>
       </div>
     </dialog>
@@ -63,6 +69,10 @@ export function PublishBar({
   const [status, setStatus] = useState<Status>('idle');
   const [message, setMessage] = useState<string | null>(null);
   const [confirmKind, setConfirmKind] = useState<'none' | 'publish-clean' | 'publish-dirty' | 'preview-dirty'>('none');
+  const materialReady = useMaterialWeb([
+    () => import('@material/web/button/filled-button.js'),
+    () => import('@material/web/button/outlined-button.js'),
+  ]);
 
   async function handleSave(): Promise<boolean> {
     setStatus('saving');
@@ -95,26 +105,22 @@ export function PublishBar({
 
   return (
     <div className="sticky bottom-0 mt-8 bg-white border border-[var(--line)] p-4 flex flex-wrap items-center gap-3">
-      <button type="button" className="button button-outline border border-[var(--ink)] text-[var(--ink)]" onClick={handleSave} disabled={status === 'saving' || status === 'publishing'}>
+      <MaterialButton ready={materialReady} variant="outlined" onClick={handleSave} disabled={status === 'saving' || status === 'publishing'}>
         {status === 'saving' ? 'Saving…' : 'Save draft'}
-      </button>
+      </MaterialButton>
       {previewHref && (
-        <button
-          type="button"
-          className="button button-outline border border-[var(--ink)] text-[var(--ink)]"
-          onClick={() => (dirty ? setConfirmKind('preview-dirty') : openPreview())}
-        >
+        <MaterialButton ready={materialReady} variant="outlined" onClick={() => (dirty ? setConfirmKind('preview-dirty') : openPreview())}>
           Preview
-        </button>
+        </MaterialButton>
       )}
-      <button
-        type="button"
-        className="button button-dark"
+      <MaterialButton
+        ready={materialReady}
+        variant="filled"
         onClick={() => setConfirmKind(dirty ? 'publish-dirty' : 'publish-clean')}
         disabled={status === 'saving' || status === 'publishing'}
       >
         {status === 'publishing' ? 'Publishing…' : 'Publish'}
-      </button>
+      </MaterialButton>
       <span role="status" className="text-sm text-[var(--slate)]">
         {status === 'idle' && dirty && 'Unsaved changes'}
         {status === 'saved' && 'Saved'}

@@ -1,0 +1,35 @@
+/*
+ * Material Web (@material/web) is used selectively inside the admin portal
+ * only — never imported by the public site. These overrides retarget its
+ * Material 3 design tokens onto IEJF's existing charcoal/gold/off-white
+ * palette and Marcellus typography, scoped to .admin-shell so a component
+ * never renders in Google's default purple even if something forgets to
+ * scope its own styles.
+ */
+.admin-shell {
+  --md-sys-color-primary: var(--ink);
+  --md-sys-color-on-primary: white;
+  --md-sys-color-primary-container: var(--ink);
+  --md-sys-color-on-primary-container: white;
+  --md-sys-color-secondary: var(--gold);
+  --md-sys-color-on-secondary: var(--ink);
+  --md-sys-color-surface: white;
+  --md-sys-color-on-surface: var(--ink);
+  --md-sys-color-on-surface-variant: var(--slate);
+  --md-sys-color-outline: var(--line);
+  --md-sys-color-outline-variant: var(--line);
+  --md-sys-color-error: #b91c1c;
+  --md-sys-color-on-error: white;
+
+  --md-sys-typescale-body-large-font: 'Marcellus', serif;
+  --md-sys-typescale-body-medium-font: 'Marcellus', serif;
+  --md-sys-typescale-label-large-font: 'Marcellus', serif;
+  --md-sys-typescale-label-medium-font: 'Marcellus', serif;
+  --md-sys-typescale-label-small-font: 'Marcellus', serif;
+
+  --md-sys-shape-corner-full: 2px;
+  --md-sys-shape-corner-extra-small: 2px;
+  --md-sys-shape-corner-small: 2px;
+  --md-sys-shape-corner-medium: 2px;
+  --md-sys-shape-corner-large: 2px;
+}
