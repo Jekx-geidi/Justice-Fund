@@ -40,16 +40,18 @@ export function HomePageView({
           <span>PUBLIC BENEFIT. LONG-TERM IMPACT.</span>
         </div>
       </section>
-      <section className="section wrap story-grid">
-        <div>
-          <p className="eyebrow">ABOUT US</p>
-          <h2>
-            Standing between short-term decisions and <span className="muted">long-term harm.</span>
-          </h2>
-        </div>
-        <div className="story-copy">
-          <p className="lead">{about.intro}</p>
-          <TextLink href="/about">About IEJF</TextLink>
+      <section className="section-dark section">
+        <div className="wrap story-grid">
+          <div>
+            <p className="eyebrow">ABOUT US</p>
+            <h2>
+              Standing between short-term decisions and <span className="muted">long-term harm.</span>
+            </h2>
+          </div>
+          <div className="story-copy">
+            <p className="lead">{about.intro}</p>
+            <TextLink href="/about">About IEJF</TextLink>
+          </div>
         </div>
       </section>
       <section className="paper section">
