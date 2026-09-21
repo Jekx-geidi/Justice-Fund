@@ -33,3 +33,21 @@
   --md-sys-shape-corner-medium: 2px;
   --md-sys-shape-corner-large: 2px;
 }
+
+/*
+ * Material buttons place their own padding on the light-DOM host element
+ * (:host { padding-inline-start/end: var(--_leading/trailing-space) }).
+ * Something in this app's global cascade (Tailwind's preflight reset, most
+ * likely) collapses that to 0 on the host element itself, leaving button
+ * text jammed against the edges. Re-assert it directly on the host tags
+ * with enough specificity to win, instead of only setting the Material
+ * custom properties (which don't help once padding-inline-* is already
+ * being overridden downstream).
+ */
+.admin-shell md-filled-button,
+.admin-shell md-outlined-button,
+.admin-shell md-text-button,
+.admin-shell md-filled-tonal-button {
+  padding-inline: 24px;
+  padding-block: 10px;
+}

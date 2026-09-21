@@ -115,19 +115,21 @@ export function AdminShell({ email, children }: { email: string; children: React
           </button>
         </div>
 
-        <div className="p-4 border-t border-white/10 text-xs">
-          <div className={collapsed ? 'md:hidden' : ''}>
+        <div className="px-3 pt-2 pb-1 border-t border-white/10 text-xs">
+          <div className={`px-3 pt-1 pb-2 ${collapsed ? 'md:hidden' : ''}`}>
             <p className="truncate text-white/90">{email}</p>
-            <p className="text-white/50 mb-2">Administrator</p>
+            <p className="text-white/50">Administrator</p>
           </div>
           <button
             type="button"
             onClick={handleLogout}
             title={collapsed ? 'Log out' : undefined}
             aria-label="Log out"
-            className={`flex items-center gap-2 text-white/70 hover:text-white ${collapsed ? 'md:justify-center md:w-full' : 'underline'}`}
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded text-sm font-medium text-white/85 hover:text-white hover:bg-white/10 ${
+              collapsed ? 'md:justify-center md:px-0' : ''
+            }`}
           >
-            <LogOut size={14} aria-hidden="true" className={collapsed ? 'md:inline hidden' : 'hidden'} />
+            <LogOut size={16} aria-hidden="true" className="shrink-0" />
             <span className={collapsed ? 'md:hidden' : ''}>Log out</span>
           </button>
         </div>
