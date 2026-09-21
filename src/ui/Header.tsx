@@ -29,7 +29,8 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
   return <header className="site-header">
     <div className="wrap header-inner">
       <Link href="/" className="brand" aria-label="Intergenerational Justice Fund home">
-        <span className="brand-name">Intergenerational<br />Justice Fund<span className="gold">.</span><span className="brand-caption">CHARITY · PERTH, WA</span></span>
+        <img className="brand-mark" src="/images/logo-iejf.svg" alt="" width={668} height={659} />
+        <span className="brand-name">Intergenerational<br />Justice Fund<span className="brand-caption">CHARITY · PERTH, WA</span></span>
       </Link>
       <nav aria-label="Main navigation" className="desktop-nav">
         {navigation.map(item => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined}>{item.label}{item.label === 'Contact' && <ArrowUpRight size={15} aria-hidden="true" />}</Link>)}
