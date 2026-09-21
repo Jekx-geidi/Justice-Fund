@@ -1,7 +1,8 @@
 .page {
-  min-height: 100svh;
+  height: 100svh;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  overflow: hidden;
   background: #f8f7f4;
 }
 
@@ -77,6 +78,32 @@
 .field input::placeholder { color: #948d8e; }
 .field input:hover { border-color: #9e948b; }
 
+.passwordControl { position: relative; }
+.passwordControl input { padding-right: 52px; }
+
+.passwordToggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #686263;
+}
+
+.passwordToggle:hover { color: #231f20; }
+.passwordToggle svg { width: 18px; height: 18px; }
+
+.passwordToggle:focus-visible {
+  border-radius: 50%;
+  outline: 2px solid #806032;
+  outline-offset: 0;
+}
+
 .field input:focus-visible {
   border-color: #806032;
   box-shadow: 0 0 0 3px rgb(201 161 90 / 20%);
@@ -129,17 +156,23 @@
 
 @media (max-width: 820px) {
   .page { grid-template-columns: 1fr; }
-  .formPanel { min-height: 66svh; padding: 48px clamp(24px, 8vw, 64px) 56px; }
-  .identity { margin-bottom: 46px; }
-  .artPanel { min-height: clamp(380px, 70vw, 620px); }
+  .formPanel { height: 100svh; padding: 32px clamp(24px, 8vw, 64px); }
+  .identity { margin-bottom: 32px; }
+  .artPanel { display: none; }
 }
 
 @media (max-width: 420px) {
-  .formPanel { padding: 36px 20px 44px; }
-  .identity { margin-bottom: 38px; }
-  .identity img { width: 50px; height: 49px; }
-  .heading { margin-bottom: 30px; }
-  .heading h1 { font-size: 2.25rem; }
+  .formPanel { padding: 24px 20px; }
+  .identity { margin-bottom: 22px; }
+  .identity img { width: 42px; height: 41px; }
+  .heading { margin-bottom: 20px; }
+  .heading h1 { margin-bottom: 10px; font-size: 2rem; }
+  .eyebrow { margin-bottom: 8px; }
+  .form { gap: 14px; }
+  .field { gap: 5px; }
+  .field input { min-height: 48px; padding-block: 10px; }
+  .submit { min-height: 50px; }
+  .restricted { margin-top: 16px; font-size: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
