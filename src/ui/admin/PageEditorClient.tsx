@@ -10,10 +10,8 @@ import { UnsavedChangesGuard } from './UnsavedChangesGuard';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AdminEditorLayout } from './live-preview/AdminEditorLayout';
 import { LivePreviewPane } from './live-preview/LivePreviewPane';
-import { HomePageView } from '@/ui/pages/HomePageView';
-import { AboutPageView } from '@/ui/pages/AboutPageView';
-import { ContactPageView } from '@/ui/pages/ContactPageView';
-import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
+import { PageContentPreview } from './PageContentPreview';
+import { RevisionHistoryDialog } from './RevisionHistoryDialog';
 
 function previewHrefFor(page: SitePage): string {
   const base = page.coreKey === 'home' ? '/' : `/${page.slug}`;
@@ -37,6 +35,7 @@ export function PageEditorClient({
   const [dirty, setDirty] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   function update(patch: Partial<SitePage>) {
     setPage((prev) => ({ ...prev, ...patch }));
@@ -121,8 +120,15 @@ export function PageEditorClient({
 
   const editor = (
     <div>
-      <p className="eyebrow">{page.isCore ? 'CORE PAGE' : 'CUSTOM PAGE'}</p>
-      <h1 className="text-3xl mt-2 mb-6">{page.title}</h1>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="eyebrow">{page.isCore ? 'CORE PAGE' : 'CUSTOM PAGE'}</p>
+          <h1 className="text-3xl mt-2 mb-6">{page.title}</h1>
+        </div>
+        <button type="button" className="text-sm underline shrink-0 mt-2" onClick={() => setHistoryOpen(true)}>
+          History
+        </button>
+      </div>
 
       <fieldset className="border border-[var(--line)] p-4 mb-6 space-y-4">
         <legend className="text-sm font-medium px-1">Page settings</legend>
@@ -225,37 +231,9 @@ export function PageEditorClient({
     </div>
   );
 
-  const previewContent =
-    page.coreKey === 'home' && page.home ? (
-      <HomePageView home={page.home} about={aboutForHomePreview ?? page.about!} />
-    ) : page.coreKey === 'about' && page.about ? (
-      <AboutPageView about={page.about} />
-    ) : page.coreKey === 'contact' && page.contact ? (
-      <ContactPageView contact={page.contact} />
-    ) : page.coreKey === 'insights' ? (
-      <div className="p-10 text-center text-sm text-[var(--slate)]">
-        Insights doesn&rsquo;t have page-level content to preview — see{' '}
-        <Link href="/admin/insights" className="underline">
-          Insights
-        </Link>
-        .
-      </div>
-    ) : (
-      <>
-        {page.blocks.length === 0 ? (
-          <div className="wrap section block-section">
-            <h1>{page.title}</h1>
-            <p className="text-sm text-[var(--slate)] mt-4">Add a block to see it here.</p>
-          </div>
-        ) : (
-          <BlockRenderer blocks={page.blocks} />
-        )}
-      </>
-    );
-
   const preview = (
     <LivePreviewPane dirty={dirty} fullPreviewHref={previewHrefFor(page)} resetKey={JSON.stringify(page)}>
-      {previewContent}
+      <PageContentPreview page={page} aboutForHomePreview={aboutForHomePreview} />
     </LivePreviewPane>
   );
 
@@ -274,6 +252,18 @@ export function PageEditorClient({
           void handleDelete();
         }}
         onCancel={() => setConfirmingDelete(false)}
+      />
+
+      <RevisionHistoryDialog
+        open={historyOpen}
+        pageId={page.id}
+        aboutForHomePreview={aboutForHomePreview}
+        onClose={() => setHistoryOpen(false)}
+        onRestored={(restoredPage) => {
+          setPage(restoredPage);
+          setDirty(false);
+          setHistoryOpen(false);
+        }}
       />
     </div>
   );

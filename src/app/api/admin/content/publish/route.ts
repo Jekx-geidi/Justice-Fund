@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   if (session instanceof NextResponse) return session;
 
   try {
-    await publishDraft();
+    await publishDraft(session);
   } catch (error) {
     console.error(error);
     audit({ event: 'publish', admin: session, result: 'failure' });

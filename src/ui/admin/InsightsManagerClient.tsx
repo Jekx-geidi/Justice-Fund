@@ -80,6 +80,15 @@ export function InsightsManagerClient({ entries: initial }: { entries: InsightEn
         approved card layout.
       </p>
 
+      {entries.length === 0 && (
+        <div className="bg-white border border-[var(--line)] p-6 mb-4 text-center">
+          <p className="text-sm mb-3">No Insights published yet.</p>
+          <button type="button" className="button button-dark" onClick={addEntry}>
+            + Add Insight
+          </button>
+        </div>
+      )}
+
       <div className="space-y-4">
         {entries.map((entry, index) => (
           <div key={entry.id} className="bg-white border border-[var(--line)] p-4">

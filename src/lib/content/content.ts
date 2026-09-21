@@ -3,6 +3,7 @@ import type { ContentVersion, SitePage, SiteContent } from './types';
 import { localFileStorage } from './storage-local';
 import { supabaseStorage, isSupabaseConfigured } from './storage-supabase';
 import { resolveMediaReferences } from './resolveMedia';
+import { recordRevisionsForPublish } from './revisions';
 
 /**
  * Single content service used by every public page and every admin route.
@@ -21,8 +22,8 @@ export async function saveDraft(content: SiteContent): Promise<void> {
   await storage.writeDraft({ ...content, updatedAt: new Date().toISOString() });
 }
 
-/** Copies the current draft into live and stamps publishedAt on published pages. */
-export async function publishDraft(): Promise<void> {
+/** Copies the current draft into live, stamps publishedAt, and snapshots a revision per published page. */
+export async function publishDraft(publishedBy: string | null = null): Promise<void> {
   const draft = await storage.readDraft();
   const now = new Date().toISOString();
   const published: SiteContent = {
@@ -35,6 +36,7 @@ export async function publishDraft(): Promise<void> {
   await storage.writeLive(published);
   // Draft continues from the just-published state so future edits diff from live.
   await storage.writeDraft(published);
+  await recordRevisionsForPublish(published.pages, publishedBy);
 }
 
 export function pageRoute(page: SitePage): string {

@@ -43,9 +43,9 @@ export function ReorderList({ pages }: { pages: Row[] }) {
         {rows.map((row, index) => (
           <li
             key={row.id}
-            className="flex items-center gap-4 p-3 border-b border-[var(--line)] last:border-0"
+            className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 p-3 border-b border-[var(--line)] last:border-0"
           >
-            <div className="flex flex-col">
+            <div className="flex flex-col shrink-0">
               <button
                 type="button"
                 aria-label={`Move ${row.title} up`}
@@ -65,15 +65,17 @@ export function ReorderList({ pages }: { pages: Row[] }) {
                 <ArrowDown size={16} aria-hidden="true" />
               </button>
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 basis-full sm:basis-auto order-1 sm:order-none">
               <p className="font-medium">
                 {row.title} {row.isCore && <span className="text-xs text-[var(--slate)]">Core</span>}
               </p>
-              <p className="text-sm text-[var(--slate)]">{row.route}</p>
+              <p className="text-sm text-[var(--slate)] truncate">{row.route}</p>
             </div>
-            <StatusBadge status={row.status} />
-            <span className="text-sm text-[var(--slate)] w-20">{row.showInNavigation ? 'Visible' : 'Hidden'}</span>
-            <Link href={`/admin/pages/${row.id}`} className="underline text-sm">
+            <div className="flex items-center gap-3 order-2 sm:order-none">
+              <StatusBadge status={row.status} />
+              <span className="text-sm text-[var(--slate)] sm:w-20">{row.showInNavigation ? 'Visible' : 'Hidden'}</span>
+            </div>
+            <Link href={`/admin/pages/${row.id}`} className="underline text-sm order-3 sm:order-none ml-auto sm:ml-0">
               Edit
             </Link>
           </li>

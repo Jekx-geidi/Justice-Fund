@@ -57,6 +57,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
     updatedAt: now,
   });
 
+  audit({ event: 'page_updated', admin: session, resourceId: id, result: 'success' });
   return NextResponse.json({ page: updated });
 }
 

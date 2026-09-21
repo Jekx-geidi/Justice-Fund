@@ -57,10 +57,13 @@ export async function findAdminByEmail(email: string): Promise<AdminCredentials 
   const client = getSupabaseClient();
   const { data, error } = await client
     .from('admin_users')
-    .select('email, password_hash')
+    .select('email, password_hash, is_active')
     .ilike('email', email)
     .maybeSingle();
 
   if (error) throw new Error(`Supabase admin lookup failed: ${error.message}`);
-  return data ? { email: data.email, passwordHash: data.password_hash } : null;
+  // A deactivated account is treated identically to "doesn't exist" — same
+  // dummy-hash timing-safe path in the login route, no existence leak.
+  if (!data || data.is_active === false) return null;
+  return { email: data.email, passwordHash: data.password_hash };
 }
