@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import styles from './AdminLogin.module.css';
 
 export function LoginForm() {
   const router = useRouter();
@@ -34,35 +35,37 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-      <div className="field">
+    <form onSubmit={handleSubmit} className={styles.form} noValidate>
+      <div className={styles.field}>
         <label htmlFor="admin-email">Email</label>
         <input
           id="admin-email"
           type="email"
           autoComplete="username"
           required
+          placeholder="admin@justicefund.org.au"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
       </div>
-      <div className="field">
+      <div className={styles.field}>
         <label htmlFor="admin-password">Password</label>
         <input
           id="admin-password"
           type="password"
           autoComplete="current-password"
           required
+          placeholder="Enter your password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
       </div>
       {error && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className={styles.error}>
           {error}
         </p>
       )}
-      <button type="submit" className="button button-dark w-full justify-center" disabled={submitting}>
+      <button type="submit" className={styles.submit} disabled={submitting}>
         {submitting ? 'Signing in…' : 'Sign in'}
       </button>
     </form>

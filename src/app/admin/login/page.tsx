@@ -1,6 +1,8 @@
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { getSessionEmail } from '@/lib/auth/session';
 import { LoginForm } from '@/ui/admin/LoginForm';
+import styles from '@/ui/admin/AdminLogin.module.css';
 
 export const metadata = { title: 'Sign in' };
 
@@ -10,18 +12,38 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
   const { reason } = await searchParams;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--paper)] px-6">
-      <div className="w-full max-w-sm bg-white border border-[var(--line)] p-8">
-        <p className="eyebrow">IEJF ADMIN</p>
-        <h1 className="text-2xl mt-3 mb-1">Sign in</h1>
-        <p className="text-sm text-[var(--slate)] mb-6">Manage the Intergenerational Justice Fund website.</p>
+    <main className={styles.page}>
+      <section className={styles.formPanel} aria-labelledby="login-heading">
+        <div className={styles.formShell}>
+          <div className={styles.identity}>
+            <Image src="/images/admin-login-logo.svg" alt="Intergenerational Justice Fund" width={58} height={57} priority unoptimized />
+            <p>IEJF Administration</p>
+          </div>
+          <div className={styles.heading}>
+            <p className={styles.eyebrow}>Welcome back</p>
+            <h1 id="login-heading">Login to your account</h1>
+            <p>Access the Intergenerational Justice Fund administration portal.</p>
+          </div>
         {reason === 'replaced' && (
-          <p role="alert" className="text-sm text-red-700 mb-4">
+          <p role="alert" className={styles.sessionAlert}>
             Your account was signed in on another device. For security, this session has been ended.
           </p>
         )}
         <LoginForm />
-      </div>
-    </div>
+          <p className={styles.restricted}>Authorised administrators only</p>
+        </div>
+      </section>
+      <aside className={styles.artPanel} aria-label="Intergenerational Justice Fund website preview">
+        <Image
+          src="/images/admin-login-art.svg"
+          alt="IEJF website shown on mobile and desktop devices"
+          fill
+          priority
+          unoptimized
+          sizes="(max-width: 820px) 100vw, 50vw"
+          className={styles.artwork}
+        />
+      </aside>
+    </main>
   );
 }
