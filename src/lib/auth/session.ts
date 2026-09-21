@@ -64,14 +64,31 @@ export function verifySessionToken(token: string | undefined | null): SessionPay
   }
 }
 
-/** Verifies the cookie's signature/expiry AND that no newer login (or a disable) has replaced this session. */
-export async function getSessionEmail(): Promise<string | null> {
+export type SessionCheck =
+  | { status: 'valid'; email: string }
+  | { status: 'none' }
+  /** Signature/expiry check failed — a plain expired-or-tampered cookie, not a replacement. */
+  | { status: 'invalid' }
+  /** Signature was fine, but a newer login (or a disable) has since replaced this session — User Management PRD §7.2. */
+  | { status: 'replaced' };
+
+/** The one place that decides whether a request is still authenticated — everything else (getSessionEmail, requireAdminSession) is a thin wrapper around this. */
+export async function checkSession(): Promise<SessionCheck> {
   const store = await cookies();
   const token = store.get(SESSION_COOKIE)?.value;
+  if (!token) return { status: 'none' };
+
   const payload = verifySessionToken(token);
-  if (!payload) return null;
+  if (!payload) return { status: 'invalid' };
+
   const stillValid = await validateSession(payload.sub, payload.sid);
-  return stillValid ? payload.sub : null;
+  return stillValid ? { status: 'valid', email: payload.sub } : { status: 'replaced' };
+}
+
+/** Verifies the cookie's signature/expiry AND that no newer login (or a disable) has replaced this session. */
+export async function getSessionEmail(): Promise<string | null> {
+  const result = await checkSession();
+  return result.status === 'valid' ? result.email : null;
 }
 
 export async function setSessionCookie(email: string, sessionId: string): Promise<void> {
