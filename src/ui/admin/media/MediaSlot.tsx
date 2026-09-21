@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { Pencil, Trash2 } from 'lucide-react';
 import type { MediaReference } from '@/lib/content/types';
 import { MediaPicker } from './MediaPicker';
 
@@ -43,12 +44,24 @@ export function MediaSlot({ image, onChange }: { image?: MediaReference | null; 
               className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-1 shrink-0">
-            <button type="button" className="text-xs underline" onClick={() => setPickerOpen(true)}>
-              Change
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              aria-label="Change image"
+              title="Change image"
+              onClick={() => setPickerOpen(true)}
+              className="w-10 h-10 grid place-items-center rounded-full text-[var(--ink)] hover:bg-[var(--paper)] border border-[var(--line)]"
+            >
+              <Pencil size={16} aria-hidden="true" />
             </button>
-            <button type="button" className="text-xs text-red-700 underline" onClick={() => onChange(null)}>
-              Remove
+            <button
+              type="button"
+              aria-label="Remove image"
+              title="Remove image"
+              onClick={() => onChange(null)}
+              className="w-10 h-10 grid place-items-center rounded-full text-red-700 hover:bg-red-50 border border-[var(--line)]"
+            >
+              <Trash2 size={16} aria-hidden="true" />
             </button>
           </div>
         </div>
