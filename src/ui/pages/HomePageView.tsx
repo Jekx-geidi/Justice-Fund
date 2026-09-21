@@ -1,5 +1,6 @@
 import { EditorialArt, FocusCards, TextLink } from '@/ui/Editorial';
-import type { HomeFields, AboutFields } from '@/lib/content/types';
+import type { HomeFields, AboutFields, ContentBlock } from '@/lib/content/types';
+import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
 /**
  * Pure presentational Home page — no data fetching. Used by the public
@@ -7,7 +8,15 @@ import type { HomeFields, AboutFields } from '@/lib/content/types';
  * (`PageEditorClient`), so both render from exactly this markup. Section 21
  * of the Live Preview PRD: "Do not create a separate fake preview design."
  */
-export function HomePageView({ home, about }: { home: HomeFields; about: AboutFields }) {
+export function HomePageView({
+  home,
+  about,
+  additionalSections = [],
+}: {
+  home: HomeFields;
+  about: AboutFields;
+  additionalSections?: ContentBlock[];
+}) {
   return (
     <>
       <section className="home-hero">
@@ -24,7 +33,7 @@ export function HomePageView({ home, about }: { home: HomeFields; about: AboutFi
             <div className="hero-rule" />
             <p className="lead">{home.mission}</p>
           </div>
-          <EditorialArt />
+          <EditorialArt image={home.heroImage} />
         </div>
         <div className="wrap hero-foot">
           <span>LAW · RESEARCH · ADVOCACY</span>
@@ -93,6 +102,7 @@ export function HomePageView({ home, about }: { home: HomeFields; about: AboutFi
         </div>
       </section>
       <p className="identity-line wrap">{home.bottomLine}</p>
+      {additionalSections.length > 0 && <BlockRenderer blocks={additionalSections} />}
     </>
   );
 }

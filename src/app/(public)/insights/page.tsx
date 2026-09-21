@@ -11,11 +11,13 @@ export default async function Insights({ searchParams }: { searchParams: Promise
   const entries = content.insights
     .filter((entry) => version === 'draft' || entry.status === 'published')
     .sort((a, b) => a.order - b.order);
+  const insightsPage = content.pages.find((page) => page.coreKey === 'insights');
+  const additionalSections = (insightsPage?.additionalSections ?? []).filter((section) => !section.hidden);
 
   return (
     <>
       {version === 'draft' && <PreviewBanner />}
-      <InsightsPageView entries={entries} />
+      <InsightsPageView entries={entries} additionalSections={additionalSections} />
     </>
   );
 }

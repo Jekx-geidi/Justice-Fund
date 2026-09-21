@@ -8,13 +8,14 @@ export const metadata = { title: 'About' };
 export default async function About({ searchParams }: { searchParams: Promise<{ preview?: string }> }) {
   const version = await resolveVersion(await searchParams);
   const content = await getSiteContent(version);
-  const about = content.pages.find((page) => page.coreKey === 'about')?.about;
-  if (!about) return null;
+  const aboutPage = content.pages.find((page) => page.coreKey === 'about');
+  if (!aboutPage?.about) return null;
+  const additionalSections = (aboutPage.additionalSections ?? []).filter((section) => !section.hidden);
 
   return (
     <>
       {version === 'draft' && <PreviewBanner />}
-      <AboutPageView about={about} />
+      <AboutPageView about={aboutPage.about} additionalSections={additionalSections} />
     </>
   );
 }

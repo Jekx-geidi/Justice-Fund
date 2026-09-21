@@ -2,13 +2,43 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, Leaf, HeartPulse, Scale } from 'lucide-react';
 import type { NavItem } from '@/lib/content/content';
-import type { AboutFocusArea } from '@/lib/content/types';
+import type { AboutFocusArea, MediaReference } from '@/lib/content/types';
+import { focalPointStyle } from '@/ui/blocks/focalPoint';
 
 export function PageIntro({ eyebrow, title }: { eyebrow: string; title: string }) {
   return <div className="page-intro"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1></div>;
 }
-export function EditorialArt({ compact = false }: { compact?: boolean }) {
-  return compact ? <figure className="editorial-photo"><Image src="/images/about.webp" alt="A group of children laughing together outdoors in winter clothing; temporary stock photograph." fill sizes="(max-width: 699px) 90vw, 45vw" /><figcaption>INTERGENERATIONAL JUSTICE FUND</figcaption></figure> : <div className="hero-visual"><div className="hero-photo"><Image src="/images/home-hero.webp" alt="A group of smiling school-aged children making peace signs outdoors; temporary stock photograph." fill sizes="(max-width: 699px) 90vw, 48vw" preload /></div><div className="image-label"><span className="label-rule" />LAW. RESEARCH. ADVOCACY.</div><span className="photo-corner" aria-hidden="true" /></div>;
+/**
+ * `image` is an admin-chosen MediaReference (About's `image` / Home's
+ * `heroImage`, both editable via Media Library). Falls back to the original
+ * placeholder photo + alt text when nothing's been chosen yet, so existing
+ * unedited content still looks the same as before this was wired up.
+ */
+export function EditorialArt({ compact = false, image }: { compact?: boolean; image?: MediaReference | null }) {
+  const src = image?.url ?? (compact ? '/images/about.webp' : '/images/home-hero.webp');
+  const alt =
+    image?.alt ??
+    (compact
+      ? 'A group of children laughing together outdoors in winter clothing; temporary stock photograph.'
+      : 'A group of smiling school-aged children making peace signs outdoors; temporary stock photograph.');
+  const style = image ? focalPointStyle(image) : undefined;
+  return compact ? (
+    <figure className="editorial-photo">
+      <Image src={src} alt={alt} fill sizes="(max-width: 699px) 90vw, 45vw" style={style} />
+      <figcaption>INTERGENERATIONAL JUSTICE FUND</figcaption>
+    </figure>
+  ) : (
+    <div className="hero-visual">
+      <div className="hero-photo">
+        <Image src={src} alt={alt} fill sizes="(max-width: 699px) 90vw, 48vw" style={style} preload />
+      </div>
+      <div className="image-label">
+        <span className="label-rule" />
+        LAW. RESEARCH. ADVOCACY.
+      </div>
+      <span className="photo-corner" aria-hidden="true" />
+    </div>
+  );
 }
 export function FocusCards({ focusAreas }: { focusAreas: AboutFocusArea[] }) {
   const icons = [Leaf, HeartPulse, Scale];

@@ -5,16 +5,18 @@ import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import type { ContentBlock } from '@/lib/content/types';
 import { MediaSlot } from './media/MediaSlot';
 
-const BLOCK_LABELS: Record<ContentBlock['type'], string> = {
+export const BLOCK_LABELS: Record<ContentBlock['type'], string> = {
   hero: 'Hero',
   richText: 'Rich text',
   imageText: 'Image + text',
   cardGrid: 'Cards',
   quote: 'Quote',
   cta: 'Call to action',
+  featureImage: 'Feature image',
+  divider: 'Divider',
 };
 
-function newBlock(type: ContentBlock['type']): ContentBlock {
+export function newBlock(type: ContentBlock['type']): ContentBlock {
   const id = crypto.randomUUID();
   switch (type) {
     case 'hero':
@@ -29,10 +31,14 @@ function newBlock(type: ContentBlock['type']): ContentBlock {
       return { id, type, quote: 'Quote text' };
     case 'cta':
       return { id, type, heading: 'Take action' };
+    case 'featureImage':
+      return { id, type, displayStyle: 'full' };
+    case 'divider':
+      return { id, type };
   }
 }
 
-function BlockFields({ block, onChange }: { block: ContentBlock; onChange: (next: ContentBlock) => void }) {
+export function BlockFields({ block, onChange }: { block: ContentBlock; onChange: (next: ContentBlock) => void }) {
   switch (block.type) {
     case 'hero':
       return (
@@ -177,6 +183,26 @@ function BlockFields({ block, onChange }: { block: ContentBlock; onChange: (next
           </div>
         </div>
       );
+    case 'featureImage':
+      return (
+        <div className="space-y-2">
+          <MediaSlot image={block.image} onChange={(image) => onChange({ ...block, image })} />
+          <input
+            placeholder="Caption (optional)"
+            value={block.caption ?? ''}
+            onChange={(event) => onChange({ ...block, caption: event.target.value })}
+          />
+          <select
+            value={block.displayStyle}
+            onChange={(event) => onChange({ ...block, displayStyle: event.target.value as 'full' | 'contained' })}
+          >
+            <option value="full">Full width</option>
+            <option value="contained">Contained</option>
+          </select>
+        </div>
+      );
+    case 'divider':
+      return <p className="text-sm text-[var(--slate)]">Visual divider — no fields to edit.</p>;
   }
 }
 

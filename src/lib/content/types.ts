@@ -67,13 +67,36 @@ export interface CtaBlock {
   buttonUrl?: string;
 }
 
+export interface FeatureImageBlock {
+  id: string;
+  type: 'featureImage';
+  image?: MediaReference | null;
+  caption?: string;
+  displayStyle: 'full' | 'contained';
+}
+
+export interface DividerBlock {
+  id: string;
+  type: 'divider';
+}
+
 export type ContentBlock =
   | HeroBlock
   | RichTextBlock
   | ImageTextBlock
   | CardGridBlock
   | QuoteBlockContent
-  | CtaBlock;
+  | CtaBlock
+  | FeatureImageBlock
+  | DividerBlock;
+
+/**
+ * A block placed into a core page's "additional sections" zone — appended
+ * after that page's fixed core content, before the footer. Same block types
+ * as custom pages' free-form `blocks`, plus an independent show/hide flag so
+ * admins can hide a section without losing/deleting its content.
+ */
+export type PageSection = ContentBlock & { hidden?: boolean };
 
 /** Page-specific structured fields for the four protected core pages (section 8.1). */
 export interface HomeQuote {
@@ -100,6 +123,7 @@ export interface AboutFocusArea {
 export interface AboutFields {
   intro: string;
   body: string;
+  image?: MediaReference | null;
   focusAreas: AboutFocusArea[];
 }
 
@@ -142,6 +166,8 @@ export interface SitePage {
   contact?: ContactFields;
 
   blocks: ContentBlock[];
+  /** Core pages only — sections an admin has appended beyond the fixed core fields. See PageSection. */
+  additionalSections?: PageSection[];
 
   createdAt: string;
   updatedAt: string;

@@ -1,7 +1,8 @@
 import { EditorialArt, FocusCards, PageIntro } from '@/ui/Editorial';
-import type { AboutFields } from '@/lib/content/types';
+import type { AboutFields, ContentBlock } from '@/lib/content/types';
+import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
-export function AboutPageView({ about }: { about: AboutFields }) {
+export function AboutPageView({ about, additionalSections = [] }: { about: AboutFields; additionalSections?: ContentBlock[] }) {
   return (
     <>
       <section className="wrap section">
@@ -10,7 +11,7 @@ export function AboutPageView({ about }: { about: AboutFields }) {
           <div>
             <p className="lead">{about.intro}</p>
             <div className="about-art">
-              <EditorialArt compact />
+              <EditorialArt compact image={about.image} />
             </div>
           </div>
           <div className="about-body">
@@ -28,6 +29,7 @@ export function AboutPageView({ about }: { about: AboutFields }) {
           <FocusCards focusAreas={about.focusAreas} />
         </div>
       </section>
+      {additionalSections.length > 0 && <BlockRenderer blocks={additionalSections} />}
     </>
   );
 }

@@ -90,6 +90,19 @@ export const ctaBlockSchema = z.object({
   buttonUrl: z.string().max(400).optional(),
 });
 
+export const featureImageBlockSchema = z.object({
+  ...blockBase,
+  type: z.literal('featureImage'),
+  image: mediaReferenceSchema.nullish(),
+  caption: z.string().max(300).optional(),
+  displayStyle: z.enum(['full', 'contained']),
+});
+
+export const dividerBlockSchema = z.object({
+  ...blockBase,
+  type: z.literal('divider'),
+});
+
 export const contentBlockSchema = z.discriminatedUnion('type', [
   heroBlockSchema,
   richTextBlockSchema,
@@ -97,6 +110,20 @@ export const contentBlockSchema = z.discriminatedUnion('type', [
   cardGridBlockSchema,
   quoteBlockSchema,
   ctaBlockSchema,
+  featureImageBlockSchema,
+  dividerBlockSchema,
+]);
+
+/** A ContentBlock placed in a core page's additionalSections zone, plus an independent show/hide flag. */
+export const pageSectionSchema = z.discriminatedUnion('type', [
+  heroBlockSchema.extend({ hidden: z.boolean().optional() }),
+  richTextBlockSchema.extend({ hidden: z.boolean().optional() }),
+  imageTextBlockSchema.extend({ hidden: z.boolean().optional() }),
+  cardGridBlockSchema.extend({ hidden: z.boolean().optional() }),
+  quoteBlockSchema.extend({ hidden: z.boolean().optional() }),
+  ctaBlockSchema.extend({ hidden: z.boolean().optional() }),
+  featureImageBlockSchema.extend({ hidden: z.boolean().optional() }),
+  dividerBlockSchema.extend({ hidden: z.boolean().optional() }),
 ]);
 
 export const homeQuoteSchema = z.object({
@@ -123,6 +150,7 @@ export const aboutFocusAreaSchema = z.object({
 export const aboutFieldsSchema = z.object({
   intro: z.string().min(1).max(2000),
   body: z.string().min(1).max(4000),
+  image: mediaReferenceSchema.nullish(),
   focusAreas: z.array(aboutFocusAreaSchema).max(6),
 });
 
@@ -165,6 +193,7 @@ export const pagePatchSchema = z.object({
   home: homeFieldsSchema.optional(),
   about: aboutFieldsSchema.optional(),
   contact: contactFieldsSchema.optional(),
+  additionalSections: z.array(pageSectionSchema).max(30).optional(),
 });
 
 export const insightEntrySchema = z.object({

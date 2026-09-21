@@ -108,6 +108,10 @@ export function AboutFieldsEditor({ value, onChange }: { value: AboutFields; onC
         rows={5}
         maxLength={4000}
       />
+      <div className="field">
+        <label>Photo</label>
+        <MediaSlot image={value.image} onChange={(image) => onChange({ ...value, image })} />
+      </div>
       {value.focusAreas.map((area, index) => (
         <fieldset key={index} className="border border-[var(--line)] p-4 space-y-2">
           <legend className="text-sm font-medium px-1">Focus area {index + 1}</legend>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { AboutFields, SitePage } from '@/lib/content/types';
 import { HomeFieldsEditor, AboutFieldsEditor, ContactFieldsEditor } from './CoreContentEditors';
 import { BlockEditor } from './BlockEditor';
+import { SectionsEditor } from './sections/SectionsEditor';
 import { PublishBar } from './PublishBar';
 import { UnsavedChangesGuard } from './UnsavedChangesGuard';
 import { ConfirmDialog } from './ConfirmDialog';
@@ -57,6 +58,7 @@ export function PageEditorClient({
               home: page.home,
               about: page.about,
               contact: page.contact,
+              additionalSections: page.additionalSections,
             },
           ],
         }),
@@ -215,6 +217,16 @@ export function PageEditorClient({
         <div>
           <p className="text-sm font-medium mb-3">Content blocks</p>
           <BlockEditor blocks={page.blocks} onChange={(blocks) => update({ blocks })} />
+        </div>
+      )}
+
+      {page.isCore && (
+        <div className="mt-8">
+          <p className="text-sm font-medium mb-1">Additional sections</p>
+          <p className="text-xs text-[var(--slate)] mb-3">
+            These appear at the end of the page, after the content above and before the footer.
+          </p>
+          <SectionsEditor sections={page.additionalSections ?? []} onChange={(additionalSections) => update({ additionalSections })} />
         </div>
       )}
 

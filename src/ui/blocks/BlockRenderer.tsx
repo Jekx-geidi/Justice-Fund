@@ -5,6 +5,8 @@ import { ImageTextBlockView } from './ImageTextBlock';
 import { CardGridBlockView } from './CardGridBlock';
 import { QuoteBlockView } from './QuoteBlock';
 import { CtaBlockView } from './CtaBlock';
+import { FeatureImageBlockView } from './FeatureImageBlock';
+import { DividerBlockView } from './DividerBlock';
 
 export function BlockRenderer({ blocks }: { blocks: ContentBlock[] }) {
   return (
@@ -17,6 +19,8 @@ export function BlockRenderer({ blocks }: { blocks: ContentBlock[] }) {
           {block.type === 'cardGrid' && <CardGridBlockView block={block} />}
           {block.type === 'quote' && <QuoteBlockView block={block} />}
           {block.type === 'cta' && <CtaBlockView block={block} />}
+          {block.type === 'featureImage' && <FeatureImageBlockView block={block} />}
+          {block.type === 'divider' && <DividerBlockView />}
         </section>
       ))}
     </>

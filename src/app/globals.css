@@ -82,6 +82,10 @@ h1,h2,h3 { font-weight:500; line-height:1.19; letter-spacing:-.045em; text-wrap:
 .block-cta { background:var(--ink); color:white; padding:clamp(40px,6vw,64px); text-align:center; }
 .block-cta h2 { color:white; margin-bottom:14px; } .block-cta p { color:#d5d0ce; max-width:60ch; margin-inline:auto; }
 .block-cta .button { margin-top:22px; }
+.block-feature-image-media { position:relative; aspect-ratio:16/9; background:var(--paper); }
+.block-feature-image.contained { max-width:900px; margin-inline:auto; }
+.block-feature-image figcaption { margin-top:14px; font-size:13px; color:var(--slate); text-align:center; }
+.block-divider { display:block; width:50px; height:2px; background:var(--gold); border:0; margin:0 auto; }
 @media(max-width:699px) { .block-imagetext,.block-imagetext.image-right { grid-template-columns:1fr; direction:ltr; } .block-cards { grid-template-columns:1fr; } }
 .confirm-dialog { margin:auto; max-width:420px; width:calc(100% - 40px); border:0; padding:0; color:var(--ink); }
 .confirm-dialog::backdrop { background:#1a171780; }

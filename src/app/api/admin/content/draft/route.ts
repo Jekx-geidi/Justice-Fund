@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   return NextResponse.json(draft);
 }
 
-function sanitizeBlocks(blocks: ContentBlock[]): ContentBlock[] {
+function sanitizeBlocks<T extends ContentBlock>(blocks: T[]): T[] {
   return blocks.map((block) => (block.type === 'richText' ? { ...block, body: sanitizeRichText(block.body) } : block));
 }
 
@@ -45,6 +45,7 @@ export async function PUT(request: Request) {
       ...existing,
       ...patch,
       blocks: patch.blocks ? sanitizeBlocks(patch.blocks) : existing.blocks,
+      additionalSections: patch.additionalSections ? sanitizeBlocks(patch.additionalSections) : existing.additionalSections,
       updatedAt: now,
     };
     pagesById.set(patch.id, updated);

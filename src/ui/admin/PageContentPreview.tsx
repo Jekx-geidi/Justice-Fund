@@ -13,24 +13,29 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
  * needs previewing, so neither path can drift into a fake preview.
  */
 export function PageContentPreview({ page, aboutForHomePreview }: { page: SitePage; aboutForHomePreview?: AboutFields }) {
+  const additionalSections = (page.additionalSections ?? []).filter((section) => !section.hidden);
+
   if (page.coreKey === 'home' && page.home) {
-    return <HomePageView home={page.home} about={aboutForHomePreview ?? page.about!} />;
+    return <HomePageView home={page.home} about={aboutForHomePreview ?? page.about!} additionalSections={additionalSections} />;
   }
   if (page.coreKey === 'about' && page.about) {
-    return <AboutPageView about={page.about} />;
+    return <AboutPageView about={page.about} additionalSections={additionalSections} />;
   }
   if (page.coreKey === 'contact' && page.contact) {
-    return <ContactPageView contact={page.contact} />;
+    return <ContactPageView contact={page.contact} additionalSections={additionalSections} />;
   }
   if (page.coreKey === 'insights') {
     return (
-      <div className="p-10 text-center text-sm text-[var(--slate)]">
-        Insights doesn&rsquo;t have page-level content to preview — see{' '}
-        <Link href="/admin/insights" className="underline">
-          Insights
-        </Link>
-        .
-      </div>
+      <>
+        <div className="p-10 text-center text-sm text-[var(--slate)]">
+          Insights entries are managed separately — see{' '}
+          <Link href="/admin/insights" className="underline">
+            Insights
+          </Link>
+          . Any additional sections below appear after the entries list on the public page.
+        </div>
+        {additionalSections.length > 0 && <BlockRenderer blocks={additionalSections} />}
+      </>
     );
   }
   if (page.blocks.length === 0) {
