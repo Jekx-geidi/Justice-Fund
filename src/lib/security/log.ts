@@ -13,6 +13,7 @@ export type AuditEvent =
   | 'page_unpublished'
   | 'revision_restored'
   | 'settings_updated'
+  | 'editor_preferences_updated'
   | 'media_upload_success'
   | 'media_upload_failure'
   | 'media_update'

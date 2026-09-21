@@ -156,6 +156,48 @@ export function MaterialCheckbox({
   );
 }
 
+export function MaterialSwitch({
+  ready,
+  id,
+  checked,
+  onChange,
+  label,
+  description,
+}: {
+  ready: boolean;
+  id: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+  description?: string;
+}) {
+  const switchEl = ready
+    ? createElement('md-switch', {
+        id,
+        selected: checked,
+        onInput: (event: Event) => onChange((event.target as unknown as { selected: boolean }).selected),
+      })
+    : (
+        <input
+          id={id}
+          type="checkbox"
+          role="switch"
+          checked={checked}
+          onChange={(event) => onChange(event.target.checked)}
+        />
+      );
+
+  return (
+    <label htmlFor={id} className="flex items-start justify-between gap-4 py-2 cursor-pointer">
+      <span>
+        <span className="text-sm block">{label}</span>
+        {description && <span className="text-xs text-[var(--slate)] block mt-0.5">{description}</span>}
+      </span>
+      <span className="shrink-0 mt-0.5">{switchEl}</span>
+    </label>
+  );
+}
+
 export interface MaterialSelectOption {
   value: string;
   label: string;

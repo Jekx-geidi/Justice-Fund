@@ -4,7 +4,9 @@ import { getSiteSettings } from '@/lib/settings/siteSettings';
 import { getSiteContent } from '@/lib/content/content';
 import { listAuditRecords } from '@/lib/security/log';
 import { WebsiteSettingsForm } from '@/ui/admin/settings/WebsiteSettingsForm';
+import { EditorPreferencesForm } from '@/ui/admin/settings/EditorPreferencesForm';
 import { SettingsTabs } from '@/ui/admin/settings/SettingsTabs';
+import { getEditorPreferences } from '@/lib/settings/editorPreferences';
 import { formatExactDateTime } from '@/lib/content/formatRelativeDate';
 
 export const metadata = { title: 'Settings' };
@@ -29,8 +31,9 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 
 export default async function AdminSettings() {
   const email = await getSessionEmail();
-  const [settings, live, auditRecords] = await Promise.all([
+  const [settings, editorPreferences, live, auditRecords] = await Promise.all([
     getSiteSettings(),
+    getEditorPreferences(),
     getSiteContent('live'),
     listAuditRecords(50),
   ]);
@@ -55,6 +58,15 @@ export default async function AdminSettings() {
             content: (
               <Section title="Website">
                 <WebsiteSettingsForm initial={settings} />
+              </Section>
+            ),
+          },
+          {
+            id: 'editor-preview',
+            label: 'Editor & Preview',
+            content: (
+              <Section title="Editor & Preview">
+                <EditorPreferencesForm initial={editorPreferences} />
               </Section>
             ),
           },
