@@ -1,6 +1,7 @@
 import 'server-only';
 import { createHmac, timingSafeEqual, randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
+import { validateSession } from './sessionStore';
 
 export const SESSION_COOKIE = 'iejf_admin_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 hours
@@ -21,6 +22,8 @@ function getSecret(): string {
 
 interface SessionPayload {
   sub: string;
+  /** Session id — must match admin_users.current_session_id (sessionStore.ts) for the token to remain valid. */
+  sid: string;
   iat: number;
   exp: number;
 }
@@ -33,9 +36,9 @@ function sign(payload: string): string {
   return base64url(createHmac('sha256', getSecret()).update(payload).digest());
 }
 
-export function createSessionToken(email: string): string {
+export function createSessionToken(email: string, sessionId: string): string {
   const now = Math.floor(Date.now() / 1000);
-  const payload: SessionPayload = { sub: email, iat: now, exp: now + SESSION_TTL_SECONDS };
+  const payload: SessionPayload = { sub: email, sid: sessionId, iat: now, exp: now + SESSION_TTL_SECONDS };
   const payloadEncoded = base64url(Buffer.from(JSON.stringify(payload)));
   const signature = sign(payloadEncoded);
   return `${payloadEncoded}.${signature}`;
@@ -54,22 +57,26 @@ export function verifySessionToken(token: string | undefined | null): SessionPay
   try {
     const payload = JSON.parse(Buffer.from(payloadEncoded, 'base64url').toString('utf8')) as SessionPayload;
     if (typeof payload.exp !== 'number' || payload.exp < Math.floor(Date.now() / 1000)) return null;
+    if (typeof payload.sid !== 'string' || !payload.sid) return null;
     return payload;
   } catch {
     return null;
   }
 }
 
+/** Verifies the cookie's signature/expiry AND that no newer login (or a disable) has replaced this session. */
 export async function getSessionEmail(): Promise<string | null> {
   const store = await cookies();
   const token = store.get(SESSION_COOKIE)?.value;
   const payload = verifySessionToken(token);
-  return payload?.sub ?? null;
+  if (!payload) return null;
+  const stillValid = await validateSession(payload.sub, payload.sid);
+  return stillValid ? payload.sub : null;
 }
 
-export async function setSessionCookie(email: string): Promise<void> {
+export async function setSessionCookie(email: string, sessionId: string): Promise<void> {
   const store = await cookies();
-  store.set(SESSION_COOKIE, createSessionToken(email), {
+  store.set(SESSION_COOKIE, createSessionToken(email, sessionId), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',

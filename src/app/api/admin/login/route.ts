@@ -3,6 +3,7 @@ import { loginSchema } from '@/lib/content/schemas';
 import { findAdminByEmail } from '@/lib/auth/admin';
 import { verifyPassword } from '@/lib/auth/password';
 import { setSessionCookie } from '@/lib/auth/session';
+import { startSession } from '@/lib/auth/sessionStore';
 import { isRateLimited, recordFailure, recordSuccess } from '@/lib/auth/rateLimit';
 import { audit } from '@/lib/security/log';
 import { isTrustedOrigin } from '@/lib/security/origin';
@@ -47,7 +48,8 @@ export async function POST(request: Request) {
   }
 
   recordSuccess(key);
-  await setSessionCookie(admin.email);
+  const sessionId = await startSession(admin.email, request.headers.get('user-agent'));
+  await setSessionCookie(admin.email, sessionId);
   audit({ event: 'login_success', admin: admin.email, result: 'success' });
   return NextResponse.json({ ok: true });
 }

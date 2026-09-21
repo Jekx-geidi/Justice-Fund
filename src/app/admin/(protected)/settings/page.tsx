@@ -3,8 +3,10 @@ import { getSessionEmail, SESSION_TTL_SECONDS } from '@/lib/auth/session';
 import { getSiteSettings } from '@/lib/settings/siteSettings';
 import { getSiteContent } from '@/lib/content/content';
 import { listAuditRecords } from '@/lib/security/log';
+import { listAdminUsers } from '@/lib/auth/adminUsers';
 import { WebsiteSettingsForm } from '@/ui/admin/settings/WebsiteSettingsForm';
 import { EditorPreferencesForm } from '@/ui/admin/settings/EditorPreferencesForm';
+import { UserManagement } from '@/ui/admin/settings/UserManagement';
 import { SettingsTabs } from '@/ui/admin/settings/SettingsTabs';
 import { getEditorPreferences } from '@/lib/settings/editorPreferences';
 import { formatExactDateTime } from '@/lib/content/formatRelativeDate';
@@ -31,11 +33,12 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 
 export default async function AdminSettings() {
   const email = await getSessionEmail();
-  const [settings, editorPreferences, live, auditRecords] = await Promise.all([
+  const [settings, editorPreferences, live, auditRecords, adminUsers] = await Promise.all([
     getSiteSettings(),
     getEditorPreferences(),
     getSiteContent('live'),
     listAuditRecords(50),
+    listAdminUsers(),
   ]);
 
   const lastLogin = auditRecords.find((record) => record.event === 'login_success' && record.admin === email);
@@ -77,11 +80,22 @@ export default async function AdminSettings() {
               <Section title="Admin Account">
                 <Row label="Signed in as" value={email} />
                 <Row label="Role" value="Administrator" />
-                <Row label="Account status" value="Active" />
+                <Row label="Account status" value={adminUsers.find((user) => user.email === email)?.isActive === false ? 'Disabled' : 'Active'} />
                 <Row label="Last login" value={lastLogin ? formatExactDateTime(lastLogin.createdAt) : 'Not available'} />
-                <p className="text-sm text-[var(--slate)] mt-4">
-                  Password change and multi-admin invitations are not available in this version.
-                </p>
+                <p className="text-sm text-[var(--slate)] mt-4">Password change is not available in this version.</p>
+              </Section>
+            ),
+          },
+          {
+            id: 'user-management',
+            label: 'User Management',
+            content: (
+              <Section title="User Management">
+                {isSupabaseConfigured ? (
+                  <UserManagement initial={adminUsers} currentEmail={email ?? ''} />
+                ) : (
+                  <p className="text-sm text-[var(--slate)]">User management requires Supabase to be configured.</p>
+                )}
               </Section>
             ),
           },

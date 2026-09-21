@@ -55,15 +55,24 @@ export async function findAdminByEmail(email: string): Promise<AdminCredentials 
   }
 
   const client = getSupabaseClient();
-  const { data, error } = await client
+  let { data, error } = await client
     .from('admin_users')
-    .select('email, password_hash, is_active')
+    .select('email, password_hash, is_active, activation_token')
     .ilike('email', email)
     .maybeSingle();
 
+  // 42703 = undefined_column — migration 0011 hasn't been run yet. Retry
+  // without the new column rather than breaking login for every admin until
+  // the SQL is applied (same ordering gotcha as is_active in migration 0007).
+  if (error?.code === '42703') {
+    ({ data, error } = await client.from('admin_users').select('email, password_hash, is_active').ilike('email', email).maybeSingle());
+  }
+
   if (error) throw new Error(`Supabase admin lookup failed: ${error.message}`);
-  // A deactivated account is treated identically to "doesn't exist" — same
-  // dummy-hash timing-safe path in the login route, no existence leak.
-  if (!data || data.is_active === false) return null;
+  // A deactivated or not-yet-activated account is treated identically to
+  // "doesn't exist" — same dummy-hash timing-safe path in the login route,
+  // no existence leak. (A pending account's password_hash is an unguessable
+  // random placeholder anyway, so this is defence in depth, not the only guard.)
+  if (!data || data.is_active === false || data.activation_token) return null;
   return { email: data.email, passwordHash: data.password_hash };
 }
