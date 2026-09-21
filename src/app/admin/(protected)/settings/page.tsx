@@ -4,6 +4,7 @@ import { getSiteSettings } from '@/lib/settings/siteSettings';
 import { getSiteContent } from '@/lib/content/content';
 import { listAuditRecords } from '@/lib/security/log';
 import { WebsiteSettingsForm } from '@/ui/admin/settings/WebsiteSettingsForm';
+import { SettingsTabs } from '@/ui/admin/settings/SettingsTabs';
 import { formatExactDateTime } from '@/lib/content/formatRelativeDate';
 
 export const metadata = { title: 'Settings' };
@@ -42,74 +43,100 @@ export default async function AdminSettings() {
   const isSupabaseConfigured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-3xl">
       <p className="eyebrow">SETTINGS</p>
-      <h1 className="text-3xl mt-2 mb-8">Settings</h1>
+      <h1 className="text-3xl mt-2 mb-6">Settings</h1>
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
-        <Section title="Website">
-          <WebsiteSettingsForm initial={settings} />
-        </Section>
-
-        <div className="grid gap-6">
-          <Section title="Admin Account">
-            <Row label="Signed in as" value={email} />
-            <Row label="Role" value="Administrator" />
-            <Row label="Account status" value="Active" />
-            <Row label="Last login" value={lastLogin ? formatExactDateTime(lastLogin.createdAt) : 'Not available'} />
-            <p className="text-sm text-[var(--slate)] mt-4">
-              Password change and multi-admin invitations are not available in this version.
-            </p>
-          </Section>
-
-          <Section title="Security">
-            <Row label="Multi-factor authentication" value="Not configured" />
-            <Row label="Session length" value={`${SESSION_TTL_SECONDS / 3600} hours`} />
-            <Row label="Login rate limiting" value="5 attempts / 15 min per IP" />
-            {securityEvents.length > 0 && (
-              <div className="mt-4">
-                <p className="text-sm font-medium mb-2">Recent security events</p>
-                <ul className="text-sm space-y-1">
-                  {securityEvents.map((record) => (
-                    <li key={record.id} className="flex justify-between gap-2 text-[var(--slate)]">
-                      <span>
-                        {record.event === 'login_success' && 'Signed in'}
-                        {record.event === 'login_failure' && 'Failed sign-in attempt'}
-                        {record.event === 'authorisation_failure' && 'Unauthorised request blocked'}
-                        {record.admin ? ` — ${record.admin}` : ''}
-                      </span>
-                      <span>{formatExactDateTime(record.createdAt)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <p className="mt-4">
-              <Link href="/admin/activity" className="text-sm underline">
-                View full activity log
-              </Link>
-            </p>
-          </Section>
-
-          <Section title="Publishing">
-            <Row label="Default new-page status" value="Draft" />
-            <Row label="Default navigation visibility" value="Hidden" />
-            <Row label="Default new-page navigation position" value="Last" />
-            <Row label="Confirm before publishing" value="Enabled" />
-            <p className="text-xs text-[var(--slate)] mt-4">
-              These defaults are enforced by the server and can&rsquo;t be weakened from this page.
-            </p>
-          </Section>
-
-          <Section title="System Information">
-            <Row label="CMS" value="IEJF Admin Portal" />
-            <Row label="Content Storage" value={isSupabaseConfigured ? 'Supabase' : 'Local JSON (dev fallback)'} />
-            <Row label="Media Storage" value={isSupabaseConfigured ? 'Supabase Storage' : 'Local disk (dev fallback)'} />
-            <Row label="Environment" value={process.env.NODE_ENV === 'production' ? 'Production' : 'Development'} />
-            <Row label="Last Content Publish" value={formatExactDateTime(live.updatedAt)} />
-          </Section>
-        </div>
-      </div>
+      <SettingsTabs
+        tabs={[
+          {
+            id: 'website',
+            label: 'Website',
+            content: (
+              <Section title="Website">
+                <WebsiteSettingsForm initial={settings} />
+              </Section>
+            ),
+          },
+          {
+            id: 'admin-account',
+            label: 'Admin Account',
+            content: (
+              <Section title="Admin Account">
+                <Row label="Signed in as" value={email} />
+                <Row label="Role" value="Administrator" />
+                <Row label="Account status" value="Active" />
+                <Row label="Last login" value={lastLogin ? formatExactDateTime(lastLogin.createdAt) : 'Not available'} />
+                <p className="text-sm text-[var(--slate)] mt-4">
+                  Password change and multi-admin invitations are not available in this version.
+                </p>
+              </Section>
+            ),
+          },
+          {
+            id: 'security',
+            label: 'Security',
+            content: (
+              <Section title="Security">
+                <Row label="Multi-factor authentication" value="Not configured" />
+                <Row label="Session length" value={`${SESSION_TTL_SECONDS / 3600} hours`} />
+                <Row label="Login rate limiting" value="5 attempts / 15 min per IP" />
+                {securityEvents.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-sm font-medium mb-2">Recent security events</p>
+                    <ul className="text-sm space-y-1">
+                      {securityEvents.map((record) => (
+                        <li key={record.id} className="flex justify-between gap-2 text-[var(--slate)]">
+                          <span>
+                            {record.event === 'login_success' && 'Signed in'}
+                            {record.event === 'login_failure' && 'Failed sign-in attempt'}
+                            {record.event === 'authorisation_failure' && 'Unauthorised request blocked'}
+                            {record.admin ? ` — ${record.admin}` : ''}
+                          </span>
+                          <span>{formatExactDateTime(record.createdAt)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                <p className="mt-4">
+                  <Link href="/admin/activity" className="text-sm underline">
+                    View full activity log
+                  </Link>
+                </p>
+              </Section>
+            ),
+          },
+          {
+            id: 'publishing',
+            label: 'Publishing',
+            content: (
+              <Section title="Publishing">
+                <Row label="Default new-page status" value="Draft" />
+                <Row label="Default navigation visibility" value="Hidden" />
+                <Row label="Default new-page navigation position" value="Last" />
+                <Row label="Confirm before publishing" value="Enabled" />
+                <p className="text-xs text-[var(--slate)] mt-4">
+                  These defaults are enforced by the server and can&rsquo;t be weakened from this page.
+                </p>
+              </Section>
+            ),
+          },
+          {
+            id: 'system-information',
+            label: 'System Information',
+            content: (
+              <Section title="System Information">
+                <Row label="CMS" value="IEJF Admin Portal" />
+                <Row label="Content Storage" value={isSupabaseConfigured ? 'Supabase' : 'Local JSON (dev fallback)'} />
+                <Row label="Media Storage" value={isSupabaseConfigured ? 'Supabase Storage' : 'Local disk (dev fallback)'} />
+                <Row label="Environment" value={process.env.NODE_ENV === 'production' ? 'Production' : 'Development'} />
+                <Row label="Last Content Publish" value={formatExactDateTime(live.updatedAt)} />
+              </Section>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }
