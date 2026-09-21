@@ -34,7 +34,7 @@ export function AdminEditorLayout({ editor, preview }: { editor: React.ReactNode
         </button>
       </div>
 
-      <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-6 lg:items-start">
         <div className={tab === 'editor' ? 'block' : 'hidden lg:block'}>{editor}</div>
         <div
           className={`${tab === 'preview' ? 'block' : 'hidden lg:block'} lg:sticky lg:top-6 lg:h-[calc(100vh-6rem)]`}
