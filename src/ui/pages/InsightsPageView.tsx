@@ -23,8 +23,8 @@ export function InsightsPageView({
           </div>
         )}
 
-        {entries.map((entry) => (
-          <article className="insight-feature" key={entry.id}>
+        {entries.map((entry, index) => (
+          <article className={`insight-feature${index === 0 ? ' featured' : ''}`} key={entry.id}>
             {entry.image && (
               <div className="insight-visual">
                 <Image
