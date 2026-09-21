@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { UploadCloud } from 'lucide-react';
 import { mediaDisplayName, type MediaItem } from '@/lib/media/types';
 import type { MediaReference } from '@/lib/content/types';
 import { MediaThumb } from './MediaThumb';
+import { UploadDialog } from './UploadDialog';
 
 function toReference(item: MediaItem): MediaReference {
   return {
@@ -38,6 +40,7 @@ export function MediaPicker({
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [highlightedId, setHighlightedId] = useState<string | null>(currentId ?? null);
+  const [uploadOpen, setUploadOpen] = useState(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -74,17 +77,27 @@ export function MediaPicker({
           </button>
         </div>
 
-        <label htmlFor="picker-search" className="sr-only">
-          Search media
-        </label>
-        <input
-          id="picker-search"
-          type="search"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search images…"
-          className="w-full px-3 py-2 text-sm border border-[var(--line)] bg-[#fdfcfb] mb-4"
-        />
+        <div className="flex items-center gap-3 mb-4">
+          <label htmlFor="picker-search" className="sr-only">
+            Search media
+          </label>
+          <input
+            id="picker-search"
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search images…"
+            className="flex-1 px-3 py-2 text-sm border border-[var(--line)] bg-[#fdfcfb]"
+          />
+          <button
+            type="button"
+            className="button button-outline border border-[var(--ink)] text-[var(--ink)] whitespace-nowrap inline-flex items-center gap-1.5"
+            onClick={() => setUploadOpen(true)}
+          >
+            <UploadCloud size={16} aria-hidden="true" />
+            Upload from computer
+          </button>
+        </div>
 
         <div className="overflow-y-auto flex-1 -mx-1 px-1">
           {loading && <p className="text-sm text-[var(--slate)]">Loading…</p>}
@@ -133,6 +146,16 @@ export function MediaPicker({
           </button>
         </div>
       </div>
+
+      <UploadDialog
+        open={uploadOpen}
+        onClose={() => setUploadOpen(false)}
+        onUploaded={(media) => {
+          setUploadOpen(false);
+          setItems((prev) => [media, ...prev]);
+          onSelect(toReference(media));
+        }}
+      />
     </dialog>
   );
 }

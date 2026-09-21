@@ -107,10 +107,7 @@ export function PagesOverview({ pages }: { pages: PageOverviewRow[] }) {
       {!hasCustomPages && (
         <div className="p-6 border-t border-[var(--line)] text-center">
           <p className="text-sm mb-1">No custom pages yet.</p>
-          <p className="text-sm text-[var(--slate)] mb-3">Create a new page when IEJF needs additional website content.</p>
-          <Link href="/admin/pages/new" className="button button-dark">
-            + Create Page
-          </Link>
+          <p className="text-sm text-[var(--slate)]">Create a new page when IEJF needs additional website content.</p>
         </div>
       )}
     </div>

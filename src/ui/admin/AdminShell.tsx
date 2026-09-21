@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -27,7 +28,17 @@ const NAV = [
 
 const COLLAPSE_STORAGE_KEY = 'iejf-admin-sidebar-collapsed';
 
-export function AdminShell({ email, children }: { email: string; children: React.ReactNode }) {
+export function AdminShell({
+  email,
+  name,
+  avatarUrl,
+  children,
+}: {
+  email: string;
+  name?: string | null;
+  avatarUrl?: string | null;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname() ?? '';
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
@@ -116,9 +127,22 @@ export function AdminShell({ email, children }: { email: string; children: React
         </div>
 
         <div className="px-3 pt-2 pb-1 border-t border-white/10 text-xs">
-          <div className={`px-3 pt-1 pb-2 ${collapsed ? 'md:hidden' : ''}`}>
-            <p className="truncate text-white/90">{email}</p>
-            <p className="text-white/50">Administrator</p>
+          <div className={`flex items-center gap-2.5 px-3 pt-1 pb-2 ${collapsed ? 'md:justify-center' : ''}`}>
+            <span className="w-8 h-8 rounded-full overflow-hidden bg-white/10 shrink-0 relative">
+              {avatarUrl ? (
+                <Image src={avatarUrl} alt="" fill sizes="32px" className="object-cover" />
+              ) : (
+                <span className="w-full h-full flex items-center justify-center text-[11px] font-medium text-white/70" aria-hidden="true">
+                  {(name || email).charAt(0).toUpperCase()}
+                </span>
+              )}
+            </span>
+            <div className={`min-w-0 ${collapsed ? 'md:hidden' : ''}`}>
+              <p className="truncate text-white/90 font-medium" title={email}>
+                {name || email}
+              </p>
+              <p className="text-white/50">Administrator</p>
+            </div>
           </div>
           <button
             type="button"

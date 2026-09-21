@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import { mediaReferenceSchema } from '@/lib/content/schemas';
+
+export const updateProfileSchema = z.object({
+  avatar: mediaReferenceSchema.nullable(),
+});
 
 export const createAdminUserSchema = z.object({
   name: z.string().min(1, 'Name is required.').max(150),

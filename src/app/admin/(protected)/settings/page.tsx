@@ -7,6 +7,7 @@ import { listAdminUsers } from '@/lib/auth/adminUsers';
 import { WebsiteSettingsForm } from '@/ui/admin/settings/WebsiteSettingsForm';
 import { EditorPreferencesForm } from '@/ui/admin/settings/EditorPreferencesForm';
 import { UserManagement } from '@/ui/admin/settings/UserManagement';
+import { AdminProfileForm } from '@/ui/admin/settings/AdminProfileForm';
 import { SettingsTabs } from '@/ui/admin/settings/SettingsTabs';
 import { getEditorPreferences } from '@/lib/settings/editorPreferences';
 import { formatExactDateTime } from '@/lib/content/formatRelativeDate';
@@ -82,7 +83,12 @@ export default async function AdminSettings() {
                 <Row label="Role" value="Administrator" />
                 <Row label="Account status" value={adminUsers.find((user) => user.email === email)?.isActive === false ? 'Disabled' : 'Active'} />
                 <Row label="Last login" value={lastLogin ? formatExactDateTime(lastLogin.createdAt) : 'Not available'} />
-                <p className="text-sm text-[var(--slate)] mt-4">Password change is not available in this version.</p>
+                <p className="text-sm text-[var(--slate)] mt-4 mb-6">Password change is not available in this version.</p>
+                {isSupabaseConfigured ? (
+                  <AdminProfileForm initial={adminUsers.find((user) => user.email === email)?.avatar ?? null} />
+                ) : (
+                  <p className="text-sm text-[var(--slate)]">Profile pictures require Supabase to be configured.</p>
+                )}
               </Section>
             ),
           },
