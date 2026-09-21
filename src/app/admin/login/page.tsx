@@ -34,6 +34,16 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
         </div>
       </section>
       <aside className={styles.artPanel} aria-label="Intergenerational Justice Fund website preview">
+        <div className={styles.artIdentity}>
+          <Image
+            src="/images/admin-login-logo.svg"
+            alt=""
+            width={58}
+            height={57}
+            unoptimized
+          />
+          <p>A not-for-profit charity</p>
+        </div>
         <Image
           src="/images/admin-login-art.svg"
           alt="IEJF website shown on mobile and desktop devices"
