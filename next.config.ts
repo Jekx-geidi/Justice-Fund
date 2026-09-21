@@ -29,6 +29,7 @@ const SECURITY_HEADERS = [
 ];
 
 const config: NextConfig = {
+  output: 'standalone',
   turbopack: { root: process.cwd() },
   images: {
     remotePatterns: [{ protocol: 'https', hostname: SUPABASE_HOST, pathname: '/storage/v1/object/public/**' }],
