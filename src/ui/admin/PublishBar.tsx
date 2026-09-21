@@ -104,7 +104,7 @@ export function PublishBar({
   }
 
   return (
-    <div className="sticky bottom-0 mt-8 bg-white border border-[var(--line)] p-4 flex flex-wrap items-center gap-3">
+    <div className="sticky bottom-0 z-20 mt-8 bg-white border border-[var(--line)] p-4 flex flex-wrap items-center gap-3">
       <MaterialButton ready={materialReady} variant="outlined" onClick={handleSave} disabled={status === 'saving' || status === 'publishing'}>
         {status === 'saving' ? 'Saving…' : 'Save draft'}
       </MaterialButton>
