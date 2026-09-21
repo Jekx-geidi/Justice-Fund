@@ -148,7 +148,7 @@ export function AdminShell({
           <div
             role="menu"
             aria-hidden={!accountMenuOpen}
-            className={`absolute bottom-full left-3 mb-2 w-44 bg-[var(--ink)] border border-white/10 rounded shadow-lg origin-bottom-left transition-all duration-150 ${
+            className={`absolute bottom-full left-3 mb-2 ${collapsed ? 'min-w-40' : 'right-3'} bg-[var(--ink)] border border-white/10 rounded shadow-lg origin-bottom-left transition-all duration-150 ${
               accountMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
             }`}
           >
