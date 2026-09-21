@@ -5,20 +5,18 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 export function AboutPageView({ about, additionalSections = [] }: { about: AboutFields; additionalSections?: ContentBlock[] }) {
   return (
     <>
-      <section className="section-dark section">
-        <div className="wrap">
-          <PageIntro eyebrow="ABOUT US" title="Standing between short-term decisions and long-term harm." />
-          <div className="about-grid">
-            <div>
-              <p className="lead">{about.intro}</p>
-              <div className="about-art">
-                <EditorialArt compact image={about.image} />
-              </div>
+      <section className="wrap section">
+        <PageIntro eyebrow="ABOUT US" title="Standing between short-term decisions and long-term harm." />
+        <div className="about-grid">
+          <div>
+            <p className="lead">{about.intro}</p>
+            <div className="about-art">
+              <EditorialArt compact image={about.image} />
             </div>
-            <div className="about-body">
-              <span className="small-rule" />
-              <p>{about.body}</p>
-            </div>
+          </div>
+          <div className="about-body">
+            <span className="small-rule" />
+            <p>{about.body}</p>
           </div>
         </div>
       </section>
