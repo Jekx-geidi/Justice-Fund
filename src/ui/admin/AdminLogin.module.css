@@ -1,16 +1,15 @@
 .page {
   --identity-top: clamp(40px, 7vw, 112px);
   min-height: 100svh;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   background: #f8f7f4;
 }
 
 .formPanel {
   min-width: 0;
   min-height: 100svh;
+  width: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   padding: var(--identity-top);
   overflow-y: auto;
@@ -201,45 +200,9 @@
 .linkButton:hover:not(:disabled) { color: #231f20; text-decoration: underline; }
 .linkButton:disabled { color: #948d8e; cursor: default; }
 
-.artPanel {
-  position: relative;
-  min-width: 0;
-  min-height: 100svh;
-  overflow: hidden;
-  background: #211d1e;
-  margin-left: -72px;
-  clip-path: polygon(72px 0, 100% 0, 100% 100%, 0 100%);
-}
-
-.artIdentity {
-  position: absolute;
-  z-index: 1;
-  top: var(--identity-top);
-  left: 50%;
-  display: grid;
-  justify-items: center;
-  gap: 22px;
-  transform: translateX(-50%);
-  color: #ead8bc;
-  text-align: center;
-}
-
-.artIdentity img { width: 58px; height: 57px; }
-
-.artIdentity p {
-  white-space: nowrap;
-  font-size: clamp(14px, 1.5vw, 22px);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.artwork { object-fit: cover; object-position: center; }
-
 @media (max-width: 820px) {
-  .page { grid-template-columns: 1fr; }
   .formPanel { min-height: 100svh; align-items: center; padding: 32px clamp(24px, 8vw, 64px); }
   .identity { margin-bottom: 32px; }
-  .artPanel { display: none; }
 }
 
 @media (max-width: 420px) {
