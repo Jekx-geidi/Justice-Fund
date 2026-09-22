@@ -125,7 +125,7 @@
 }
 
 .submit:hover:not(:disabled) { border-color: #4a4445; background: #4a4445; }
-.submit:disabled { cursor: wait; opacity: 0.65; }
+.submit:disabled { cursor: not-allowed; }
 
 .error,
 .sessionAlert {
