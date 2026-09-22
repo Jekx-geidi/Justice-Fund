@@ -207,6 +207,8 @@
   min-height: 100svh;
   overflow: hidden;
   background: #211d1e;
+  margin-left: -72px;
+  clip-path: polygon(72px 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .artIdentity {
