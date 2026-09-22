@@ -150,9 +150,12 @@
 
 .otpRow {
   display: flex;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 22px;
 }
+
+.centerText { text-align: center; }
 
 .otpDigit {
   width: 48px;

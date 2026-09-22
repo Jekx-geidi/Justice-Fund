@@ -136,7 +136,7 @@ export function MfaVerifyForm({
 
   return (
     <div>
-      <div className={styles.heading}>
+      <div className={`${styles.heading} ${styles.centerText}`}>
         <p className={styles.eyebrow}>Verify your identity</p>
         <h1 style={{ fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)' }}>Enter your verification code</h1>
         <p>
