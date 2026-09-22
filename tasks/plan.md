@@ -11,43 +11,36 @@ No test runner exists in this repo (only `lint`, `typecheck`, `build`). Each
 task is verified with those three plus a manual dev-server check, not unit
 tests.
 
-## Tasks
+## Tasks — all done (commits `79d54b2`..`72fe858`)
 
-1. **[done] Typography + token pass** — swap `--font-sans`/body font from
-   Marcellus to Poppins in `src/app/globals.css` (matching the mockup's
-   Google Fonts import), confirm charcoal/paper/gold tokens already match the
-   mockup. No component changes.
-2. **Remove decorative hero/about photography** — stop rendering
-   `EditorialArt`'s photo on Home (`hero-visual`/`hero-photo`/portrait accents)
-   and About (`about-art`/`editorial-photo`); keep `heroImage`/`about.image`
-   CMS fields and Media Library untouched, just don't render them publicly.
-   Restyle hero/about layout to a single-column, text-only layout matching
-   the mockup's `.hero-home`/`.about-grid`.
-3. **Remove the "In the news" placeholder quote-wall from Home** — this
-   section is explicitly flagged as placeholder/unverified in both the
-   mockup (`IN THE NEWS — PLACEHOLDER QUOTES`) and the current code
-   (`placeholder-badge`). Drop the section; leave `home.quotes` CMS field
-   alone (unused by the view, still editable/dormant in admin) rather than
-   deleting the schema.
-4. **Restyle Home CTA** — match the mockup's centered `.home-cta` treatment
-   (single centered column, no grid) instead of the current two-column
-   `cta-grid`. Keep the CMS-bound copy and the existing disabled Donate
-   button/copy as-is (already-approved content, not new marketing copy).
-5. **Restyle About page** — remove the two-column photo/text split now that
-   the photo is gone; adopt the mockup's simpler intro + focus-card layout.
-   Keep `focusAreas`/ABNs CMS-bound.
-6. **Restyle Insights list** — replace the featured/photo-heavy
-   `insight-feature` treatment with the mockup's plain bordered list
-   (`.case-item` style). Keep optional `entry.image` rendering (small, only
-   if an editor attaches one) since Insights images are an explicit
-   exception to "no photos"; keep empty-state notice.
-7. **Restyle Contact page** — replace the dark decorative `contact-details`
-   aside (circles decoration, dark background) with the mockup's plain
-   two-column layout. Keep form behavior and CMS-bound email/location.
-8. **Restyle Header/Footer** — align header nav and footer visual weight
-   with the mockup (simpler footer, no oversized brand lockup) while keeping
-   real routing, dynamic nav data, and mobile dialog behavior untouched.
-9. **Full verification pass** — typecheck, lint, build; manual check at
-   390/430/768/820/1024/1280/1440px; Admin smoke test (login, Pages editor,
-   Save Draft → Preview → Publish for Home/About/Insights/Contact); final
-   report per AGENTS.md's Final Report section.
+1. **[done]** Typography + token pass — Poppins scoped to `.site-public`,
+   admin's Marcellus/Material typography untouched.
+2. **[done]** Home reversion — dropped hero photo/portrait cutout, charcoal
+   single-column hero, correctly bound `home.heading` (was hardcoded),
+   removed the About-teaser/Focus-cards sections duplicated onto Home
+   (mockup doesn't have them there).
+3. **[done]** Removed the "In the news" placeholder quote-wall from Home.
+   `home.quotes` stays in the schema/admin editor, unused publicly.
+4. **[done]** Home CTA restyled to the mockup's centered, paper-background
+   treatment. Copy/CMS binding unchanged.
+5. **[done]** About reversion — dropped the photo, plain two-column
+   intro/body text layout, focus cards unchanged.
+6. **[done]** Insights reversion — plain `.case-item` bordered list,
+   dropped the two-column "featured" photo panel; optional entry images
+   kept (explicit brief exception).
+7. **[done]** Contact reversion — dropped the dark decorative aside/circle
+   decoration; plain two-column layout, form/CMS binding unchanged.
+8. **[done]** Header/Footer — removed decorative nav arrow icons, reduced
+   the oversized footer brand lockup. Routing/mobile-dialog/CMS nav data
+   untouched.
+9. **[done]** Full verification pass — see final report delivered to the
+   user in-conversation. typecheck/lint/build all green on every commit;
+   confirmed via `git diff --stat` that no file under `src/app/admin`,
+   `src/ui/admin`, `src/app/api/admin`, or `supabase/` was touched.
+   Live-browser screenshot verification could not be completed (agent-browser/
+   Playwright did not come up in this sandbox); responsive correctness was
+   instead verified by reasoning through every media query touched plus
+   DOM/curl checks against the running dev server. Admin login→Save
+   Draft→Preview→Publish click-through was **not** run — it needs real
+   admin credentials against a live Supabase project, which this session
+   doesn't have and shouldn't guess at.
