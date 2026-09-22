@@ -8,9 +8,14 @@ const SUPABASE_HOST = 'fxpznpdrpzgkwplghvqx.supabase.co';
 // Phase 1 CSP: 'unsafe-inline' on script-src is a known trade-off to allow
 // Next.js's own inline hydration bootstrap without nonce plumbing. Moving to
 // a nonce-based CSP is a documented Phase 1.1 hardening item (Admin.md 23).
+//
+// 'unsafe-eval' is added to script-src in dev only: Next dev's Turbopack/RSC
+// client runtime uses eval() for HMR and stack-trace reconstruction. React
+// never uses eval() in production, so prod's CSP stays as strict as before.
+const isDev = process.env.NODE_ENV !== 'production';
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: https://${SUPABASE_HOST}`,
   "font-src 'self' data:",
