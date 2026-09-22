@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import type { NavItem } from '@/lib/content/content';
 
 export default function Header({ navigation }: { navigation: NavItem[] }) {
@@ -33,7 +33,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
         <span className="brand-name">Intergenerational<br />Justice Fund<span className="brand-caption">CHARITY · PERTH, WA</span></span>
       </Link>
       <nav aria-label="Main navigation" className="desktop-nav">
-        {navigation.map(item => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined}>{item.label}{item.label === 'Contact' && <ArrowUpRight size={15} aria-hidden="true" />}</Link>)}
+        {navigation.map(item => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined}>{item.label}</Link>)}
       </nav>
       <button ref={trigger} className="menu-trigger" aria-label="Open navigation" aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(true)}><Menu aria-hidden="true" /></button>
     </div>
@@ -47,7 +47,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
     }}>
       <div className="mobile-panel">
         <div className="flex items-center justify-between"><span className="eyebrow">IEJF · NAVIGATION</span><button className="icon-button" aria-label="Close navigation" onClick={() => setOpen(false)}><X aria-hidden="true" /></button></div>
-        <nav aria-label="Mobile navigation">{navigation.map((item, index) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} onClick={() => setOpen(false)}><span className="nav-number">0{index + 1}</span>{item.label}<ArrowUpRight aria-hidden="true" /></Link>)}</nav>
+        <nav aria-label="Mobile navigation">{navigation.map((item, index) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} onClick={() => setOpen(false)}><span className="nav-number">0{index + 1}</span>{item.label}</Link>)}</nav>
         <p className="mobile-caption">Intergenerational Justice Fund<br />CHARITY · PERTH, WA</p>
       </div>
     </dialog>
