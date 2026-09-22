@@ -19,3 +19,12 @@ export const activateAccountSchema = z.object({
   token: z.string().min(1).max(200),
   password: z.string().min(10, 'Password must be at least 10 characters.').max(200),
 });
+
+export const mfaVerifySchema = z.object({
+  challengeId: z.string().min(1).max(100),
+  otp: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code.'),
+});
+
+export const mfaResendSchema = z.object({
+  challengeId: z.string().min(1).max(100),
+});

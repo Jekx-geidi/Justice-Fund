@@ -145,6 +145,55 @@
   text-transform: uppercase;
 }
 
+.otpRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.otpDigit {
+  width: 48px;
+  height: 56px;
+  border: 1px solid #d0cbc6;
+  border-radius: 0;
+  background: #fff;
+  color: #231f20;
+  font: inherit;
+  font-size: 22px;
+  text-align: center;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.otpDigit:focus-visible {
+  border-color: #806032;
+  box-shadow: 0 0 0 3px rgb(201 161 90 / 20%);
+  outline: none;
+}
+
+.otpDigit:disabled { background: #f2f0ee; color: #948d8e; }
+
+.linkRow {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.linkButton {
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #686263;
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.linkButton:hover:not(:disabled) { color: #231f20; }
+.linkButton:disabled { color: #948d8e; cursor: default; text-decoration: none; }
+
 .artPanel {
   position: relative;
   min-width: 0;
@@ -196,6 +245,8 @@
   .field input { min-height: 48px; padding-block: 10px; }
   .submit { min-height: 50px; }
   .restricted { margin-top: 16px; font-size: 10px; }
+  .otpRow { gap: 8px; }
+  .otpDigit { width: 42px; height: 50px; font-size: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

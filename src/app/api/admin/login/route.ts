@@ -5,6 +5,7 @@ import { verifyPassword } from '@/lib/auth/password';
 import { setSessionCookie } from '@/lib/auth/session';
 import { startSession } from '@/lib/auth/sessionStore';
 import { isRateLimited, recordFailure, recordSuccess } from '@/lib/auth/rateLimit';
+import { createMfaChallenge, isMfaConfigured } from '@/lib/auth/mfa';
 import { audit } from '@/lib/security/log';
 import { isTrustedOrigin } from '@/lib/security/origin';
 
@@ -48,8 +49,25 @@ export async function POST(request: Request) {
   }
 
   recordSuccess(key);
-  const sessionId = await startSession(admin.email, request.headers.get('user-agent'));
-  await setSessionCookie(admin.email, sessionId);
-  audit({ event: 'login_success', admin: admin.email, result: 'success' });
-  return NextResponse.json({ ok: true });
+
+  // Local dev without Supabase configured has nowhere to persist an MFA
+  // challenge — same graceful-degradation fallback already used for
+  // single-session enforcement (sessionStore.ts). Every real deployment has
+  // Supabase configured, so MFA is enforced there unconditionally.
+  if (!isMfaConfigured()) {
+    const sessionId = await startSession(admin.email, request.headers.get('user-agent'));
+    await setSessionCookie(admin.email, sessionId);
+    audit({ event: 'login_success', admin: admin.email, result: 'success' });
+    return NextResponse.json({ ok: true });
+  }
+
+  const challenge = await createMfaChallenge(admin.email);
+  if (!challenge.ok) {
+    audit({ event: 'mfa_challenge_failed', admin: admin.email, result: 'failure' });
+    return NextResponse.json({ error: challenge.error }, { status: 500 });
+  }
+
+  audit({ event: 'mfa_challenge_created', admin: admin.email, result: 'success' });
+  audit({ event: 'mfa_email_sent', admin: admin.email, result: 'success' });
+  return NextResponse.json({ mfaRequired: true, challengeId: challenge.challengeId, maskedEmail: challenge.maskedEmail });
 }

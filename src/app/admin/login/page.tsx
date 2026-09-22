@@ -19,17 +19,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
             <Image src="/images/admin-login-logo.svg" alt="Intergenerational Justice Fund" width={58} height={57} priority unoptimized />
             <p>IEJF Administration</p>
           </div>
-          <div className={styles.heading}>
-            <p className={styles.eyebrow}>Welcome back</p>
-            <h1 id="login-heading">Login to your account</h1>
-            <p>Access the Intergenerational Justice Fund administration portal.</p>
-          </div>
-        {reason === 'replaced' && (
-          <p role="alert" className={styles.sessionAlert}>
-            Your account was signed in on another device. For security, this session has been ended.
-          </p>
-        )}
-        <LoginForm />
+          <LoginForm initialReason={reason} />
           <p className={styles.restricted}>Authorised administrators only</p>
         </div>
       </section>

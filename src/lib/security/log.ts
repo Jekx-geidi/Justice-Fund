@@ -26,7 +26,16 @@ export type AuditEvent =
   | 'media_replace'
   | 'media_delete'
   | 'media_delete_blocked'
-  | 'authorisation_failure';
+  | 'authorisation_failure'
+  | 'mfa_challenge_created'
+  | 'mfa_challenge_failed'
+  | 'mfa_email_sent'
+  | 'mfa_email_failed'
+  | 'mfa_verify_success'
+  | 'mfa_verify_failure'
+  | 'mfa_expired'
+  | 'mfa_resend'
+  | 'mfa_max_attempts_reached';
 
 interface AuditFields {
   event: AuditEvent;

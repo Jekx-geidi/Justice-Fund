@@ -25,9 +25,18 @@ function getBucket(key: string): Bucket {
   return fresh;
 }
 
-export function isRateLimited(key: string): boolean {
+/**
+ * `maxAttempts` defaults to the original login threshold (5/15min) so every
+ * existing caller is unaffected. MFA verify passes a higher ceiling — it
+ * already has its own, stricter per-challenge attempt cap (5, enforced in
+ * the `admin_mfa_challenges` row itself); this IP bucket exists to catch
+ * someone spraying many *different* challenges, not to double-punish a
+ * single mistyped code, so it must not trip before the per-challenge lock
+ * does for a legitimate admin who fails once, resends, and retries.
+ */
+export function isRateLimited(key: string, maxAttempts: number = MAX_ATTEMPTS): boolean {
   const bucket = getBucket(key);
-  return bucket.failures >= MAX_ATTEMPTS;
+  return bucket.failures >= maxAttempts;
 }
 
 export function recordFailure(key: string): void {

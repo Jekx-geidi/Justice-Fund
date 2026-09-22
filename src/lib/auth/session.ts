@@ -6,7 +6,8 @@ import { validateSession } from './sessionStore';
 export const SESSION_COOKIE = 'iejf_admin_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 hours
 
-function getSecret(): string {
+/** Shared app secret — also used to HMAC-hash MFA OTPs (src/lib/auth/mfa.ts) so a DB read alone can't recover codes. */
+export function getSecret(): string {
   const secret = process.env.SESSION_SECRET;
   if (secret) return secret;
   if (process.env.NODE_ENV === 'production') {
