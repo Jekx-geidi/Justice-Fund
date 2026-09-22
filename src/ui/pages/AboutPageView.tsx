@@ -2,31 +2,22 @@ import { FocusCards, PageIntro } from '@/ui/Editorial';
 import type { AboutFields, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
+/** Ports docs/approved-content.html's About page verbatim: one continuous section, no paper band, no eyebrow before the focus heading. */
 export function AboutPageView({ about, additionalSections = [] }: { about: AboutFields; additionalSections?: ContentBlock[] }) {
   return (
     <>
-      <section className="section paper">
-        <div className="wrap">
-          <PageIntro eyebrow="ABOUT US" title="Standing between short-term decisions and long-term harm." />
-          <div className="about-grid">
-            <div>
-              <p className="lead">{about.intro}</p>
-            </div>
-            <div className="about-body">
-              <span className="small-rule" />
-              <p>{about.body}</p>
-            </div>
+      <section className="wrap section">
+        <PageIntro eyebrow="ABOUT US" title="Standing between short-term decisions and long-term harm." />
+        <div className="about-grid">
+          <div>
+            <p>{about.intro}</p>
+          </div>
+          <div>
+            <p>{about.body}</p>
           </div>
         </div>
-      </section>
-      <section className="section paper">
-        <div className="wrap">
-          <div className="section-heading">
-            <p className="eyebrow">OUR FOCUS</p>
-            <h2>Our work is anchored in three complementary focus areas</h2>
-          </div>
-          <FocusCards focusAreas={about.focusAreas} />
-        </div>
+        <h2 className="about-focus-heading">Our work is anchored in three complementary focus areas</h2>
+        <FocusCards focusAreas={about.focusAreas} />
       </section>
       {additionalSections.length > 0 && <BlockRenderer blocks={additionalSections} />}
     </>

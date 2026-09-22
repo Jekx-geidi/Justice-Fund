@@ -7,10 +7,11 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
  * (`PageEditorClient`), so both render from exactly this markup. Section 21
  * of the Live Preview PRD: "Do not create a separate fake preview design."
  *
- * Matches docs/approved-content.html (Yudi's mockup): charcoal hero, no
- * photography, no placeholder news quotes. `about` is accepted but no
- * longer rendered here — the About-teaser/focus-card sections the previous
- * design duplicated onto Home belong on the About page in the mockup.
+ * Ports docs/approved-content.html (Yudi's mockup) verbatim — layout,
+ * copy, and structure. `home.quotes` already holds the mockup's exact
+ * three placeholder quotes, so the quote-wall stays fully CMS-bound.
+ * `about` is accepted but unused — the mockup's Home doesn't include the
+ * About-teaser/focus-card sections the previous design duplicated here.
  */
 export function HomePageView({
   home,
@@ -22,17 +23,26 @@ export function HomePageView({
 }) {
   return (
     <>
-      <section className="home-hero section-dark section">
-        <div className="wrap home-hero-copy">
+      <section className="section">
+        <div className="wrap home-hero">
           <p className="eyebrow">{home.eyebrow}</p>
           <h1>{home.heading}</h1>
-          <div className="hero-rule" />
           <p className="lead">{home.mission}</p>
         </div>
       </section>
-      <section className="home-cta">
-        <div className="wrap">
-          <p className="eyebrow">INTERGENERATIONAL JUSTICE</p>
+
+      <section className="quote-wall wrap">
+        <p className="eyebrow">IN THE NEWS — PLACEHOLDER QUOTES</p>
+        {home.quotes.map((quote, index) => (
+          <div className="quote-block" key={`${quote.attribution}-${index}`}>
+            <h3>&quot;{quote.text}&quot;</h3>
+            <div className="attr">{quote.attribution}</div>
+          </div>
+        ))}
+      </section>
+
+      <section className="section">
+        <div className="wrap home-cta">
           <h2>Help us act for the generations who aren&rsquo;t in the room yet.</h2>
           <p>Your support funds the legal work, research and advocacy that protects the environment for the long term.</p>
           <button className="button button-dark" disabled aria-describedby="donation-note">
@@ -43,6 +53,7 @@ export function HomePageView({
           </p>
         </div>
       </section>
+
       <p className="identity-line wrap">{home.bottomLine}</p>
       {additionalSections.length > 0 && <BlockRenderer blocks={additionalSections} />}
     </>
