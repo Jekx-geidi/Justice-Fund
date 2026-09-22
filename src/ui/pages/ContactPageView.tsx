@@ -17,7 +17,7 @@ export function ContactPageView({
         <PageIntro eyebrow="CONTACT" title="Contact" />
         <div className="contact-grid">
           <ContactForm email={contact.email} />
-          <aside className="contact-details dark">
+          <aside className="contact-details">
             <p className="eyebrow">CONTACT DETAILS</p>
             <h2>
               Intergenerational
@@ -34,11 +34,6 @@ export function ContactPageView({
                 {contact.email}
                 <ArrowUpRight size={18} aria-hidden="true" />
               </a>
-            </div>
-            <div className="contact-decoration" aria-hidden="true">
-              <span />
-              <span />
-              <span />
             </div>
           </aside>
         </div>
