@@ -33,6 +33,8 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
    page-intro band (About/Insights/Contact) so Abaddon Black (#231F20) reads
    as a consistent, alternating identity element across the whole site. */
 .home-hero { background:var(--ink); color:#fff; padding:clamp(48px,8vw,90px) clamp(28px,5vw,64px) clamp(40px,6vw,70px); }
+/* PageIntro's outer .section already gets its bottom edge from .home-hero's own padding — without this, the two stack and leave a large blank gap before the next section (About/Insights/Contact). */
+.page-intro-section { padding-bottom:0; }
 .home-hero .eyebrow { color:var(--gold); }
 .home-hero h1 { color:#fff; }
 .home-hero .lead { color:#d8d4d1; }
