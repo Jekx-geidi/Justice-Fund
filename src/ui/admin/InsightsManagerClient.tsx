@@ -112,26 +112,49 @@ export function InsightsManagerClient({ entries: initial }: { entries: InsightEn
                 </button>
               </div>
             </div>
-            <div className="space-y-2">
-              <input placeholder="Title" value={entry.title} onChange={(event) => update(entry.id, { title: event.target.value })} maxLength={200} />
-              <input
-                placeholder="Category (e.g. LITIGATION)"
-                value={entry.category ?? ''}
-                onChange={(event) => update(entry.id, { category: event.target.value })}
-                maxLength={60}
-              />
-              <textarea
-                placeholder="Summary"
-                rows={3}
-                value={entry.summary}
-                onChange={(event) => update(entry.id, { summary: event.target.value })}
-                maxLength={2000}
-              />
-              <select value={entry.status} onChange={(event) => update(entry.id, { status: event.target.value as InsightEntry['status'] })}>
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="unpublished">Unpublished</option>
-              </select>
+            <div className="space-y-3">
+              <div className="field">
+                <label htmlFor={`insight-title-${entry.id}`}>Title</label>
+                <input
+                  id={`insight-title-${entry.id}`}
+                  placeholder="Insights entry title"
+                  value={entry.title}
+                  onChange={(event) => update(entry.id, { title: event.target.value })}
+                  maxLength={200}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor={`insight-category-${entry.id}`}>Category</label>
+                <input
+                  id={`insight-category-${entry.id}`}
+                  placeholder="e.g. LITIGATION"
+                  value={entry.category ?? ''}
+                  onChange={(event) => update(entry.id, { category: event.target.value })}
+                  maxLength={60}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor={`insight-summary-${entry.id}`}>Summary</label>
+                <textarea
+                  id={`insight-summary-${entry.id}`}
+                  rows={3}
+                  value={entry.summary}
+                  onChange={(event) => update(entry.id, { summary: event.target.value })}
+                  maxLength={2000}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor={`insight-status-${entry.id}`}>Status</label>
+                <select
+                  id={`insight-status-${entry.id}`}
+                  value={entry.status}
+                  onChange={(event) => update(entry.id, { status: event.target.value as InsightEntry['status'] })}
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="unpublished">Unpublished</option>
+                </select>
+              </div>
               <MediaSlot image={entry.image} onChange={(image) => update(entry.id, { image })} />
             </div>
           </div>
