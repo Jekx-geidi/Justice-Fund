@@ -4,8 +4,8 @@
   --md-sys-color-outline: var(--line);
   --md-sys-color-on-surface: var(--ink);
   --md-sys-color-on-surface-variant: var(--slate);
-  --md-sys-typescale-body-large-font: 'Marcellus', serif;
-  --md-sys-typescale-label-large-font: 'Marcellus', serif;
+  --md-sys-typescale-body-large-font: 'Poppins', sans-serif;
+  --md-sys-typescale-label-large-font: 'Poppins', sans-serif;
   --md-outlined-text-field-container-shape: 2px;
 }
 .insights-manager md-outlined-text-field { display: block; width: 100%; }
