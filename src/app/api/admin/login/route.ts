@@ -50,14 +50,29 @@ export async function POST(request: Request) {
 
   recordSuccess(key);
 
+  // TEMPORARY (requested 2026-09-22, pending Sir Jun's network/IP whitelist):
+  // admin@justicefund.org.au is exempt from MFA so this one account can keep
+  // logging in without email OTP delivery while the whitelist is set up.
+  // Every other admin account still goes through MFA unconditionally below.
+  // Remove MFA_EXEMPT_EMAILS once the whitelist is live — this is a
+  // deliberate, time-boxed exception, not a reversal of the MFA policy.
+  const MFA_EXEMPT_EMAILS = ['admin@justicefund.org.au'];
+  const isMfaExempt = MFA_EXEMPT_EMAILS.includes(admin.email.toLowerCase());
+
   // Local dev without Supabase configured has nowhere to persist an MFA
   // challenge — same graceful-degradation fallback already used for
   // single-session enforcement (sessionStore.ts). Every real deployment has
-  // Supabase configured, so MFA is enforced there unconditionally.
-  if (!isMfaConfigured()) {
+  // Supabase configured, so MFA is enforced there unconditionally (except
+  // the temporary exemption above).
+  if (!isMfaConfigured() || isMfaExempt) {
     const sessionId = await startSession(admin.email, request.headers.get('user-agent'));
     await setSessionCookie(admin.email, sessionId);
-    audit({ event: 'login_success', admin: admin.email, result: 'success' });
+    audit({
+      event: 'login_success',
+      admin: admin.email,
+      result: 'success',
+      metadata: isMfaExempt ? { mfaExempt: true, reason: 'temporary-whitelist-pending' } : undefined,
+    });
     return NextResponse.json({ ok: true });
   }
 
