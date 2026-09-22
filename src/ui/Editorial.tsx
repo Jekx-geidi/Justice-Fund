@@ -9,5 +9,5 @@ export function FocusCards({ focusAreas }: { focusAreas: AboutFocusArea[] }) {
 }
 /** Matches docs/approved-content.html's plain single-row footer — no nav/contact columns. */
 export function Footer() {
-  return <footer className="site-footer"><div className="wrap footer-bottom"><span>© 2026 Intergenerational Justice Fund</span><span>ABN placeholder · Privacy Policy</span></div></footer>;
+  return <footer className="site-footer"><div className="wrap footer-bottom"><span>© 2026 Intergenerational Justice Fund</span><span>ABN 51 656 623 719 · Privacy Policy</span></div></footer>;
 }
