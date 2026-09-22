@@ -28,6 +28,9 @@ qa-output/
 *.tsbuildinfo
 next-env.d.ts
 
+# Vercel CLI project link (local-only project/org IDs, not shared with the team)
+.vercel
+
 # Secrets — never commit
 .env
 .env.local
@@ -39,3 +42,6 @@ next-env.d.ts
 
 # Per-machine Claude Code settings, not shared with the team
 .claude/settings.local.json
+
+.vercel
+.env*

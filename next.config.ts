@@ -29,7 +29,11 @@ const SECURITY_HEADERS = [
 ];
 
 const config: NextConfig = {
-  output: 'standalone',
+  // 'standalone' output is for the existing Docker/Cloud Run deployment
+  // (see Dockerfile — copies .next/standalone into the runtime image).
+  // Vercel's own Next.js builder doesn't use or want this output mode; it
+  // sets VERCEL=1 during its build, so this only ever applies off-Vercel.
+  output: process.env.VERCEL ? undefined : 'standalone',
   turbopack: { root: process.cwd() },
   images: {
     remotePatterns: [{ protocol: 'https', hostname: SUPABASE_HOST, pathname: '/storage/v1/object/public/**' }],
