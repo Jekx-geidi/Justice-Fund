@@ -1,4 +1,4 @@
-import { EditorialArt, FocusCards, PageIntro } from '@/ui/Editorial';
+import { FocusCards, PageIntro } from '@/ui/Editorial';
 import type { AboutFields, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
@@ -11,9 +11,6 @@ export function AboutPageView({ about, additionalSections = [] }: { about: About
           <div className="about-grid">
             <div>
               <p className="lead">{about.intro}</p>
-              <div className="about-art">
-                <EditorialArt compact image={about.image} />
-              </div>
             </div>
             <div className="about-body">
               <span className="small-rule" />
