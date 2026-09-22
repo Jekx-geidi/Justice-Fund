@@ -3,7 +3,7 @@ import ContactForm from '@/ui/ContactForm';
 import type { ContactFields, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
-/** Ports docs/approved-content.html's Contact page verbatim: "Get in touch.", plain contact-details block, no icons/micro-labels. */
+/** Ports docs/approved-content.html's Contact page, plus a dark intro band and a dark contact-details panel per the site's Abaddon Black visual-identity brief. */
 export function ContactPageView({
   contact,
   additionalSections = [],
@@ -13,11 +13,11 @@ export function ContactPageView({
 }) {
   return (
     <>
+      <PageIntro eyebrow="CONTACT" title="Get in touch." />
       <section className="wrap section">
-        <PageIntro eyebrow="CONTACT" title="Get in touch." />
         <div className="contact-grid">
           <ContactForm email={contact.email} />
-          <aside className="contact-details">
+          <aside className="contact-details contact-details-dark">
             <h3>Intergenerational Justice Fund</h3>
             <p>{contact.location}</p>
             <p>

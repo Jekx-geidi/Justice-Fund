@@ -2,7 +2,12 @@ import { PageIntro } from '@/ui/Editorial';
 import type { InsightEntry, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
-/** Ports docs/approved-content.html's Insights page verbatim, including its illustrative "EXAMPLE ENTRY" card, shown only while no real entries are published. */
+/**
+ * Ports docs/approved-content.html's Insights page, including its
+ * illustrative "EXAMPLE ENTRY" card (shown only while no real entries are
+ * published), plus a dark intro band and a dark first-entry card per the
+ * site's Abaddon Black visual-identity brief.
+ */
 export function InsightsPageView({
   entries,
   additionalSections = [],
@@ -12,9 +17,8 @@ export function InsightsPageView({
 }) {
   return (
     <>
+      <PageIntro eyebrow="INSIGHTS" title="Case updates and our environmental focus, in one place." />
       <section className="wrap section">
-        <PageIntro eyebrow="INSIGHTS" title="Case updates and our environmental focus, in one place." />
-
         {entries.length === 0 && (
           <>
             <div className="notice">
@@ -24,7 +28,7 @@ export function InsightsPageView({
               </p>
             </div>
             <div className="case-list">
-              <article className="case-item">
+              <article className="case-item case-item-dark">
                 <p className="case-tag">EXAMPLE ENTRY</p>
                 <h3>Insights entry title goes here</h3>
                 <p>
@@ -38,8 +42,8 @@ export function InsightsPageView({
 
         {entries.length > 0 && (
           <div className="case-list">
-            {entries.map((entry) => (
-              <article className="case-item" key={entry.id}>
+            {entries.map((entry, index) => (
+              <article className={`case-item${index === 0 ? ' case-item-dark' : ''}`} key={entry.id}>
                 {entry.category && <p className="case-tag">{entry.category}</p>}
                 <h3>{entry.title || 'Untitled entry'}</h3>
                 <p>{entry.summary}</p>

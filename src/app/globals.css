@@ -17,7 +17,7 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .lead { font-size:1.12rem; color:var(--slate); max-width:640px; margin-top:18px; } .gold { color:var(--gold); } .muted { color:#797273; } .paper { background:var(--paper); }
 @media(max-width:860px) { h1 { font-size:1.9rem; } }
 .skip-link { position:fixed; top:8px; left:16px; padding:12px 20px; background:white; color:var(--ink); z-index:100; transform:translateY(-160%); } .skip-link:focus { transform:translateY(0); }
-.site-header { position:sticky; top:0; z-index:30; background:#fffffff5; border-bottom:1px solid #e3e0dd80; }
+.site-header { position:sticky; top:0; z-index:30; background:#fffffff5; border-bottom:1px solid #e3e0dd80; border-top:3px solid var(--ink); }
 .header-inner { display:flex; align-items:center; justify-content:space-between; min-height:100px; gap:24px; }
 .brand { font-weight:700; font-size:1.02rem; letter-spacing:.01em; }
 .brand-caption { display:block; font-weight:400; font-size:0.66rem; color:var(--slate); letter-spacing:.03em; margin-top:2px; }
@@ -29,7 +29,9 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .mobile-dialog::backdrop { background:#1a171780; } .mobile-panel { padding:30px 24px; } .mobile-dialog[open] .mobile-panel { animation:enter .25s ease-out; }
 .mobile-panel nav { margin-top:40px; } .mobile-panel nav a { display:flex; gap:24px; align-items:center; font-size:28px; padding-block:20px; border-bottom:1px solid var(--line); } .mobile-panel nav a svg { margin-left:auto; width:20px; }
 .mobile-panel nav a[aria-current] { color:#806032; } .nav-number { font-size:11px; letter-spacing:.12em; } .mobile-caption { font-size:12px; color:var(--slate); margin-top:48px; }
-/* Home hero — docs/approved-content.html: strong charcoal band, no photography. */
+/* Dark intro band — Home's hero, and reused as every other public page's
+   page-intro band (About/Insights/Contact) so Abaddon Black (#231F20) reads
+   as a consistent, alternating identity element across the whole site. */
 .home-hero { background:var(--ink); color:#fff; padding:clamp(48px,8vw,90px) clamp(28px,5vw,64px) clamp(40px,6vw,70px); }
 .home-hero .eyebrow { color:var(--gold); }
 .home-hero h1 { color:#fff; }
@@ -47,17 +49,16 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .focus-card h3 { font-size:1.1rem; font-weight:600; margin-bottom:10px; }
 .focus-card>p { color:var(--slate); font-size:0.94rem; margin-bottom:14px; }
 .entity { font-size:0.78rem; color:var(--slate); margin-top:14px; } .entity span { display:block; margin-top:2px; }
-/* Home CTA — docs/approved-content.html: centered, paper background, no grid. */
-.home-cta { background:var(--paper); padding:clamp(48px,8vw,70px) clamp(28px,5vw,64px); text-align:center; }
-.home-cta h2 { max-width:600px; margin-inline:auto; }
-.home-cta p:not(.cta-note) { color:var(--slate); max-width:520px; margin:16px auto 0; }
-.button { display:inline-flex; min-height:50px; align-items:center; justify-content:center; gap:35px; padding:13px 24px; border:1px solid transparent; font-size:12px; font-weight:500; transition:background .2s; } .button-gold { background:var(--gold); color:var(--deep); margin-top:25px; } .button-dark { background:var(--ink); color:white; margin-top:25px; } .button-dark:hover { background:#454041; } .home-cta .cta-note { font-size:10px!important; margin-top:12px; color:var(--slate); } .identity-line { text-align:center; font-size:10px; color:var(--slate); padding-block:32px; }
+/* Home CTA — dark panel (Abaddon Black), per the site's visual-identity brief. */
+.home-cta { background:var(--ink); color:#fff; padding:clamp(48px,8vw,70px) clamp(28px,5vw,64px); text-align:center; }
+.home-cta h2 { color:#fff; max-width:600px; margin-inline:auto; }
+.home-cta p:not(.cta-note) { color:#d8d4d1; max-width:520px; margin:16px auto 0; }
+.button { display:inline-flex; min-height:50px; align-items:center; justify-content:center; gap:35px; padding:13px 24px; border:1px solid transparent; font-size:12px; font-weight:500; transition:background .2s; } .button-gold { background:var(--gold); color:var(--deep); margin-top:25px; } .button-dark { background:var(--ink); color:white; margin-top:25px; } .button-dark:hover { background:#454041; } .home-cta .cta-note { font-size:10px!important; margin-top:12px; color:#b4aaa4; } .identity-line { text-align:center; font-size:10px; color:var(--slate); padding-block:32px; }
 
-/* Footer — docs/approved-content.html: one plain flex row, no nav/contact columns. */
-.site-footer { background:var(--deep); color:#b7b2b0; padding:50px 5% 30px; }
+/* Footer — docs/approved-content.html's plain flex row, with a stronger dark presence (deeper charcoal, gold-tinted top edge). */
+.site-footer { background:var(--deep); color:#b7b2b0; padding:56px 5% 34px; border-top:3px solid #c9a15a4d; }
 .footer-bottom { display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; font-size:0.85rem; }
 
-.page-intro { max-width:1000px; } .page-intro h1 { margin-top:24px; }
 /* About — docs/approved-content.html: two plain text columns, no accent rule. */
 .about-grid { display:grid; grid-template-columns:0.9fr 1.1fr; gap:60px; margin-top:50px; } .about-grid p { color:var(--slate); max-width:52ch; }
 /* Insights empty-state banner — docs/approved-content.html: .tbc-banner. */
@@ -70,9 +71,20 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .case-item h3 { margin-bottom:12px; }
 .case-item>p { color:var(--slate); font-size:15px; line-height:1.85; max-width:70ch; }
 .case-item-date { display:block; margin-top:16px; font-size:11px; color:var(--slate); }
+/* Dark accent card (Abaddon Black) — one selected/first Insights entry, per the site's visual-identity brief. */
+.case-item-dark { background:var(--ink); color:#fff; border-top-color:var(--ink); padding:32px 28px; }
+.case-item-dark .case-tag { color:var(--gold); }
+.case-item-dark h3 { color:#fff; }
+.case-item-dark > p { color:#d8d4d1; }
+.case-item-dark .case-item-date { color:#b4aaa4; }
 .contact-grid { display:grid; grid-template-columns:1.05fr 1fr; gap:clamp(40px,8vw,120px); margin-top:45px; } .form-note { font-size:12px; color:var(--slate); margin-bottom:26px; } .field { margin-bottom:25px; } .field label { font-size:12px; font-weight:500; display:block; margin-bottom:9px; } .field input,.field textarea { width:100%; border:1px solid #cac5c1; background:#fdfcfb; border-radius:0; padding:13px 15px; font-size:16px; color:var(--ink); } .field textarea { resize:vertical; min-height:150px; } .field input::placeholder,.field textarea::placeholder { color:#777172; font-size:13px; }
 .form-status { display:flex; gap:10px; font-size:12px; color:var(--slate); margin-top:20px; } .form-status svg { flex-shrink:0; } .form-status a { text-decoration:underline; overflow-wrap:anywhere; }
 .contact-details { align-self:start; } .contact-details h3 { margin-bottom:14px; } .contact-details p { margin-bottom:10px; color:var(--slate); }
+/* Dark contact panel (Abaddon Black), per the site's visual-identity brief. */
+.contact-details-dark { background:var(--ink); color:#fff; padding:clamp(28px,4vw,44px); }
+.contact-details-dark h3 { color:#fff; }
+.contact-details-dark p { color:#d8d4d1; }
+.contact-details-dark a { text-decoration:underline; text-decoration-color:var(--gold); }
 /* Generic block system (custom admin-created pages) — reuses the site's
    tokens/eyebrow/button classes rather than inventing a new visual language. */
 .block-section { border-top:1px solid var(--line); }

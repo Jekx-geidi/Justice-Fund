@@ -7,9 +7,11 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
  * (`PageEditorClient`), so both render from exactly this markup. Section 21
  * of the Live Preview PRD: "Do not create a separate fake preview design."
  *
- * Ports docs/approved-content.html (Yudi's mockup) verbatim — layout,
- * copy, and structure. `home.quotes` already holds the mockup's exact
- * three placeholder quotes, so the quote-wall stays fully CMS-bound.
+ * Ports docs/approved-content.html (Yudi's mockup) — layout, copy, and
+ * structure. `home.quotes` already holds the mockup's exact three
+ * placeholder quotes, so the quote-wall stays fully CMS-bound. The CTA is
+ * a dark (Abaddon Black) panel per the site's visual-identity brief, so
+ * its button uses the gold fill for contrast rather than the dark fill.
  * `about` is accepted but unused — the mockup's Home doesn't include the
  * About-teaser/focus-card sections the previous design duplicated here.
  */
@@ -45,7 +47,7 @@ export function HomePageView({
         <div className="wrap home-cta">
           <h2>Help us act for the generations who aren&rsquo;t in the room yet.</h2>
           <p>Your support funds the legal work, research and advocacy that protects the environment for the long term.</p>
-          <button className="button button-dark" disabled aria-describedby="donation-note">
+          <button className="button button-gold" disabled aria-describedby="donation-note">
             Donate now
           </button>
           <p id="donation-note" className="cta-note">
