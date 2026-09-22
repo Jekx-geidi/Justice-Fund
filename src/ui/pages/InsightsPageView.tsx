@@ -23,27 +23,27 @@ export function InsightsPageView({
           </div>
         )}
 
-        {entries.map((entry, index) => (
-          <article className={`insight-feature${index === 0 ? ' featured' : ''}`} key={entry.id}>
-            {entry.image && (
-              <div className="insight-visual">
-                <Image
-                  src={entry.image.url}
-                  alt={entry.image.alt}
-                  fill
-                  sizes="(max-width: 699px) 90vw, 40vw"
-                  style={focalPointStyle(entry.image)}
-                />
-              </div>
-            )}
-            <div className="insight-copy">
-              {entry.category && <p className="eyebrow">{entry.category.toUpperCase()}</p>}
-              <h2>{entry.title || 'Untitled entry'}</h2>
+        <div className="case-list">
+          {entries.map((entry) => (
+            <article className="case-item" key={entry.id}>
+              {entry.category && <p className="case-tag">{entry.category}</p>}
+              <h3>{entry.title || 'Untitled entry'}</h3>
+              {entry.image && (
+                <div className="case-item-media">
+                  <Image
+                    src={entry.image.url}
+                    alt={entry.image.alt}
+                    fill
+                    sizes="(max-width: 699px) 90vw, 480px"
+                    style={focalPointStyle(entry.image)}
+                  />
+                </div>
+              )}
               <p>{entry.summary}</p>
-              {entry.date && <span className="insight-status">{entry.date}</span>}
-            </div>
-          </article>
-        ))}
+              {entry.date && <span className="case-item-date">{entry.date}</span>}
+            </article>
+          ))}
+        </div>
       </section>
       {additionalSections.length > 0 && <BlockRenderer blocks={additionalSections} />}
     </>
