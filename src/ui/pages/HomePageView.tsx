@@ -1,4 +1,3 @@
-import { EditorialArt, FocusCards, TextLink } from '@/ui/Editorial';
 import type { HomeFields, AboutFields, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
@@ -7,10 +6,14 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
  * route (`(public)/page.tsx`) and by the admin Live Draft Preview
  * (`PageEditorClient`), so both render from exactly this markup. Section 21
  * of the Live Preview PRD: "Do not create a separate fake preview design."
+ *
+ * Matches docs/approved-content.html (Yudi's mockup): charcoal hero, no
+ * photography, no placeholder news quotes. `about` is accepted but no
+ * longer rendered here — the About-teaser/focus-card sections the previous
+ * design duplicated onto Home belong on the About page in the mockup.
  */
 export function HomePageView({
   home,
-  about,
   additionalSections = [],
 }: {
   home: HomeFields;
@@ -19,88 +22,25 @@ export function HomePageView({
 }) {
   return (
     <>
-      <section className="home-hero">
-        <div className="wrap hero-grid">
-          <div className="hero-copy">
-            <p className="eyebrow">{home.eyebrow}</p>
-            <h1>
-              Intergenerational
-              <br />
-              <span>
-                Justice Fund<span className="gold">.</span>
-              </span>
-            </h1>
-            <div className="hero-rule" />
-            <p className="lead">{home.mission}</p>
-          </div>
-          <EditorialArt image={home.heroImage} />
-        </div>
-        <div className="wrap hero-foot">
-          <span>LAW · RESEARCH · ADVOCACY</span>
-          <span>PUBLIC BENEFIT. LONG-TERM IMPACT.</span>
-        </div>
-      </section>
-      <section className="section-dark section">
-        <div className="wrap story-grid">
-          <div>
-            <p className="eyebrow">ABOUT US</p>
-            <h2>
-              Standing between short-term decisions and <span className="muted">long-term harm.</span>
-            </h2>
-          </div>
-          <div className="story-copy">
-            <p className="lead">{about.intro}</p>
-            <TextLink href="/about">About IEJF</TextLink>
-          </div>
-        </div>
-      </section>
-      <section className="paper section">
-        <div className="wrap">
-          <div className="section-heading">
-            <p className="eyebrow">OUR FOCUS</p>
-            <h2>Our work is anchored in three complementary focus areas</h2>
-          </div>
-          <FocusCards focusAreas={about.focusAreas} />
-        </div>
-      </section>
-      <section className="section wrap news-section">
-        <div className="section-heading news-heading">
-          <p className="eyebrow">IN THE NEWS</p>
-          <h2>
-            In the news<span className="gold">.</span>
-          </h2>
-          <span className="placeholder-badge">Placeholder quotes</span>
-        </div>
-        <div className="quote-grid">
-          {home.quotes.map((quote, index) => (
-            <figure className="quote-card" key={`${quote.attribution}-${index}`}>
-              <span className="quote-symbol" aria-hidden="true">
-                &ldquo;
-              </span>
-              <blockquote>{quote.text}</blockquote>
-              <figcaption>
-                {quote.attribution}
-                <span>PLACEHOLDER · NOT VERIFIED COVERAGE</span>
-              </figcaption>
-            </figure>
-          ))}
+      <section className="home-hero section-dark section">
+        <div className="wrap home-hero-copy">
+          <p className="eyebrow">{home.eyebrow}</p>
+          <h1>{home.heading}</h1>
+          <div className="hero-rule" />
+          <p className="lead">{home.mission}</p>
         </div>
       </section>
       <section className="home-cta">
-        <div className="wrap cta-grid">
-          <div>
-            <p className="eyebrow">INTERGENERATIONAL JUSTICE</p>
-            <h2>Help us act for the generations who aren&rsquo;t in the room yet.</h2>
-          </div>
-          <div>
-            <p>Your support funds the legal work, research and advocacy that protects the environment for the long term.</p>
-            <button className="button button-gold" disabled aria-describedby="donation-note">
-              Donate now
-            </button>
-            <p id="donation-note" className="cta-note">
-              Donations are not available in this preview.
-            </p>
-          </div>
+        <div className="wrap">
+          <p className="eyebrow">INTERGENERATIONAL JUSTICE</p>
+          <h2>Help us act for the generations who aren&rsquo;t in the room yet.</h2>
+          <p>Your support funds the legal work, research and advocacy that protects the environment for the long term.</p>
+          <button className="button button-dark" disabled aria-describedby="donation-note">
+            Donate now
+          </button>
+          <p id="donation-note" className="cta-note">
+            Donations are not available in this preview.
+          </p>
         </div>
       </section>
       <p className="identity-line wrap">{home.bottomLine}</p>
