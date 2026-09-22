@@ -1,7 +1,5 @@
-import Image from 'next/image';
 import { PageIntro } from '@/ui/Editorial';
 import type { InsightEntry, ContentBlock } from '@/lib/content/types';
-import { focalPointStyle } from '@/ui/blocks/focalPoint';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
 export function InsightsPageView({
@@ -28,17 +26,6 @@ export function InsightsPageView({
             <article className="case-item" key={entry.id}>
               {entry.category && <p className="case-tag">{entry.category}</p>}
               <h3>{entry.title || 'Untitled entry'}</h3>
-              {entry.image && (
-                <div className="case-item-media">
-                  <Image
-                    src={entry.image.url}
-                    alt={entry.image.alt}
-                    fill
-                    sizes="(max-width: 699px) 90vw, 480px"
-                    style={focalPointStyle(entry.image)}
-                  />
-                </div>
-              )}
               <p>{entry.summary}</p>
               {entry.date && <span className="case-item-date">{entry.date}</span>}
             </article>
