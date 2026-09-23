@@ -1,5 +1,6 @@
 import type { HomeFields, AboutFields, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
+import { HeroArtworkLayer } from '@/ui/brand/HeroArtworkLayer';
 
 /**
  * Pure presentational Home page — no data fetching. Used by the public
@@ -27,6 +28,7 @@ export function HomePageView({
     <>
       <section className="section">
         <div className="wrap home-hero">
+          <HeroArtworkLayer />
           <p className="eyebrow">{home.eyebrow}</p>
           <h1>{home.heading}</h1>
           <p className="lead">{home.mission}</p>

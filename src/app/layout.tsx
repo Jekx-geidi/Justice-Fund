@@ -4,6 +4,9 @@ import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
 import './globals.css';
+import { BRAND_CHOOSER_ENABLED } from '@/lib/brand/env';
+import { buildPrePaintScript } from '@/lib/brand/pre-paint';
+import { BrandChooser } from '@/ui/brand/BrandChooser';
 
 export const metadata: Metadata = {
   title: { default: 'Intergenerational Justice Fund', template: '%s — Intergenerational Justice Fund' },
@@ -13,8 +16,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-AU">
-      <body>{children}</body>
+    <html
+      lang="en-AU"
+      suppressHydrationWarning={BRAND_CHOOSER_ENABLED}
+      {...(BRAND_CHOOSER_ENABLED ? {} : { 'data-brand': 'b' })}
+    >
+      <head>
+        {BRAND_CHOOSER_ENABLED && <script dangerouslySetInnerHTML={{ __html: buildPrePaintScript() }} />}
+      </head>
+      <body>
+        {children}
+        {BRAND_CHOOSER_ENABLED && <BrandChooser />}
+      </body>
     </html>
   );
 }

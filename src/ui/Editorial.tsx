@@ -1,4 +1,5 @@
 import type { AboutFocusArea } from '@/lib/content/types';
+import { FooterBrandMark } from '@/ui/brand/FooterBrandMark';
 
 /** Dark intro band (Abaddon Black), shared with Home's hero styling — gives every public page a consistent dark opening section. */
 export function PageIntro({ eyebrow, title }: { eyebrow: string; title: string }) {
@@ -9,5 +10,5 @@ export function FocusCards({ focusAreas }: { focusAreas: AboutFocusArea[] }) {
 }
 /** Matches docs/approved-content.html's plain single-row footer — no nav/contact columns. */
 export function Footer() {
-  return <footer className="site-footer"><div className="wrap footer-bottom"><span>© 2026 Intergenerational Justice Fund</span><span>ABN 51 656 623 719 · Privacy Policy</span></div></footer>;
+  return <footer className="site-footer"><div className="wrap footer-bottom"><span><FooterBrandMark /> © 2026 Intergenerational Justice Fund</span><span>ABN 51 656 623 719 · Privacy Policy</span></div></footer>;
 }

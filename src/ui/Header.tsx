@@ -5,12 +5,28 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import type { NavItem } from '@/lib/content/content';
+import { BRAND_CHOOSER_ENABLED } from '@/lib/brand/env';
+import { resolveLogoConcept, getLogoConcept } from '@/lib/brand/logo-concepts';
+import { resolveMark, getMark } from '@/lib/brand/marks';
+import { MarkIcon } from '@/ui/brand/MarkIcon';
 
 export default function Header({ navigation }: { navigation: NavItem[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const [logoId, setLogoId] = useState<string | null>(null);
+  const [markId, setMarkId] = useState<string | null>(null);
+  useEffect(() => {
+    if (!BRAND_CHOOSER_ENABLED) return;
+    try {
+      setLogoId(resolveLogoConcept(localStorage.getItem('logo')));
+      setMarkId(resolveMark(localStorage.getItem('mark')));
+    } catch {}
+  }, []);
+  const logoConcept = BRAND_CHOOSER_ENABLED && logoId ? getLogoConcept(logoId) : undefined;
+  const soloMark = BRAND_CHOOSER_ENABLED && !logoConcept && markId ? getMark(markId) : undefined;
+  const displayMark = logoConcept?.mark ?? soloMark;
   useEffect(() => {
     const desktop = window.matchMedia('(min-width: 900px)');
     const closeOnDesktop = () => { if (desktop.matches) setOpen(false); };
@@ -28,9 +44,23 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
   }, [open]);
   return <header className="site-header">
     <div className="wrap header-inner">
-      <Link href="/" className="brand" aria-label="Intergenerational Justice Fund home">
-        Intergenerational Justice Fund<span className="brand-caption">CHARITY · PERTH, WA</span>
-      </Link>
+      {logoConcept || soloMark ? (
+        <Link
+          href="/"
+          className={`brand brand-logo${logoConcept ? ` brand-logo-${logoConcept.layout}` : ''}`}
+          aria-label="Intergenerational Justice Fund home"
+        >
+          <MarkIcon mark={displayMark!} size={logoConcept ? 28 : 22} />
+          <span>
+            Intergenerational Justice Fund
+            <span className="brand-caption">CHARITY · PERTH, WA</span>
+          </span>
+        </Link>
+      ) : (
+        <Link href="/" className="brand" aria-label="Intergenerational Justice Fund home">
+          Intergenerational Justice Fund<span className="brand-caption">CHARITY · PERTH, WA</span>
+        </Link>
+      )}
       <nav aria-label="Main navigation" className="desktop-nav">
         {navigation.map(item => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined}>{item.label}</Link>)}
       </nav>

@@ -13,12 +13,16 @@ const SUPABASE_HOST = 'fxpznpdrpzgkwplghvqx.supabase.co';
 // client runtime uses eval() for HMR and stack-trace reconstruction. React
 // never uses eval() in production, so prod's CSP stays as strict as before.
 const isDev = process.env.NODE_ENV !== 'production';
+// The Brand & Design Control Panel (docs/brand-control-panel-prd.md) loads
+// Google Fonts stylesheets to preview type pairings. Only Preview builds
+// set this env var, so Production's CSP never carries the extra allowance.
+const brandChooserEnabled = process.env.NEXT_PUBLIC_BRAND_CHOOSER === 'true';
 const CSP = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
-  "style-src 'self' 'unsafe-inline'",
+  `style-src 'self' 'unsafe-inline'${brandChooserEnabled ? ' https://fonts.googleapis.com' : ''}`,
   `img-src 'self' data: blob: https://${SUPABASE_HOST}`,
-  "font-src 'self' data:",
+  `font-src 'self' data:${brandChooserEnabled ? ' https://fonts.gstatic.com' : ''}`,
   "connect-src 'self'",
   "frame-ancestors 'none'",
   "base-uri 'self'",
