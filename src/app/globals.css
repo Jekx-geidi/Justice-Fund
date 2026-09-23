@@ -213,20 +213,20 @@ html:is([data-brand="a"],[data-brand="c"]) :is(.button,.block-card,.field input,
 html:is([data-brand="a"],[data-brand="c"]) .button-gold { color:var(--brand-accent-contrast); }
 html:is([data-brand="a"],[data-brand="c"]) :focus-visible { outline-color:var(--gold); }
 
-html[data-type="t1"] { --font-heading:'Poppins',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif; --font-body:'Poppins',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif; }
+[data-type="t1"] { --font-heading:'Poppins',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif; --font-body:'Poppins',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif; }
 
 /* Type pairings — t1 (Poppins/Poppins) matches the :root default above.
-   html[...] outranks the Site settings :root font rule inlined later, so a Control panel pick still shows. */
-html[data-type="t2"] { --font-heading:'Fraunces',serif; --font-body:'Inter',sans-serif; }
-html[data-type="t3"] { --font-heading:'Playfair Display',serif; --font-body:'Source Sans 3',sans-serif; }
-html[data-type="t4"] { --font-heading:'Space Grotesk',sans-serif; --font-body:'IBM Plex Sans',sans-serif; }
-html[data-type="t5"] { --font-heading:'DM Serif Display',serif; --font-body:'DM Sans',sans-serif; }
-html[data-type="t6"] { --font-heading:'Libre Baskerville',serif; --font-body:'Work Sans',sans-serif; }
-html[data-type="t7"] { --font-heading:'Archivo Black',sans-serif; --font-body:'Archivo',sans-serif; }
-html[data-type="t8"] { --font-heading:'Cormorant Garamond',serif; --font-body:'Karla',sans-serif; }
-html[data-type="t9"] { --font-heading:'Sora',sans-serif; --font-body:'Sora',sans-serif; }
-html[data-type="t10"] { --font-heading:'Newsreader',serif; --font-body:'Inter',sans-serif; }
-html[data-type="t11"] { --font-heading:'Bricolage Grotesque',sans-serif; --font-body:'Public Sans',sans-serif; }
+   Same weight as the Site settings :root font rule, which comes later, so Site settings wins on public pages. */
+[data-type="t2"] { --font-heading:'Fraunces',serif; --font-body:'Inter',sans-serif; }
+[data-type="t3"] { --font-heading:'Playfair Display',serif; --font-body:'Source Sans 3',sans-serif; }
+[data-type="t4"] { --font-heading:'Space Grotesk',sans-serif; --font-body:'IBM Plex Sans',sans-serif; }
+[data-type="t5"] { --font-heading:'DM Serif Display',serif; --font-body:'DM Sans',sans-serif; }
+[data-type="t6"] { --font-heading:'Libre Baskerville',serif; --font-body:'Work Sans',sans-serif; }
+[data-type="t7"] { --font-heading:'Archivo Black',sans-serif; --font-body:'Archivo',sans-serif; }
+[data-type="t8"] { --font-heading:'Cormorant Garamond',serif; --font-body:'Karla',sans-serif; }
+[data-type="t9"] { --font-heading:'Sora',sans-serif; --font-body:'Sora',sans-serif; }
+[data-type="t10"] { --font-heading:'Newsreader',serif; --font-body:'Inter',sans-serif; }
+[data-type="t11"] { --font-heading:'Bricolage Grotesque',sans-serif; --font-body:'Public Sans',sans-serif; }
 
 /* Header logo concept (mark + wordmark) */
 .brand-logo { display:inline-flex; align-items:center; gap:10px; }

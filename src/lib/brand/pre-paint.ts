@@ -9,6 +9,10 @@ import { TYPEFACES, TYPEFACE_IDS, googleFontsUrl } from './typefaces';
  * minifier is free to rename/inline a real function, and `.toString()`
  * would then capture the mangled build output rather than this source.
  * There is exactly one place this logic lives; this string is it.
+ *
+ * Fonts belong to Site settings now, so a type pairing only applies for one
+ * visit via `?type=` (the /brand comparison links), and any pairing the old
+ * floating chooser saved is cleared rather than re-applied.
  */
 export function buildPrePaintScript(): string {
   const fontUrls: Record<string, string | null> = Object.fromEntries(
@@ -23,11 +27,11 @@ var params=new URLSearchParams(window.location.search);
 var qBrand=params.get('brand');
 var qType=params.get('type');
 var brand=qBrand!==null?qBrand:(function(){try{return localStorage.getItem('brand');}catch(e){return null;}})();
-var type=qType!==null?qType:(function(){try{return localStorage.getItem('type');}catch(e){return null;}})();
+var type=qType;
+try{localStorage.removeItem('type');}catch(e){}
 brand=(brand&&brandIds.indexOf(brand)!==-1)?brand:defaultBrand;
 type=(type&&typeIds.indexOf(type)!==-1)?type:null;
 if(qBrand!==null){try{localStorage.setItem('brand',brand);}catch(e){}}
-if(qType!==null){try{if(type)localStorage.setItem('type',type);else localStorage.removeItem('type');}catch(e){}}
 try{document.documentElement.dataset.chooserCollapsed=String(localStorage.getItem('chooserCollapsed')!=='false');}catch(e){}
 document.documentElement.setAttribute('data-brand',brand);
 if(type){
