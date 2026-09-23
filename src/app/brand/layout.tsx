@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { BRAND_CHOOSER_ENABLED } from '@/lib/brand/env';
 
 export const metadata: Metadata = {
   title: 'Brand & design comparison',
@@ -7,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function BrandLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  if (!BRAND_CHOOSER_ENABLED) notFound();
   return (
     <div className="brand-compare">
       <nav className="brand-compare-nav wrap" aria-label="Brand comparison pages">

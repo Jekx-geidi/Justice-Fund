@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { BRANDS } from '@/lib/brand/brands';
-import { TYPEFACES, getTypeface, googleFontsUrl } from '@/lib/brand/typefaces';
+import { BRANDS, DEFAULT_BRAND, resolveBrand } from '@/lib/brand/brands';
+import { TYPEFACES, getTypeface, googleFontsUrl, resolveTypeface } from '@/lib/brand/typefaces';
 
 function applyTypeface(id: string | null) {
   document.documentElement.removeAttribute('data-type');
@@ -24,15 +24,29 @@ function applyTypeface(id: string | null) {
  * `NEXT_PUBLIC_BRAND_CHOOSER=true`. Two independent axes, each persisted to
  * `localStorage` and applied to the live document immediately, no reload.
  */
-export function BrandChooser() {
-  const [brand, setBrand] = useState<string | null>(null);
+function BrandChooserPreview() {
+  const [brand, setBrand] = useState<string | null>(DEFAULT_BRAND);
   const [type, setType] = useState<string | null>(null);
-  const [typeOpen, setTypeOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    setBrand(document.documentElement.dataset.brand ?? null);
-    setType(document.documentElement.dataset.type ?? null);
+    function syncChoices() {
+      setBrand(resolveBrand(document.documentElement.dataset.brand));
+      setType(resolveTypeface(document.documentElement.dataset.type));
+    }
+    syncChoices();
+    setCollapsed(document.documentElement.dataset.chooserCollapsed === 'true');
+    const observer = new MutationObserver(syncChoices);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-brand', 'data-type'] });
+    return () => observer.disconnect();
   }, []);
+
+  function togglePanel() {
+    const next = !collapsed;
+    document.documentElement.dataset.chooserCollapsed = String(next);
+    try { localStorage.setItem('chooserCollapsed', String(next)); } catch {}
+    setCollapsed(next);
+  }
 
   function chooseBrand(id: string) {
     document.documentElement.setAttribute('data-brand', id);
@@ -54,40 +68,28 @@ export function BrandChooser() {
 
   return (
     <div className="brand-chooser" role="region" aria-label="Brand and design preview controls">
-      <div className="brand-chooser-row" role="group" aria-label="Colour direction">
-        {BRANDS.map((direction) => (
-          <button
-            key={direction.id}
-            type="button"
-            className="brand-chooser-button"
-            aria-pressed={brand === direction.id}
-            onClick={() => chooseBrand(direction.id)}
-          >
-            {direction.label}
-          </button>
-        ))}
-        <Link href="/brand" className="brand-chooser-button brand-chooser-link">
-          Compare
-        </Link>
-      </div>
-      <div className="brand-chooser-row brand-chooser-type-row">
-        <button
-          type="button"
-          className="brand-chooser-button brand-chooser-toggle"
-          aria-expanded={typeOpen}
-          aria-controls="brand-chooser-type-options"
-          onClick={() => setTypeOpen((open) => !open)}
-        >
-          Type ▾
-        </button>
-        <div
-          id="brand-chooser-type-options"
-          className="brand-chooser-type-options"
-          role="group"
-          aria-label="Type pairing"
-          hidden={false}
-          data-open={typeOpen}
-        >
+      <button type="button" className="brand-chooser-button brand-chooser-toggle"
+        aria-expanded={!collapsed} aria-controls="brand-chooser-body" onClick={togglePanel}>
+        {collapsed ? 'Design ▾' : '▴ Collapse'}
+      </button>
+      <div id="brand-chooser-body" className="brand-chooser-body" hidden={collapsed}>
+        <div className="brand-chooser-row" role="group" aria-label="Colour direction">
+          {BRANDS.map((direction) => (
+            <button
+              key={direction.id}
+              type="button"
+              className="brand-chooser-button"
+              aria-pressed={brand === direction.id}
+              onClick={() => chooseBrand(direction.id)}
+            >
+              {direction.label}
+            </button>
+          ))}
+          <Link href="/brand" className="brand-chooser-button brand-chooser-link">
+            Compare
+          </Link>
+        </div>
+        <div className="brand-chooser-row" role="group" aria-label="Type pairing">
           <button
             type="button"
             className="brand-chooser-button"
@@ -112,3 +114,7 @@ export function BrandChooser() {
     </div>
   );
 }
+
+export const BrandChooser = process.env.NEXT_PUBLIC_BRAND_CHOOSER === 'true'
+  ? BrandChooserPreview
+  : () => null;

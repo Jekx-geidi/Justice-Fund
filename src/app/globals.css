@@ -171,9 +171,17 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
    sets a `data-brand`/`data-type` attribute or renders these routes.
    ============================================================ */
 
-/* Colour directions — "b" (Paper) is the :root default above. */
-[data-brand="a"] { --ink:#2b2420; --deep:#1f1a16; --paper:#f7f1e6; --line:#e8ddc9; --gold:#b5793c; --slate:#6b5f52; }
-[data-brand="c"] { --ink:#1f2428; --deep:#15181b; --paper:#eef1f3; --line:#dde2e6; --gold:#5b7a99; --slate:#5c6770; }
+/* Colour directions own colour, surface, geometry and asset treatment only. */
+[data-brand="a"] { --ink:#2b2420; --deep:#1f1a16; --paper:#f7f1e6; --line:#e8ddc9; --gold:#b5793c; --slate:#6b5f52; --brand-ground:#f7f1e6; --brand-surface:#fffaf1; --brand-accent-contrast:#1f1a16; --brand-radius:6px; --brand-texture:none; --brand-texture-opacity:0; --brand-logo-blend:multiply; --brand-logo-invert:0; }
+[data-brand="b"] { --ink:#231f20; --deep:#1a1717; --paper:#f5f3f1; --line:#e3e0dd; --gold:#c9a15a; --slate:#5b5758; --brand-ground:#fff; --brand-surface:#fff; --brand-accent-contrast:#1a1717; --brand-radius:0px; --brand-texture:none; --brand-texture-opacity:0; --brand-logo-blend:multiply; --brand-logo-invert:0; }
+[data-brand="c"] { --ink:#1f2428; --deep:#15181b; --paper:#eef1f3; --line:#dde2e6; --gold:#5b7a99; --slate:#5c6770; --brand-ground:#eef1f3; --brand-surface:#f8fafb; --brand-accent-contrast:#000; --brand-radius:2px; --brand-texture:none; --brand-texture-opacity:0; --brand-logo-blend:multiply; --brand-logo-invert:0; }
+body { background:var(--brand-ground,#fff); }
+html:is([data-brand="a"],[data-brand="c"]) :is(.site-header,.focus-card,.block-card,.skip-link,.field input,.field textarea) { background:var(--brand-surface); border-color:var(--line); }
+html:is([data-brand="a"],[data-brand="c"]) :is(.button,.focus-card,.block-card,.field input,.field textarea) { border-radius:var(--brand-radius); }
+html:is([data-brand="a"],[data-brand="c"]) .button-gold { color:var(--brand-accent-contrast); }
+html:is([data-brand="a"],[data-brand="c"]) :focus-visible { outline-color:var(--gold); }
+
+[data-type="t1"] { --font-heading:'Poppins',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif; --font-body:'Poppins',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif; }
 
 /* Type pairings — t1 (Poppins/Poppins) matches the :root default above. */
 [data-type="t2"] { --font-heading:'Fraunces',serif; --font-body:'Inter',sans-serif; }
@@ -198,18 +206,14 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 @keyframes hero-drift { from { background-position:0% 0%; } to { background-position:100% 100%; } }
 
 /* Floating chooser widget */
-.brand-chooser { position:fixed; right:16px; bottom:16px; z-index:80; display:flex; flex-direction:column; gap:8px; padding:10px; background:#fffffff2; border:1px solid var(--line); box-shadow:0 4px 20px #00000022; max-width:calc(100vw - 32px); }
+.brand-chooser { position:fixed; right:max(16px,env(safe-area-inset-right)); bottom:max(16px,env(safe-area-inset-bottom)); z-index:1000; display:flex; flex-direction:column; align-items:flex-end; gap:8px; padding:10px; color:var(--ink); background:var(--brand-surface,var(--paper)); border:1px solid var(--line); border-radius:var(--brand-radius,0); box-shadow:0 4px 20px #00000022; width:max-content; max-width:min(680px,calc(100vw - 32px)); max-height:calc(100dvh - 32px); overflow:auto; }
+.brand-chooser-body { display:grid; gap:8px; width:100%; }
+.brand-chooser-body[hidden], html[data-chooser-collapsed="true"] .brand-chooser-body { display:none; }
 .brand-chooser-row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
-.brand-chooser-button { min-height:36px; padding:6px 12px; font-size:12px; font-weight:500; border:1px solid var(--line); background:white; color:var(--ink); }
-.brand-chooser-button[aria-pressed="true"] { border-color:var(--gold); color:var(--gold); }
+.brand-chooser-button { min-height:44px; max-width:100%; padding:6px 12px; font-size:12px; font-weight:500; border:1px solid var(--line); border-radius:var(--brand-radius,0); background:var(--brand-surface,var(--paper)); color:var(--ink); overflow-wrap:anywhere; }
+.brand-chooser-button[aria-pressed="true"] { border-color:var(--gold); background:var(--gold); color:var(--brand-accent-contrast,var(--deep)); }
+.brand-chooser-button:focus-visible { outline-color:var(--gold); outline-offset:2px; }
 .brand-chooser-link { display:inline-flex; align-items:center; }
-.brand-chooser-toggle { display:none; }
-.brand-chooser-type-options { display:flex; flex-wrap:wrap; gap:6px; }
-@media(max-width:639px) {
-  .brand-chooser-toggle { display:inline-flex; }
-  .brand-chooser-type-options { display:none; width:100%; }
-  .brand-chooser-type-options[data-open="true"] { display:flex; }
-}
 
 /* /brand and /brand/artwork comparison pages */
 .brand-compare { min-height:100dvh; background:var(--paper); }

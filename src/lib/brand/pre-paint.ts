@@ -22,12 +22,13 @@ var fontUrls=${JSON.stringify(fontUrls)};
 var params=new URLSearchParams(window.location.search);
 var qBrand=params.get('brand');
 var qType=params.get('type');
-if(qBrand){try{localStorage.setItem('brand',qBrand);}catch(e){}}
-if(qType){try{localStorage.setItem('type',qType);}catch(e){}}
-var brand=qBrand||(function(){try{return localStorage.getItem('brand');}catch(e){return null;}})();
-var type=qType||(function(){try{return localStorage.getItem('type');}catch(e){return null;}})();
+var brand=qBrand!==null?qBrand:(function(){try{return localStorage.getItem('brand');}catch(e){return null;}})();
+var type=qType!==null?qType:(function(){try{return localStorage.getItem('type');}catch(e){return null;}})();
 brand=(brand&&brandIds.indexOf(brand)!==-1)?brand:defaultBrand;
 type=(type&&typeIds.indexOf(type)!==-1)?type:null;
+if(qBrand!==null){try{localStorage.setItem('brand',brand);}catch(e){}}
+if(qType!==null){try{if(type)localStorage.setItem('type',type);else localStorage.removeItem('type');}catch(e){}}
+try{document.documentElement.dataset.chooserCollapsed=String(localStorage.getItem('chooserCollapsed')==='true');}catch(e){}
 document.documentElement.setAttribute('data-brand',brand);
 if(type){
 document.documentElement.setAttribute('data-type',type);
