@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Settings, X, Upload, Check, RotateCcw } from 'lucide-react';
+import { Settings, X, Check, RotateCcw } from 'lucide-react';
 import {
   BACKGROUND_IMAGES,
   DEFAULT_DESIGN,
@@ -102,14 +102,22 @@ function Slider({
   );
 }
 
-export function SiteSettingsPanel({ initialDraft, live: initialLive }: { initialDraft: SiteDesign; live: SiteDesign }) {
+export function SiteSettingsPanel({
+  initialDraft,
+  live: initialLive,
+  canSave,
+}: {
+  initialDraft: SiteDesign;
+  live: SiteDesign;
+  /** False for visitors: changes preview on their own screen only and are never sent to the server. */
+  canSave: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(initialDraft);
   const [live, setLive] = useState(initialLive);
   const [saveState, setSaveState] = useState<SaveState>('saved');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latest = useRef(draft);
   // Saves run one after another, so the last change always wins and Publish can wait for them.
@@ -172,6 +180,7 @@ export function SiteSettingsPanel({ initialDraft, live: initialLive }: { initial
     setDraft(next);
     latest.current = next;
     applyToPage(next);
+    if (!canSave) return;
     setSaveState('saving');
     if (pending.current) clearTimeout(pending.current);
     pending.current = setTimeout(() => void save(latest.current), 600);
@@ -228,29 +237,27 @@ export function SiteSettingsPanel({ initialDraft, live: initialLive }: { initial
   function restoreDefaults() {
     if (!window.confirm('Put the background, layout, fonts, sizes, colour, header and logo back to the original design? Your text and search settings stay as they are. Nothing changes for visitors until you publish.')) return;
     update({ ...DEFAULT_DESIGN, background: { ...DEFAULT_DESIGN.background, customUrl: draft.background.customUrl }, text: draft.text, seo: draft.seo });
-    setMessage('Original design restored. Publish to make it live.');
+    setMessage(canSave ? 'Original design restored. Publish to make it live.' : 'Original design shown.');
   }
 
-  async function uploadBackground(file: File) {
-    setUploading(true);
-    const form = new FormData();
-    form.set('file', file);
-    form.set('alt', 'Site background');
-    form.set('title', 'Site background');
-    form.set('category', 'shared');
-    const res = await fetch('/api/admin/media', { method: 'POST', body: form }).catch(() => null);
-    const body = await res?.json().catch(() => null);
-    if (res?.ok && body?.media?.url) {
-      set('background', { ...draft.background, kind: 'custom', customUrl: body.media.url });
-    } else {
-      setMessage(body?.error ?? "Couldn't upload that image. Try a JPG or PNG.");
-    }
-    setUploading(false);
+  /** Visitors' "undo": back to the published look, on their screen only. */
+  function undoPreview() {
+    setDraft(live);
+    latest.current = live;
+    applyToPage(live);
+    setMessage('');
   }
 
   const unpublished = !same(draft, live);
-  const status =
-    saveState === 'saving' ? 'Saving…' : saveState === 'error' ? 'Not saved' : unpublished ? 'Unpublished changes' : 'Everything is published';
+  const status = !canSave
+    ? 'Preview only. Changes show on your screen and are not saved.'
+    : saveState === 'saving'
+      ? 'Saving…'
+      : saveState === 'error'
+        ? 'Not saved'
+        : unpublished
+          ? 'Unpublished changes'
+          : 'Everything is published';
 
   return (
     <>
@@ -314,31 +321,7 @@ export function SiteSettingsPanel({ initialDraft, live: initialLive }: { initial
                 <span className="ss-swatch-white" />
                 <span>Plain white</span>
               </button>
-              {draft.background.customUrl && (
-                <button
-                  type="button"
-                  className="ss-thumb"
-                  aria-pressed={draft.background.kind === 'custom'}
-                  onClick={() => set('background', { ...draft.background, kind: 'custom' })}
-                >
-                  <img src={draft.background.customUrl} alt="" />
-                  <span>My image</span>
-                </button>
-              )}
             </div>
-            <label className="ss-upload">
-              <Upload size={15} aria-hidden="true" /> {uploading ? 'Uploading…' : 'Upload your own image'}
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                disabled={uploading}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) void uploadBackground(file);
-                  e.target.value = '';
-                }}
-              />
-            </label>
           </details>
 
           <details>
@@ -503,14 +486,25 @@ export function SiteSettingsPanel({ initialDraft, live: initialLive }: { initial
               {message}
             </p>
           )}
-          <div className="ss-actions">
-            <button type="button" className="ss-reset" disabled={busy || !unpublished} onClick={() => void reset()}>
-              Reset
-            </button>
-            <button type="button" className="ss-publish" disabled={busy || !unpublished || saveState === 'error'} onClick={() => void publish()}>
-              {busy ? 'Working…' : 'Publish'}
-            </button>
-          </div>
+          {canSave ? (
+            <div className="ss-actions">
+              <button type="button" className="ss-reset" disabled={busy || !unpublished} onClick={() => void reset()}>
+                Reset
+              </button>
+              <button type="button" className="ss-publish" disabled={busy || !unpublished || saveState === 'error'} onClick={() => void publish()}>
+                {busy ? 'Working…' : 'Publish'}
+              </button>
+            </div>
+          ) : (
+            <div className="ss-actions">
+              <button type="button" className="ss-reset" disabled={!unpublished} onClick={undoPreview}>
+                Undo
+              </button>
+              <a className="ss-publish ss-login" href="/admin/login">
+                Log in to publish
+              </a>
+            </div>
+          )}
           <button type="button" className="ss-restore" disabled={busy} onClick={restoreDefaults}>
             <RotateCcw size={13} aria-hidden="true" /> Restore original design
           </button>

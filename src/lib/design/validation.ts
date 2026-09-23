@@ -8,7 +8,7 @@ const plainText = (max: number) => z.string().max(max).refine((s) => !/[<>]/.tes
 /** Everything here ends up inside a <style> tag or page markup, so it is strictly whitelisted. */
 export const siteDesignSchema = z.object({
   background: z.object({
-    kind: z.enum(['image', 'white', 'custom']),
+    kind: z.enum(['image', 'white']),
     imageId: z.string().refine((id) => BACKGROUND_IMAGES.some((b) => b.id === id), 'Unknown background'),
     customUrl: z
       .string()

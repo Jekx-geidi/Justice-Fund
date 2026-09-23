@@ -2,7 +2,8 @@
 
 import { SITE_LOGO_IDS } from '@/lib/brand/logo-concepts';
 
-export type BackgroundKind = 'image' | 'white' | 'custom';
+/** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
+export type BackgroundKind = 'image' | 'white';
 export type HomeLayout = 'centred' | 'split' | 'band';
 export type PageLayout = 'stacked' | 'side' | 'centred';
 export type HeaderStyle = 'split' | 'centred';
@@ -115,6 +116,7 @@ export function withDefaults(saved: Partial<SiteDesign> | null | undefined): Sit
   const background = { ...d.background, ...saved.background };
   // A photo that has since been retired from the list falls back to the default, so saves still validate.
   if (!BACKGROUND_IMAGES.some((b) => b.id === background.imageId)) background.imageId = d.background.imageId;
+  if ((background.kind as string) === 'custom') background.kind = 'image';
   const logo = saved.logo && SITE_LOGO_IDS.includes(saved.logo) ? saved.logo : '';
   return {
     ...d,
@@ -133,7 +135,6 @@ export function fontByName(name: string): FontOption {
 export function backgroundUrl(design: SiteDesign): string | null {
   const bg = design.background;
   if (bg.kind === 'white') return null;
-  if (bg.kind === 'custom') return bg.customUrl || null;
   return (BACKGROUND_IMAGES.find((b) => b.id === bg.imageId) ?? BACKGROUND_IMAGES[0]).url;
 }
 
