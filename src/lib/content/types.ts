@@ -1,4 +1,6 @@
-export type PageStatus = 'draft' | 'published' | 'unpublished';
+import type { SiteDesign } from '@/lib/design/types';
+
+export type PageStatus ='draft' | 'published' | 'unpublished';
 
 export interface MediaReference {
   id: string;
@@ -178,6 +180,8 @@ export interface SiteContent {
   site: {
     name: string;
   };
+  /** Site settings panel values; published separately from pages (see publishDesign). */
+  design?: Partial<SiteDesign>;
   pages: SitePage[];
   insights: InsightEntry[];
   updatedAt: string;

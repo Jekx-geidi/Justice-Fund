@@ -28,7 +28,7 @@ brand=(brand&&brandIds.indexOf(brand)!==-1)?brand:defaultBrand;
 type=(type&&typeIds.indexOf(type)!==-1)?type:null;
 if(qBrand!==null){try{localStorage.setItem('brand',brand);}catch(e){}}
 if(qType!==null){try{if(type)localStorage.setItem('type',type);else localStorage.removeItem('type');}catch(e){}}
-try{document.documentElement.dataset.chooserCollapsed=String(localStorage.getItem('chooserCollapsed')==='true');}catch(e){}
+try{document.documentElement.dataset.chooserCollapsed=String(localStorage.getItem('chooserCollapsed')!=='false');}catch(e){}
 document.documentElement.setAttribute('data-brand',brand);
 if(type){
 document.documentElement.setAttribute('data-type',type);

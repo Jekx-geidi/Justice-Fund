@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, PenLine } from 'lucide-react';
+import { SITE_EDITOR_HREF } from '@/lib/design/types';
 import { getSiteContent, pageRoute } from '@/lib/content/content';
 import { SummaryCard } from '@/ui/admin/dashboard/SummaryCard';
 import { PagesOverview } from '@/ui/admin/dashboard/PagesOverview';
@@ -22,15 +23,22 @@ export default async function AdminDashboard() {
           <h1 className="text-3xl mt-2 mb-1">Dashboard</h1>
           <p className="text-sm text-[var(--slate)]">Manage your website content, pages and publishing.</p>
         </div>
-        <a
-          href="/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="button button-outline border border-[var(--ink)] text-[var(--ink)] inline-flex items-center gap-1.5"
-        >
-          View Website
-          <ArrowUpRight size={14} aria-hidden="true" />
-        </a>
+        <div className="flex flex-wrap gap-3">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="button button-outline border border-[var(--ink)] text-[var(--ink)] inline-flex items-center gap-1.5"
+          >
+            View Website
+            <ArrowUpRight size={14} aria-hidden="true" />
+          </a>
+          {/* Visual settings live on the public site itself; this opens it with the Site settings panel already open. */}
+          <a href={SITE_EDITOR_HREF} className="button button-dark inline-flex items-center gap-1.5">
+            <PenLine size={14} aria-hidden="true" />
+            Open Site Editor
+          </a>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

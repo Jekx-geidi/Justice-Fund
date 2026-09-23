@@ -2,8 +2,9 @@ import { getSiteContent } from '@/lib/content/content';
 import { resolveVersion } from '@/lib/content/preview';
 import { PreviewBanner } from '@/ui/PreviewBanner';
 import { InsightsPageView } from '@/ui/pages/InsightsPageView';
+import { corePageMetadata } from '@/lib/design/seo';
 
-export const metadata = { title: 'Insights' };
+export const generateMetadata = () => corePageMetadata('insights', 'Insights');
 
 export default async function Insights({ searchParams }: { searchParams: Promise<{ preview?: string }> }) {
   const version = await resolveVersion(await searchParams);

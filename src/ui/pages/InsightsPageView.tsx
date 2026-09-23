@@ -1,13 +1,8 @@
-import { PageIntro } from '@/ui/Editorial';
+import { PageFrame } from '@/ui/Editorial';
 import type { InsightEntry, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
-/**
- * Ports docs/approved-content.html's Insights page, including its
- * illustrative "EXAMPLE ENTRY" card (shown only while no real entries are
- * published), plus a dark intro band and a dark first-entry card per the
- * site's Abaddon Black visual-identity brief.
- */
+/** Entries sit in black boxes, matching the About focus areas; a neutral empty state shows until real entries are published. */
 export function InsightsPageView({
   entries,
   additionalSections = [],
@@ -17,42 +12,25 @@ export function InsightsPageView({
 }) {
   return (
     <>
-      <PageIntro eyebrow="INSIGHTS" title="Case updates and our environmental focus, in one place." />
-      <section className="wrap section">
-        {entries.length === 0 && (
-          <>
-            <div className="notice">
-              <p>
-                Placeholder page — IEJF has asked to leave this blank for now. This page is built as a simple,
-                growing list/card format so entries can be added later (via the admin CMS) without a rebuild.
-              </p>
+      <PageFrame title="Insights">
+        <div className="case-list">
+          {entries.length === 0 ? (
+            <div className="case-item case-item-dark case-empty">
+              <p className="case-tag">Coming soon</p>
+              <p>Insights will be added here.</p>
             </div>
-            <div className="case-list">
-              <article className="case-item case-item-dark">
-                <p className="case-tag">EXAMPLE ENTRY</p>
-                <h3>Insights entry title goes here</h3>
-                <p>
-                  A short summary of a case update, research brief or advocacy item — added and edited by
-                  IEJF&rsquo;s own team once the CMS is live.
-                </p>
-              </article>
-            </div>
-          </>
-        )}
-
-        {entries.length > 0 && (
-          <div className="case-list">
-            {entries.map((entry, index) => (
-              <article className={`case-item${index === 0 ? ' case-item-dark' : ''}`} key={entry.id}>
+          ) : (
+            entries.map((entry) => (
+              <article className="case-item case-item-dark" key={entry.id}>
                 {entry.category && <p className="case-tag">{entry.category}</p>}
                 <h3>{entry.title || 'Untitled entry'}</h3>
                 <p>{entry.summary}</p>
                 {entry.date && <span className="case-item-date">{entry.date}</span>}
               </article>
-            ))}
-          </div>
-        )}
-      </section>
+            ))
+          )}
+        </div>
+      </PageFrame>
       {additionalSections.length > 0 && <BlockRenderer blocks={additionalSections} />}
     </>
   );

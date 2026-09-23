@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { AboutFields, SitePage } from '@/lib/content/types';
+import type { SiteDesign } from '@/lib/design/types';
 import { HomePageView } from '@/ui/pages/HomePageView';
 import { AboutPageView } from '@/ui/pages/AboutPageView';
 import { ContactPageView } from '@/ui/pages/ContactPageView';
@@ -12,17 +13,40 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
  * (RevisionHistoryDialog's preview). One switch, reused everywhere a page
  * needs previewing, so neither path can drift into a fake preview.
  */
-export function PageContentPreview({ page, aboutForHomePreview }: { page: SitePage; aboutForHomePreview?: AboutFields }) {
+export function PageContentPreview({
+  page,
+  aboutForHomePreview,
+  siteText,
+}: {
+  page: SitePage;
+  aboutForHomePreview?: AboutFields;
+  /** Site settings text the public pages render in place of the page's own stored values (as in the public routes). */
+  siteText?: SiteDesign['text'];
+}) {
   const additionalSections = (page.additionalSections ?? []).filter((section) => !section.hidden);
 
   if (page.coreKey === 'home' && page.home) {
-    return <HomePageView home={page.home} about={aboutForHomePreview ?? page.about!} additionalSections={additionalSections} />;
+    return (
+      <HomePageView
+        home={page.home}
+        about={aboutForHomePreview ?? page.about!}
+        additionalSections={additionalSections}
+        heading={siteText?.homeHeading}
+        tagline={siteText?.homeTagline}
+      />
+    );
   }
   if (page.coreKey === 'about' && page.about) {
     return <AboutPageView about={page.about} additionalSections={additionalSections} />;
   }
   if (page.coreKey === 'contact' && page.contact) {
-    return <ContactPageView contact={page.contact} additionalSections={additionalSections} />;
+    return (
+      <ContactPageView
+        contact={page.contact}
+        email={siteText?.contactEmail || page.contact.email}
+        additionalSections={additionalSections}
+      />
+    );
   }
   if (page.coreKey === 'insights') {
     return (
@@ -32,7 +56,7 @@ export function PageContentPreview({ page, aboutForHomePreview }: { page: SitePa
           <Link href="/admin/insights" className="underline">
             Insights
           </Link>
-          . Any additional sections below appear after the entries list on the public page.
+          .
         </div>
         {additionalSections.length > 0 && <BlockRenderer blocks={additionalSections} />}
       </>

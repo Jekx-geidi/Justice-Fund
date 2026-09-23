@@ -4,6 +4,7 @@ import { localFileStorage } from './storage-local';
 import { supabaseStorage, isSupabaseConfigured } from './storage-supabase';
 import { resolveMediaReferences } from './resolveMedia';
 import { recordRevisionsForPublish } from './revisions';
+import { withDefaults, type SiteDesign } from '@/lib/design/types';
 
 /**
  * Single content service used by every public page and every admin route.
@@ -33,10 +34,37 @@ export async function publishDraft(publishedBy: string | null = null): Promise<v
       page.status === 'published' ? { ...page, publishedAt: page.publishedAt ?? now } : page
     ),
   };
-  await storage.writeLive(published);
+  // Site settings have their own Publish button, so page publishes leave both design versions as they were.
+  const live = await storage.readLive();
+  await storage.writeLive({ ...published, design: live.design });
   // Draft continues from the just-published state so future edits diff from live.
   await storage.writeDraft(published);
   await recordRevisionsForPublish(published.pages, publishedBy);
+}
+
+export async function getDesign(version: ContentVersion): Promise<SiteDesign> {
+  const content = version === 'live' ? await storage.readLive() : await storage.readDraft();
+  return withDefaults(content.design);
+}
+
+export async function saveDesignDraft(design: SiteDesign): Promise<void> {
+  const draft = await storage.readDraft();
+  await storage.writeDraft({ ...draft, design });
+}
+
+export async function publishDesign(): Promise<SiteDesign> {
+  const [draft, live] = await Promise.all([storage.readDraft(), storage.readLive()]);
+  const design = withDefaults(draft.design);
+  await storage.writeLive({ ...live, design, updatedAt: new Date().toISOString() });
+  return design;
+}
+
+/** Throws away unpublished settings changes. */
+export async function resetDesignDraft(): Promise<SiteDesign> {
+  const [draft, live] = await Promise.all([storage.readDraft(), storage.readLive()]);
+  const design = withDefaults(live.design);
+  await storage.writeDraft({ ...draft, design });
+  return design;
 }
 
 export function pageRoute(page: SitePage): string {

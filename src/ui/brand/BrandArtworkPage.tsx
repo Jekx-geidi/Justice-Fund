@@ -13,7 +13,6 @@ import {
   resolveIssueImage,
 } from '@/lib/brand/artwork';
 import { LOGO_CONCEPTS } from '@/lib/brand/logo-concepts';
-import { MarkIcon } from '@/ui/brand/MarkIcon';
 
 function BrandArtworkPage() {
   const [heroByDirection, setHeroByDirection] = useState<Record<string, string>>({});
@@ -151,9 +150,12 @@ function BrandArtworkPage() {
         <h2>Logos</h2>
         <div className="logo-grid">
           {LOGO_CONCEPTS.map((concept) => (
-            <div className={`logo-card logo-card-${concept.layout}`} key={concept.id}>
-              <MarkIcon mark={concept.mark} size={40} />
-              <span className="logo-card-wordmark">Intergenerational Justice Fund</span>
+            <div className="logo-card" key={concept.id}>
+              <a href={concept.file} target="_blank" rel="noopener noreferrer" className="logo-card-image">
+                <img src={concept.thumb} alt={`${concept.name} logo concept`} width={600} height={600} loading="lazy" />
+              </a>
+              <p className="logo-card-name">{concept.id} · {concept.name}</p>
+              <p className="logo-card-note">{concept.note}</p>
             </div>
           ))}
         </div>
