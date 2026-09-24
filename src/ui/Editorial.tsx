@@ -16,14 +16,17 @@ export function PageFrame({ title, children }: { title: string; children: React.
   );
 }
 
-/** Organisation details are deliberately left out until they're approved. */
 export function FocusCards({ focusAreas }: { focusAreas: AboutFocusArea[] }) {
   return (
     <div className="focus-grid">
       {focusAreas.map((area) => (
         <article className="focus-card" key={area.title}>
           <h3>{area.title}</h3>
-          <p className="placeholder-text">Description to come.</p>
+          <p>{area.description}</p>
+          <div className="entity">
+            {area.entity}
+            <span>ABN {area.abn}</span>
+          </div>
         </article>
       ))}
     </div>
