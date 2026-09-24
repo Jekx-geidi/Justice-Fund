@@ -117,9 +117,6 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .site-footer a { text-decoration:underline; text-decoration-color:#d8d4d166; text-underline-offset:3px; }
 .site-footer a:hover { color:#fff; text-decoration-color:currentColor; }
 .site-footer a:focus-visible { outline:2px solid color-mix(in srgb,var(--gold) 65%,#fff); outline-offset:3px; }
-/* Editors get corner buttons (Site settings, Control panel); keep the legal text clear of them. */
-/* Keep the footer text clear of the admin's Site settings launcher. */
-.site-shell[data-editor] .site-footer { padding-bottom:96px; }
 
 .form-note { font-size:12px; color:var(--slate); margin-bottom:26px; } .field { margin-bottom:25px; } .field label { font-size:12px; font-weight:500; display:block; margin-bottom:9px; } .field input,.field textarea { width:100%; border:1px solid #cac5c1; background:#fdfcfb; border-radius:0; padding:13px 15px; font-size:16px; color:var(--ink); } .field textarea { resize:vertical; min-height:150px; } .field input::placeholder,.field textarea::placeholder { color:#777172; font-size:13px; }
 /* Generic block system (custom admin-created pages) — reuses the site's
@@ -193,8 +190,8 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
  .focus-grid { grid-template-columns:1fr; } .focus-card { padding:24px 20px; } .focus-card>p { font-size:14px; }
  [data-page-layout="side"] .page-frame { grid-template-columns:1fr; gap:0; } [data-page-layout="side"] .page-frame-head { position:static; margin-bottom:24px; }
  [data-home-layout="split"] .home-box { flex-basis:100%; }
- .footer-bottom { flex-direction:column; align-items:flex-start; gap:2px; }
- .footer-legal { flex-direction:column; } .footer-sep { display:none; }
+ .footer-bottom { flex-direction:column; align-items:center; gap:2px; text-align:center; }
+ .footer-legal { flex-direction:column; align-items:center; } .footer-sep { display:none; }
 }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
 
@@ -316,6 +313,9 @@ html[data-chooser-collapsed="true"] .brand-chooser-toggle-close { display:none; 
 .ss-launcher svg { color:#fff; transition:transform .4s cubic-bezier(.2,.8,.2,1); }
 .ss-launcher:hover svg { transform:rotate(60deg); }
 .ss-dot { position:absolute; top:3px; right:3px; width:12px; height:12px; border-radius:50%; background:var(--gold,#c9a15a); box-shadow:0 0 0 2px #231f20; }
+/* The gear floats over the page (no space reserved). Below 1280px, where the legal bar would run under it, the bar is centred and stacked (see .footer-bottom) and the gear is smaller and tucked into the corner. */
+@media(max-width:1279px) { .footer-bottom { flex-direction:column; align-items:center; gap:2px; text-align:center; } }
+@media(max-width:1279px) { .ss-launcher { width:44px; height:44px; left:max(12px,env(safe-area-inset-left)); bottom:max(12px,env(safe-area-inset-bottom)); } .ss-launcher svg { width:20px; height:20px; } }
 .ss-panel { position:fixed; inset:0 auto 0 0; z-index:1002; width:min(380px,100vw); display:flex; flex-direction:column; background:#fff; box-shadow:0 0 60px #0000003d; transform:translateX(-105%); transition:transform .28s cubic-bezier(.2,.8,.2,1); outline:none; }
 .ss-panel[data-open="true"] { transform:none; }
 .ss-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:20px; border-bottom:1px solid #e3e0dd; }
