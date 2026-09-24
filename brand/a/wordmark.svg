@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 60" role="img" aria-label="Intergenerational Justice Fund">
+	<!-- textLength pins the wordmark to the viewBox width, so it renders at
+	     the same size whether the brand face or its fallback is available,
+	     and never overflows or clips inside a narrow column. -->
+	<text x="4" y="42" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="700" fill="#f4f4f2" textLength="612" lengthAdjust="spacingAndGlyphs">Intergenerational Justice Fund</text>
+</svg>

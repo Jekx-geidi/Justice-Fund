@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Balance mark">
+	<path d="M32 26 47 49H17Z" fill="currentColor" />
+	<rect x="5" y="18" width="54" height="9" rx="4.5" fill="currentColor" transform="rotate(-8 32 22.5)" />
+</svg>
