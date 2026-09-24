@@ -365,7 +365,6 @@ html[data-chooser-collapsed="true"] .brand-chooser-toggle-close { display:none; 
 .ss-reset, .ss-publish { min-height:44px; border-radius:6px; font-size:14px; }
 .ss-reset { flex:1; border:1px solid #cac5c1; background:#fff; color:#231f20; }
 .ss-publish { flex:2; border:0; background:#231f20; color:#fff; font-weight:500; }
-.ss-login { display:flex; align-items:center; justify-content:center; }
 :is(.ss-reset,.ss-publish):disabled { opacity:.45; }
 /* Tiny layout diagrams on the layout and header buttons. */
 .ss-mini { position:relative; display:block; width:52px; height:34px; border-radius:3px; background:#e9dcc8; overflow:hidden; }

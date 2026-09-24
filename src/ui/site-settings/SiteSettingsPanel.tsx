@@ -13,6 +13,7 @@ import {
   OPEN_EDITOR_PARAM,
   type SiteDesign,
 } from '@/lib/design/types';
+import { designExport } from '@/lib/design/export';
 import { SITE_LOGOS } from '@/lib/brand/logo-concepts';
 import { LOGO_PREVIEW_EVENT } from '@/ui/Header';
 
@@ -254,6 +255,18 @@ export function SiteSettingsPanel({
     latest.current = live;
     applyToPage(live);
     setMessage('');
+  }
+
+  /** Visitors can't publish, so they download their picks as a .json file to email to us. */
+  function exportDesign() {
+    const { filename, json } = designExport(latest.current, pathname, new Date());
+    const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setMessage(`Saved ${filename}. Please attach it to an email to us.`);
   }
 
   const unpublished = !same(draft, live);
@@ -519,11 +532,12 @@ export function SiteSettingsPanel({
               <button type="button" className="ss-reset" disabled={!unpublished} onClick={undoPreview}>
                 Undo
               </button>
-              <a className="ss-publish ss-login" href="/admin/login">
-                Log in to publish
-              </a>
+              <button type="button" className="ss-publish" onClick={exportDesign}>
+                Export design
+              </button>
             </div>
           )}
+          {!canSave && <p className="ss-hint">Saves your choices as a file. Email it to us and we&apos;ll apply it to the site.</p>}
           <button type="button" className="ss-restore" disabled={busy} onClick={restoreDefaults}>
             <RotateCcw size={13} aria-hidden="true" /> Restore original design
           </button>

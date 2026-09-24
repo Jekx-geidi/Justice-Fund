@@ -1,6 +1,6 @@
 import { chromium } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 const base = process.env.QA_URL || 'http://localhost:3100';
 await mkdir('qa-output', { recursive: true });
@@ -50,8 +50,15 @@ for(const route of ['/team','/cases','/environment']) assert.equal((await page.g
 // Logged-out visitors can try Site settings, but only as an on-screen preview: no Publish, no saving.
 await page.goto(base+'/?editor');
 assert.equal(await page.locator('.ss-launcher').count(),1,'Visitors get the Site settings gear');
-assert.equal(await page.locator('#site-settings button.ss-publish').count(),0,'Visitors have no Publish button');
-assert.equal(await page.locator('#site-settings a.ss-login').count(),1,'Visitors see "Log in to publish", not a Publish button');
+assert.equal(await page.locator('#site-settings').getByRole('button',{name:'Publish',exact:true}).count(),0,'Visitors have no Publish button');
+assert.equal(await page.locator('#site-settings a.ss-login').count(),0,'"Log in to publish" is replaced by Export design');
+// Visitors export their picks as a .json file to email to us.
+const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button',{name:'Export design'}).click()]);
+assert.match(download.suggestedFilename(),/^iejf-design-\d{4}-\d{2}-\d{2}\.json$/);
+const exported = JSON.parse(await readFile(await download.path(),'utf8'));
+assert.equal(exported.kind,'iejf-site-design');
+assert.equal(exported.page,'/');
+assert.equal(typeof exported.design.headingFont,'string');
 assert.equal(await page.locator('.brand-chooser').count(),0);
 await page.emulateMedia({reducedMotion:'reduce'});
 await page.goto(base);

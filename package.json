@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "oxlint src/app src/ui src/content",
     "typecheck": "tsc --noEmit",
+    "test": "node --test src/**/*.test.ts",
     "test:ui": "node scripts/qa.mjs"
   },
   "dependencies": {
