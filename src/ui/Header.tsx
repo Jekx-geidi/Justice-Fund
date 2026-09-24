@@ -5,28 +5,23 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import type { NavItem } from '@/lib/content/content';
-import { BRAND_CHOOSER_ENABLED } from '@/lib/brand/env';
-import { resolveLogoConcept, getLogoConcept } from '@/lib/brand/logo-concepts';
-import { resolveMark, getMark } from '@/lib/brand/marks';
-import { MarkIcon } from '@/ui/brand/MarkIcon';
+import { getLogoConcept } from '@/lib/brand/logo-concepts';
 
-export default function Header({ navigation }: { navigation: NavItem[] }) {
+/** Site settings previews a logo change by firing this event, so the header updates without a reload. */
+export const LOGO_PREVIEW_EVENT = 'sitesettings:logo';
+
+export default function Header({ navigation, logo }: { navigation: NavItem[]; logo: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
-  const [logoId, setLogoId] = useState<string | null>(null);
-  const [markId, setMarkId] = useState<string | null>(null);
+  const [logoId, setLogoId] = useState(logo);
   useEffect(() => {
-    if (!BRAND_CHOOSER_ENABLED) return;
-    try {
-      setLogoId(resolveLogoConcept(localStorage.getItem('logo')));
-      setMarkId(resolveMark(localStorage.getItem('mark')));
-    } catch {}
+    const onPreview = (e: Event) => setLogoId((e as CustomEvent<string>).detail);
+    window.addEventListener(LOGO_PREVIEW_EVENT, onPreview);
+    return () => window.removeEventListener(LOGO_PREVIEW_EVENT, onPreview);
   }, []);
-  const logoConcept = BRAND_CHOOSER_ENABLED && logoId ? getLogoConcept(logoId) : undefined;
-  const soloMark = BRAND_CHOOSER_ENABLED && !logoConcept && markId ? getMark(markId) : undefined;
-  const displayMark = logoConcept?.mark ?? soloMark;
+  const logoConcept = logoId ? getLogoConcept(logoId) : undefined;
   useEffect(() => {
     const desktop = window.matchMedia('(min-width: 900px)');
     const closeOnDesktop = () => { if (desktop.matches) setOpen(false); };
@@ -44,21 +39,13 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
   }, [open]);
   return <header className="site-header">
     <div className="wrap header-inner">
-      {logoConcept || soloMark ? (
-        <Link
-          href="/"
-          className={`brand brand-logo${logoConcept ? ` brand-logo-${logoConcept.layout}` : ''}`}
-          aria-label="Intergenerational Justice Fund home"
-        >
-          <MarkIcon mark={displayMark!} size={logoConcept ? 28 : 22} />
-          <span>
-            Intergenerational Justice Fund
-            <span className="brand-caption">CHARITY · PERTH, WA</span>
-          </span>
+      {logoConcept ? (
+        <Link href="/" className="brand brand-logo" aria-label="Intergenerational Justice Fund home">
+          <img className="brand-logo-image" src={logoConcept.file} alt="Intergenerational Justice Fund" width={96} height={96} />
         </Link>
       ) : (
         <Link href="/" className="brand" aria-label="Intergenerational Justice Fund home">
-          Intergenerational Justice Fund<span className="brand-caption">CHARITY · PERTH, WA</span>
+          Intergenerational Justice Fund Limited<span className="brand-caption">CHARITY · PERTH, WA</span>
         </Link>
       )}
       <nav aria-label="Main navigation" className="desktop-nav">
@@ -77,7 +64,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
       <div className="mobile-panel">
         <div className="flex items-center justify-between"><span className="eyebrow">IEJF · NAVIGATION</span><button className="icon-button" aria-label="Close navigation" onClick={() => setOpen(false)}><X aria-hidden="true" /></button></div>
         <nav aria-label="Mobile navigation">{navigation.map((item, index) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} onClick={() => setOpen(false)}><span className="nav-number">0{index + 1}</span>{item.label}</Link>)}</nav>
-        <p className="mobile-caption">Intergenerational Justice Fund — CHARITY · PERTH, WA</p>
+        <p className="mobile-caption">Intergenerational Justice Fund Limited — CHARITY · PERTH, WA</p>
       </div>
     </dialog>
   </header>;

@@ -1,4 +1,8 @@
-﻿# Intergenerational Justice Fund
+﻿<p align="center">
+  <img src="public/images/logo-iejf.svg" alt="Intergenerational Justice Fund logo" width="160">
+</p>
+
+# Intergenerational Justice Fund
 
 Next.js App Router, TypeScript, React, Tailwind CSS. Public site (Home/About/Insights/Contact + admin-created custom pages) plus an `/admin` CMS backed by Supabase — see `docs/admin-readme.md` and `docs/admin-prd.md` for that half of the app; this file covers the public site only.
 

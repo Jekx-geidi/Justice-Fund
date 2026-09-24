@@ -6,17 +6,13 @@ import '@fontsource/poppins/700.css';
 import './globals.css';
 import { BRAND_CHOOSER_ENABLED } from '@/lib/brand/env';
 import { buildPrePaintScript } from '@/lib/brand/pre-paint';
-
 export const metadata: Metadata = {
   title: { default: 'Intergenerational Justice Fund', template: '%s — Intergenerational Justice Fund' },
   description:
     'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed.',
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const BrandChooser = process.env.NEXT_PUBLIC_BRAND_CHOOSER === 'true'
-    ? (await import('@/ui/brand/BrandChooser')).BrandChooser
-    : null;
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en-AU"
@@ -28,7 +24,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body>
         {children}
-        {BrandChooser && <BrandChooser />}
       </body>
     </html>
   );

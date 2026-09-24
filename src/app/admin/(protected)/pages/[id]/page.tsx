@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getPageById, getSiteContent } from '@/lib/content/content';
+import { deriveNavigation, getDesign, getPageById, getSiteContent } from '@/lib/content/content';
 import { PageEditorClient } from '@/ui/admin/PageEditorClient';
 
 interface PageProps {
@@ -13,12 +13,15 @@ export default async function EditPage({ params }: PageProps) {
   const page = await getPageById(id, 'draft');
   if (!page) notFound();
 
-  // Home's preview reuses About's copy, same as the public page — fetch the
-  // current draft About content once so that preview matches reality.
-  const aboutForHomePreview =
-    page.coreKey === 'home'
-      ? (await getSiteContent('draft')).pages.find((p) => p.coreKey === 'about')?.about
-      : undefined;
+  const [draftContent, design] = await Promise.all([getSiteContent('draft'), getDesign('draft')]);
+  const aboutForHomePreview = page.coreKey === 'home' ? draftContent.pages.find((p) => p.coreKey === 'about')?.about : undefined;
 
-  return <PageEditorClient page={page} aboutForHomePreview={aboutForHomePreview} />;
+  // The preview wears the same header, footer and Site settings look as the public site (draft, as an editor sees it).
+  return (
+    <PageEditorClient
+      page={page}
+      aboutForHomePreview={aboutForHomePreview}
+      site={{ design, navigation: deriveNavigation(draftContent) }}
+    />
+  );
 }

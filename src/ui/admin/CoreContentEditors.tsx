@@ -1,188 +1,84 @@
 'use client';
 
-import type { HomeFields, AboutFields, ContactFields } from '@/lib/content/types';
-import { MediaSlot } from './media/MediaSlot';
+import { PenLine } from 'lucide-react';
+import type { AboutFields } from '@/lib/content/types';
+import { SITE_EDITOR_HREF } from '@/lib/design/types';
 import { MaterialTextField } from './material/MaterialControls';
 import { useMaterialWeb } from './material/useMaterialWeb';
 
 const TEXT_FIELD_LOADERS = [() => import('@material/web/textfield/outlined-text-field.js')];
 
-export function HomeFieldsEditor({ value, onChange }: { value: HomeFields; onChange: (next: HomeFields) => void }) {
-  const materialReady = useMaterialWeb(TEXT_FIELD_LOADERS);
+/**
+ * Core page editors expose only what the public page actually renders. Anything the
+ * page no longer shows (old hero, quotes, photo, entity/ABN, location…) stays in the
+ * stored content untouched, it just isn't offered for editing here.
+ */
 
-  function updateQuote(index: number, field: 'text' | 'attribution', text: string) {
-    const quotes = [...value.quotes];
-    quotes[index] = { ...quotes[index], [field]: text };
-    onChange({ ...value, quotes });
-  }
-
+/** For values owned by the on-site Site settings panel, so they're never edited in two places. */
+export function SiteSettingsNotice({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-4">
-      <MaterialTextField
-        ready={materialReady}
-        id="home-eyebrow"
-        label="Eyebrow label"
-        value={value.eyebrow}
-        onChange={(eyebrow) => onChange({ ...value, eyebrow })}
-        maxLength={80}
-      />
-      <MaterialTextField
-        ready={materialReady}
-        id="home-mission"
-        label="Mission statement"
-        value={value.mission}
-        onChange={(mission) => onChange({ ...value, mission })}
-        multiline
-        rows={3}
-        maxLength={2000}
-      />
-      <MaterialTextField
-        ready={materialReady}
-        id="home-bottom"
-        label="Bottom identity line"
-        value={value.bottomLine}
-        onChange={(bottomLine) => onChange({ ...value, bottomLine })}
-        maxLength={300}
-      />
-      <div className="field">
-        <label>Hero image</label>
-        <MediaSlot image={value.heroImage} onChange={(heroImage) => onChange({ ...value, heroImage })} />
-      </div>
-      <fieldset className="border border-[var(--line)] p-4">
-        <legend className="text-sm font-medium px-1">News quotes (placeholder)</legend>
-        {value.quotes.map((quote, index) => (
-          <div key={index} className="space-y-2 mb-4 last:mb-0">
-            <MaterialTextField
-              ready={materialReady}
-              id={`quote-text-${index}`}
-              label={`Quote ${index + 1}`}
-              value={quote.text}
-              onChange={(text) => updateQuote(index, 'text', text)}
-              multiline
-              rows={2}
-              maxLength={400}
-            />
-            <MaterialTextField
-              ready={materialReady}
-              id={`quote-attr-${index}`}
-              label="Attribution"
-              value={quote.attribution}
-              onChange={(text) => updateQuote(index, 'attribution', text)}
-              maxLength={150}
-            />
-          </div>
-        ))}
-      </fieldset>
-    </div>
+    <fieldset className="border border-[var(--line)] p-4">
+      <legend className="text-sm font-medium px-1">{title}</legend>
+      <p className="text-sm text-[var(--slate)] mb-4">{children}</p>
+      <a href={SITE_EDITOR_HREF} className="button button-dark inline-flex items-center gap-1.5">
+        <PenLine size={14} aria-hidden="true" />
+        Open Site Editor
+      </a>
+    </fieldset>
   );
 }
 
 export function AboutFieldsEditor({ value, onChange }: { value: AboutFields; onChange: (next: AboutFields) => void }) {
   const materialReady = useMaterialWeb(TEXT_FIELD_LOADERS);
 
-  function updateFocusArea(index: number, field: keyof AboutFields['focusAreas'][number], text: string) {
+  function renameFocusArea(index: number, title: string) {
     const focusAreas = [...value.focusAreas];
-    focusAreas[index] = { ...focusAreas[index], [field]: text };
+    focusAreas[index] = { ...focusAreas[index], title };
     onChange({ ...value, focusAreas });
   }
 
   return (
-    <div className="space-y-4">
-      <MaterialTextField
-        ready={materialReady}
-        id="about-intro"
-        label="Introduction"
-        value={value.intro}
-        onChange={(intro) => onChange({ ...value, intro })}
-        multiline
-        rows={3}
-        maxLength={2000}
-      />
-      <MaterialTextField
-        ready={materialReady}
-        id="about-body"
-        label="Body"
-        value={value.body}
-        onChange={(body) => onChange({ ...value, body })}
-        multiline
-        rows={5}
-        maxLength={4000}
-      />
-      <div className="field">
-        <label>Photo</label>
-        <MediaSlot image={value.image} onChange={(image) => onChange({ ...value, image })} />
-      </div>
-      {value.focusAreas.map((area, index) => (
-        <fieldset key={index} className="border border-[var(--line)] p-4 space-y-2">
-          <legend className="text-sm font-medium px-1">Focus area {index + 1}</legend>
+    <div className="space-y-6">
+      <fieldset className="border border-[var(--line)] p-4 space-y-4">
+        <legend className="text-sm font-medium px-1">About content</legend>
+        <MaterialTextField
+          ready={materialReady}
+          id="about-intro"
+          label="Paragraph 1"
+          value={value.intro}
+          onChange={(intro) => onChange({ ...value, intro })}
+          multiline
+          rows={4}
+          maxLength={2000}
+        />
+        <MaterialTextField
+          ready={materialReady}
+          id="about-body"
+          label="Paragraph 2"
+          value={value.body}
+          onChange={(body) => onChange({ ...value, body })}
+          multiline
+          rows={5}
+          maxLength={4000}
+        />
+      </fieldset>
+      <fieldset className="border border-[var(--line)] p-4 space-y-4">
+        <legend className="text-sm font-medium px-1">Focus areas</legend>
+        <p className="text-xs text-[var(--slate)]">
+          Each area shows as a black box. Descriptions read &ldquo;Description to come.&rdquo; until the final copy is approved.
+        </p>
+        {value.focusAreas.map((area, index) => (
           <MaterialTextField
+            key={index}
             ready={materialReady}
             id={`focus-title-${index}`}
-            label="Title"
+            label={`Focus area ${index + 1}`}
             value={area.title}
-            onChange={(text) => updateFocusArea(index, 'title', text)}
+            onChange={(title) => renameFocusArea(index, title)}
             maxLength={120}
           />
-          <MaterialTextField
-            ready={materialReady}
-            id={`focus-desc-${index}`}
-            label="Description"
-            value={area.description}
-            onChange={(text) => updateFocusArea(index, 'description', text)}
-            multiline
-            rows={3}
-            maxLength={2000}
-          />
-          <MaterialTextField
-            ready={materialReady}
-            id={`focus-entity-${index}`}
-            label="Entity name"
-            value={area.entity}
-            onChange={(text) => updateFocusArea(index, 'entity', text)}
-            maxLength={200}
-          />
-          <MaterialTextField
-            ready={materialReady}
-            id={`focus-abn-${index}`}
-            label="ABN"
-            value={area.abn}
-            onChange={(text) => updateFocusArea(index, 'abn', text)}
-            maxLength={40}
-          />
-        </fieldset>
-      ))}
-    </div>
-  );
-}
-
-export function ContactFieldsEditor({
-  value,
-  onChange,
-}: {
-  value: ContactFields;
-  onChange: (next: ContactFields) => void;
-}) {
-  const materialReady = useMaterialWeb(TEXT_FIELD_LOADERS);
-
-  return (
-    <div className="space-y-4">
-      <MaterialTextField
-        ready={materialReady}
-        id="contact-location"
-        label="Location"
-        value={value.location}
-        onChange={(location) => onChange({ ...value, location })}
-        maxLength={200}
-      />
-      <MaterialTextField
-        ready={materialReady}
-        id="contact-email"
-        label="Email"
-        type="email"
-        value={value.email}
-        onChange={(email) => onChange({ ...value, email })}
-        maxLength={200}
-      />
+        ))}
+      </fieldset>
     </div>
   );
 }
