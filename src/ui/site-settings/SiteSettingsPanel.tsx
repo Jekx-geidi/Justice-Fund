@@ -118,11 +118,15 @@ export function SiteSettingsPanel({
   canSave: boolean;
 }) {
   const pathname = usePathname() ?? '';
-  // Only offer the layout that changes the page on screen, so a pick never looks like it did nothing.
+  // Only offer controls that change the page on screen, so a pick never looks like it did nothing.
   const isHome = pathname === '/';
   const isFramed = FRAMED_PAGES.includes(pathname);
+  // The heading colour only styles the About focus-areas heading; Home and the page titles stay white on black.
+  const hasColouredHeading = pathname === '/about';
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(initialDraft);
+  // Home has no body text unless a tagline is set.
+  const hasBodyText = !isHome || Boolean(draft.text.homeTagline);
   const [live, setLive] = useState(initialLive);
   const [saveState, setSaveState] = useState<SaveState>('saved');
   const [message, setMessage] = useState('');
@@ -418,10 +422,13 @@ export function SiteSettingsPanel({
           <details>
             <summary>Sizes</summary>
             <Slider label="Headings" value={draft.headingSize} min={80} max={140} unit="%" presets={[['Small', 90], ['Default', 100], ['Large', 115], ['Extra large', 130]]} onChange={(v) => set('headingSize', v)} />
-            <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
+            {hasBodyText && (
+              <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
+            )}
             <Slider label="Menu" value={draft.menuSize} min={11} max={18} unit="px" presets={[['Small', 12], ['Default', 13], ['Large', 15], ['Extra large', 17]]} onChange={(v) => set('menuSize', v)} />
           </details>
 
+          {hasColouredHeading && (
           <details>
             <summary>Colour</summary>
             <p className="ss-label">Heading colour</p>
@@ -442,6 +449,7 @@ export function SiteSettingsPanel({
               ))}
             </div>
           </details>
+          )}
 
           <details>
             <summary>Header</summary>
@@ -476,24 +484,32 @@ export function SiteSettingsPanel({
 
           <details>
             <summary>Text</summary>
-            <label className="ss-field">
-              Homepage heading
-              <input value={draft.text.homeHeading} maxLength={120} onChange={(e) => setText('homeHeading', e.target.value)} />
-            </label>
-            <label className="ss-field">
-              Homepage tagline <small>(optional)</small>
-              <input value={draft.text.homeTagline} maxLength={240} onChange={(e) => setText('homeTagline', e.target.value)} />
-            </label>
-            <label className="ss-field">
-              Contact email
-              <input type="email" value={draft.text.contactEmail} maxLength={200} onChange={(e) => setText('contactEmail', e.target.value)} />
-            </label>
+            {isHome && (
+              <>
+                <label className="ss-field">
+                  Homepage heading
+                  <input value={draft.text.homeHeading} maxLength={120} onChange={(e) => setText('homeHeading', e.target.value)} />
+                </label>
+                <label className="ss-field">
+                  Homepage tagline <small>(optional)</small>
+                  <input value={draft.text.homeTagline} maxLength={240} onChange={(e) => setText('homeTagline', e.target.value)} />
+                </label>
+              </>
+            )}
+            {pathname === '/contact' && (
+              <label className="ss-field">
+                Contact email
+                <input type="email" value={draft.text.contactEmail} maxLength={200} onChange={(e) => setText('contactEmail', e.target.value)} />
+              </label>
+            )}
             <label className="ss-field">
               ABN
               <input inputMode="numeric" value={draft.text.abn} maxLength={20} onChange={(e) => setText('abn', e.target.value)} />
             </label>
           </details>
 
+          {/* Nothing on the page changes, so only admins, whose saves reach Google, get these. */}
+          {canSave && (
           <details>
             <summary>Search (SEO)</summary>
             <p className="ss-hint">How the site appears in Google results.</p>
@@ -510,6 +526,7 @@ export function SiteSettingsPanel({
               <textarea rows={2} value={draft.seo.keywords} maxLength={300} onChange={(e) => setSeo('keywords', e.target.value)} />
             </label>
           </details>
+          )}
         </div>
 
         <div className="ss-foot">

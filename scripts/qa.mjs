@@ -60,6 +60,39 @@ assert.equal(exported.kind,'iejf-site-design');
 assert.equal(exported.page,'/');
 assert.equal(typeof exported.design.headingFont,'string');
 assert.equal(await page.locator('.brand-chooser').count(),0);
+// Site settings only shows controls that visibly change the page you're on: one pick in every group,
+// and a keystroke in every field, must change the page (screenshotted with the panel hidden).
+await page.setViewportSize({width:1280,height:900});
+const pageShot = async () => {
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForLoadState('networkidle');
+  await page.addStyleTag({content:'#site-settings,.ss-launcher{visibility:hidden!important}'}).then(tag => tag.evaluate(el => el.setAttribute('data-qa-hide','')));
+  const shot = await page.screenshot({fullPage:true,animations:'disabled'});
+  await page.evaluate(() => document.querySelectorAll('[data-qa-hide]').forEach(el => el.remove()));
+  return shot;
+};
+for (const route of ['/','/about','/insights','/contact']) {
+  await page.goto(base+route+'?editor');
+  const panel = page.locator('#site-settings');
+  await panel.locator('details').evaluateAll(sections => sections.forEach(d => { d.open = true; }));
+  const groups = panel.locator('.ss-body :is(.ss-grid,.ss-swatches,.ss-presets)');
+  for (let i = 0; i < await groups.count(); i++) {
+    const option = groups.nth(i).locator('button[aria-pressed="false"]').first();
+    const group = (await groups.nth(i).getAttribute('aria-label')) ?? (await groups.nth(i).evaluate(el => el.previousElementSibling?.textContent ?? el.closest('details').querySelector('summary').textContent));
+    const name = `${group}: ${(await option.getAttribute('aria-label')) || (await option.innerText()).trim()}`;
+    const before = await pageShot();
+    await option.click();
+    if (before.equals(await pageShot())) failures.push(`${route}: Site settings option "${name}" changes nothing on this page`);
+  }
+  const fields = panel.locator('.ss-body :is(input:not([type=range]),textarea)');
+  for (let i = 0; i < await fields.count(); i++) {
+    const field = fields.nth(i);
+    const name = (await field.evaluate(el => el.closest('label')?.firstChild?.textContent ?? '')).trim();
+    const before = await pageShot();
+    await field.fill((await field.inputValue()) + ' QA');
+    if (before.equals(await pageShot())) failures.push(`${route}: Site settings field "${name}" changes nothing on this page`);
+  }
+}
 await page.emulateMedia({reducedMotion:'reduce'});
 await page.goto(base);
 assert.equal(await page.locator('.home-box').evaluate(el=>getComputedStyle(el).animationName),'none');
@@ -67,4 +100,4 @@ assert.equal(await page.evaluate(() => document.documentElement.scrollHeight <= 
 await writeFile('qa-output/results.json',JSON.stringify({results,failures,checks:['menu focus trap','Escape and focus restoration','scroll lock','menu navigation','contact is email-only','removed routes 404','reduced motion','home fits one screen']},null,2));
 await browser.close();
 assert.deepEqual(failures,[]);
-console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, one-screen home, legacy routes, visitor preview-only Site settings.`);
+console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, one-screen home, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on.`);
