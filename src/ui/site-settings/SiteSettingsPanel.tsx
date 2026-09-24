@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Settings, X, Check, RotateCcw } from 'lucide-react';
 import {
   BACKGROUND_IMAGES,
@@ -14,6 +15,9 @@ import {
 } from '@/lib/design/types';
 import { SITE_LOGOS } from '@/lib/brand/logo-concepts';
 import { LOGO_PREVIEW_EVENT } from '@/ui/Header';
+
+/** Pages built on the shared PageFrame, the only ones the page layout changes. */
+const FRAMED_PAGES = ['/about', '/insights', '/contact'];
 
 type SaveState = 'saved' | 'saving' | 'error';
 type TextKey = keyof SiteDesign['text'];
@@ -112,6 +116,10 @@ export function SiteSettingsPanel({
   /** False for visitors: changes preview on their own screen only and are never sent to the server. */
   canSave: boolean;
 }) {
+  const pathname = usePathname() ?? '';
+  // Only offer the layout that changes the page on screen, so a pick never looks like it did nothing.
+  const isHome = pathname === '/';
+  const isFramed = FRAMED_PAGES.includes(pathname);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(initialDraft);
   const [live, setLive] = useState(initialLive);
@@ -326,41 +334,52 @@ export function SiteSettingsPanel({
 
           <details>
             <summary>Layout</summary>
-            <p className="ss-label">Homepage</p>
-            <div className="ss-grid ss-grid-3">
-              {(
-                [
-                  ['centred', 'Centred box'],
-                  ['split', 'Split'],
-                  ['band', 'Bottom band'],
-                ] as const
-              ).map(([value, label]) => (
-                <Choice key={value} value={value} current={draft.homeLayout} onPick={(v) => set('homeLayout', v)}>
-                  <span className={`ss-mini ss-mini-home-${value}`} aria-hidden="true">
-                    <i />
-                  </span>
-                  {label}
-                </Choice>
-              ))}
-            </div>
-            <p className="ss-label">Other pages</p>
-            <div className="ss-grid ss-grid-3">
-              {(
-                [
-                  ['stacked', 'Stacked'],
-                  ['side', 'Heading on side'],
-                  ['centred', 'Centred'],
-                ] as const
-              ).map(([value, label]) => (
-                <Choice key={value} value={value} current={draft.pageLayout} onPick={(v) => set('pageLayout', v)}>
-                  <span className={`ss-mini ss-mini-page-${value}`} aria-hidden="true">
-                    <i />
-                    <b />
-                  </span>
-                  {label}
-                </Choice>
-              ))}
-            </div>
+            {isHome && (
+              <>
+                <p className="ss-label">Homepage</p>
+                <div className="ss-grid ss-grid-3">
+                  {(
+                    [
+                      ['centred', 'Centred box'],
+                      ['split', 'Split'],
+                      ['band', 'Bottom band'],
+                    ] as const
+                  ).map(([value, label]) => (
+                    <Choice key={value} value={value} current={draft.homeLayout} onPick={(v) => set('homeLayout', v)}>
+                      <span className={`ss-mini ss-mini-home-${value}`} aria-hidden="true">
+                        <i />
+                      </span>
+                      {label}
+                    </Choice>
+                  ))}
+                </div>
+              </>
+            )}
+            {isFramed && (
+              <>
+                <p className="ss-label">About, Insights and Contact</p>
+                <div className="ss-grid ss-grid-3">
+                  {(
+                    [
+                      ['stacked', 'Stacked'],
+                      ['side', 'Heading on side'],
+                      ['centred', 'Centred'],
+                    ] as const
+                  ).map(([value, label]) => (
+                    <Choice key={value} value={value} current={draft.pageLayout} onPick={(v) => set('pageLayout', v)}>
+                      <span className={`ss-mini ss-mini-page-${value}`} aria-hidden="true">
+                        <i />
+                        <b />
+                      </span>
+                      {label}
+                    </Choice>
+                  ))}
+                </div>
+              </>
+            )}
+            {!isHome && !isFramed && (
+              <p className="ss-hint">Layout options show on Home, About, Insights and Contact.</p>
+            )}
           </details>
 
           <details>
