@@ -1,38 +1,68 @@
+/* Split layout from 900px: Abaddon Black brand panel on the left, paper form panel on the right. */
 .page {
-  --identity-top: clamp(40px, 7vw, 112px);
   min-height: 100svh;
-  background: #f8f7f4;
+  display: grid;
+  grid-template-columns: minmax(340px, 5fr) 7fr;
+  background: #f5f3f1;
+}
+
+.brandPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+  padding: clamp(40px, 5vw, 72px);
+  /* Extra right padding keeps the text clear of the slanted edge. */
+  padding-right: calc(clamp(40px, 5vw, 72px) + 8%);
+  /* The site's desert background (set per page as --login-photo) under a brown tint so the white text stays legible,
+     cut on a "/" diagonal where it meets the form panel. */
+  background:
+    linear-gradient(180deg, rgb(107 74 46 / 45%) 0%, rgb(58 38 24 / 72%) 60%, rgb(35 31 32 / 88%) 100%),
+    var(--login-photo, none) center / cover no-repeat,
+    #6b4a2e;
+  color: #fff;
+  clip-path: polygon(0 0, 100% 0, 86% 100%, 0 100%);
+}
+
+/* Logo mirrors the header. Concept files are black on white: inverted and screened they read white on Abaddon Black. */
+.brandLogo { min-height: 1px; }
+.logoOnDark { width: 140px; height: 140px; filter: invert(1) contrast(2); mix-blend-mode: screen; }
+/* contrast() snaps the files' off-white backgrounds to pure white/black so no faint box shows. */
+.logoOnLight { width: 56px; height: 56px; filter: contrast(2); mix-blend-mode: multiply; flex: 0 0 auto; }
+.mark { display: inline-flex; flex: 0 0 auto; }
+
+.brandText { border-top: 1px solid rgb(201 161 90 / 45%); padding-top: 24px; }
+
+.brandName {
+  max-width: 16ch;
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.brandLabel {
+  margin-top: 12px;
+  color: #ecd9b4;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .formPanel {
   min-width: 0;
-  min-height: 100svh;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--identity-top);
-  overflow-y: auto;
+  padding: clamp(40px, 6vw, 96px) clamp(24px, 6vw, 96px);
 }
 
-.formShell { width: min(100%, 460px); }
+.formShell { width: min(100%, 480px); }
 
-.identity {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: clamp(48px, 8vh, 88px);
-}
-
-.identity img { width: 58px; height: 57px; flex: 0 0 auto; }
-
-.identity p {
-  color: #5b5758;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  line-height: 1.5;
-  text-transform: uppercase;
-}
+/* Mobile-only logo row; the brand panel carries identity on wider screens. */
+.identity { display: none; align-items: center; gap: 14px; margin-bottom: 32px; }
+.identity p { color: #3f3a3b; font-size: 13px; font-weight: 600; line-height: 1.35; }
 
 .heading { margin-bottom: 36px; }
 
@@ -111,6 +141,21 @@
   outline: none;
 }
 
+/* Browser autofill keeps working; this only repaints Chrome/Safari's blue fill in the paper theme.
+   An inset shadow is the only reliable way to cover the UA autofill background. */
+.field input:-webkit-autofill,
+.field input:autofill {
+  -webkit-text-fill-color: #231f20;
+  caret-color: #231f20;
+  box-shadow: 0 0 0 1000px #fff inset;
+  transition: background-color 600000s 0s;
+}
+
+.field input:-webkit-autofill:focus-visible,
+.field input:autofill:focus-visible {
+  box-shadow: 0 0 0 1000px #fff inset, 0 0 0 3px rgb(201 161 90 / 20%);
+}
+
 .submit {
   width: 100%;
   min-height: 56px;
@@ -139,10 +184,10 @@
 .sessionAlert { margin-bottom: 24px; }
 
 .restricted {
-  margin-top: 28px;
-  color: #686263;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  margin-top: 24px;
+  color: #6f5a45;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   text-align: center;
 }
@@ -200,15 +245,18 @@
 .linkButton:hover:not(:disabled) { color: #231f20; text-decoration: underline; }
 .linkButton:disabled { color: #948d8e; cursor: default; }
 
-@media (max-width: 820px) {
-  .formPanel { min-height: 100svh; align-items: center; padding: 32px clamp(24px, 8vw, 64px); }
-  .identity { margin-bottom: 32px; }
+/* Below 900px a two-column split gets too narrow: drop the brand panel and centre one column. */
+@media (max-width: 899px) {
+  .page { grid-template-columns: 1fr; }
+  .brandPanel { display: none; }
+  .identity { display: flex; }
+  .formPanel { min-height: 100svh; padding: 32px clamp(24px, 8vw, 64px); }
 }
 
 @media (max-width: 420px) {
-  .formPanel { padding: 24px 20px; }
+  .formPanel { padding: 24px; }
   .identity { margin-bottom: 22px; }
-  .identity img { width: 42px; height: 41px; }
+  .logoOnLight { width: 48px; height: 48px; }
   .heading { margin-bottom: 20px; }
   .heading h1 { margin-bottom: 10px; font-size: 2rem; }
   .eyebrow { margin-bottom: 8px; }

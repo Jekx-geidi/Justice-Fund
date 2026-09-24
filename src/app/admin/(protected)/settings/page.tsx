@@ -1,16 +1,16 @@
 import Link from 'next/link';
 import { getSessionEmail, SESSION_TTL_SECONDS } from '@/lib/auth/session';
-import { getSiteSettings } from '@/lib/settings/siteSettings';
 import { getSiteContent } from '@/lib/content/content';
 import { listAuditRecords } from '@/lib/security/log';
 import { listAdminUsers } from '@/lib/auth/adminUsers';
-import { WebsiteSettingsForm } from '@/ui/admin/settings/WebsiteSettingsForm';
 import { EditorPreferencesForm } from '@/ui/admin/settings/EditorPreferencesForm';
 import { UserManagement } from '@/ui/admin/settings/UserManagement';
 import { AdminProfileForm } from '@/ui/admin/settings/AdminProfileForm';
 import { SettingsTabs } from '@/ui/admin/settings/SettingsTabs';
 import { getEditorPreferences } from '@/lib/settings/editorPreferences';
 import { formatExactDateTime } from '@/lib/content/formatRelativeDate';
+import { isMfaConfigured } from '@/lib/auth/mfa';
+import { SITE_EDITOR_HREF } from '@/lib/design/types';
 
 export const metadata = { title: 'Settings' };
 
@@ -34,8 +34,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 
 export default async function AdminSettings() {
   const email = await getSessionEmail();
-  const [settings, editorPreferences, live, auditRecords, adminUsers] = await Promise.all([
-    getSiteSettings(),
+  const [editorPreferences, live, auditRecords, adminUsers] = await Promise.all([
     getEditorPreferences(),
     getSiteContent('live'),
     listAuditRecords(50),
@@ -61,7 +60,14 @@ export default async function AdminSettings() {
             label: 'Website',
             content: (
               <Section title="Website">
-                <WebsiteSettingsForm initial={settings} />
+                {/* Visual and site-wide settings have one home, the on-site Site settings panel, so they aren't duplicated here. */}
+                <p className="text-sm text-[var(--slate)] mb-4">
+                  Background, layout, fonts, sizes, colours, header and logo, the homepage heading, contact email, ABN and search
+                  settings are edited on the website itself, where you can see each change before you publish it.
+                </p>
+                <a href={SITE_EDITOR_HREF} className="button button-dark inline-flex">
+                  Open Site Editor
+                </a>
               </Section>
             ),
           },
@@ -76,9 +82,9 @@ export default async function AdminSettings() {
           },
           {
             id: 'admin-account',
-            label: 'Admin Account',
+            label: 'Account',
             content: (
-              <Section title="Admin Account">
+              <Section title="Account">
                 <Row label="Signed in as" value={email} />
                 <Row label="Role" value="Administrator" />
                 <Row label="Account status" value={adminUsers.find((user) => user.email === email)?.isActive === false ? 'Disabled' : 'Active'} />
@@ -107,10 +113,10 @@ export default async function AdminSettings() {
           },
           {
             id: 'security',
-            label: 'Security',
+            label: 'Security & MFA',
             content: (
-              <Section title="Security">
-                <Row label="Multi-factor authentication" value="Not configured" />
+              <Section title="Security & MFA">
+                <Row label="Multi-factor authentication" value={isMfaConfigured() ? 'Email code at every sign-in' : 'Not configured (local development)'} />
                 <Row label="Session length" value={`${SESSION_TTL_SECONDS / 3600} hours`} />
                 <Row label="Login rate limiting" value="5 attempts / 15 min per IP" />
                 {securityEvents.length > 0 && (

@@ -57,6 +57,7 @@ function BrandComparePage() {
       localStorage.setItem('logo', id);
     } catch {}
     setLogoState(id);
+    window.dispatchEvent(new CustomEvent('brandchooser:logo', { detail: id }));
   }
 
   return (
@@ -132,9 +133,12 @@ function BrandComparePage() {
         <h2>Logo concepts</h2>
         <div className="logo-grid">
           {LOGO_CONCEPTS.map((concept) => (
-            <div className={`logo-card logo-card-${concept.layout}`} key={concept.id}>
-              <MarkIcon mark={concept.mark} size={40} />
-              <span className="logo-card-wordmark">Intergenerational Justice Fund</span>
+            <div className="logo-card" key={concept.id}>
+              <a href={concept.file} target="_blank" rel="noopener noreferrer" className="logo-card-image">
+                <img src={concept.thumb} alt={`${concept.name} logo concept`} width={600} height={600} loading="lazy" />
+              </a>
+              <p className="logo-card-name">{concept.id} · {concept.name}</p>
+              <p className="logo-card-note">{concept.note}</p>
               <button
                 type="button"
                 className="button button-dark"

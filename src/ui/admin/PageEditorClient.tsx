@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import type { AboutFields, SitePage } from '@/lib/content/types';
-import { HomeFieldsEditor, AboutFieldsEditor, ContactFieldsEditor } from './CoreContentEditors';
+import { AboutFieldsEditor, SiteSettingsNotice } from './CoreContentEditors';
 import { BlockEditor } from './BlockEditor';
-import { SectionsEditor } from './sections/SectionsEditor';
 import { PublishBar } from './PublishBar';
 import { UnsavedChangesGuard } from './UnsavedChangesGuard';
 import { ConfirmDialog } from './ConfirmDialog';
@@ -13,6 +12,7 @@ import { AdminEditorLayout } from './live-preview/AdminEditorLayout';
 import { LivePreviewPane } from './live-preview/LivePreviewPane';
 import { PageContentPreview } from './PageContentPreview';
 import { RevisionHistoryDialog } from './RevisionHistoryDialog';
+import { SitePreviewShell, type SitePreviewContext } from './live-preview/SitePreviewShell';
 
 function previewHrefFor(page: SitePage): string {
   const base = page.coreKey === 'home' ? '/' : `/${page.slug}`;
@@ -22,8 +22,10 @@ function previewHrefFor(page: SitePage): string {
 export function PageEditorClient({
   page: initialPage,
   aboutForHomePreview,
+  site,
 }: {
   page: SitePage;
+  site: SitePreviewContext;
   /**
    * Home's preview reuses About's intro/focus-area copy (same as the public
    * page). Not editable here — just the current draft About content, fetched
@@ -195,14 +197,18 @@ export function PageEditorClient({
         )}
       </fieldset>
 
-      {page.coreKey === 'home' && page.home && (
-        <HomeFieldsEditor value={page.home} onChange={(home) => update({ home })} />
+      {page.coreKey === 'home' && (
+        <SiteSettingsNotice title="Homepage editing">
+          Homepage appearance and site-level settings are managed directly from the public Site Settings panel.
+        </SiteSettingsNotice>
       )}
       {page.coreKey === 'about' && page.about && (
         <AboutFieldsEditor value={page.about} onChange={(about) => update({ about })} />
       )}
-      {page.coreKey === 'contact' && page.contact && (
-        <ContactFieldsEditor value={page.contact} onChange={(contact) => update({ contact })} />
+      {page.coreKey === 'contact' && (
+        <SiteSettingsNotice title="Contact email">
+          The email address on this page is a site-level setting, managed from the public Site Settings panel (Text).
+        </SiteSettingsNotice>
       )}
       {page.coreKey === 'insights' && (
         <p className="text-sm text-[var(--slate)]">
@@ -217,16 +223,6 @@ export function PageEditorClient({
         <div>
           <p className="text-sm font-medium mb-3">Content blocks</p>
           <BlockEditor blocks={page.blocks} onChange={(blocks) => update({ blocks })} />
-        </div>
-      )}
-
-      {page.isCore && (
-        <div className="mt-8">
-          <p className="text-sm font-medium mb-1">Additional sections</p>
-          <p className="text-xs text-[var(--slate)] mb-3">
-            These appear at the end of the page, after the content above and before the footer.
-          </p>
-          <SectionsEditor sections={page.additionalSections ?? []} onChange={(additionalSections) => update({ additionalSections })} />
         </div>
       )}
 
@@ -245,14 +241,17 @@ export function PageEditorClient({
 
   const preview = (
     <LivePreviewPane dirty={dirty} fullPreviewHref={previewHrefFor(page)} resetKey={JSON.stringify(page)}>
-      <PageContentPreview page={page} aboutForHomePreview={aboutForHomePreview} />
+      <SitePreviewShell site={site}>
+        <PageContentPreview page={page} aboutForHomePreview={aboutForHomePreview} siteText={site.design.text} />
+      </SitePreviewShell>
     </LivePreviewPane>
   );
 
   return (
     <div>
       <UnsavedChangesGuard dirty={dirty} />
-      <AdminEditorLayout editor={editor} preview={preview} />
+      {/* Home, Insights and Contact have only page settings here, so the preview gets the extra room. */}
+      <AdminEditorLayout editor={editor} preview={preview} widePreview={page.isCore && page.coreKey !== 'about'} />
 
       <ConfirmDialog
         open={confirmingDelete}

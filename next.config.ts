@@ -13,16 +13,14 @@ const SUPABASE_HOST = 'fxpznpdrpzgkwplghvqx.supabase.co';
 // client runtime uses eval() for HMR and stack-trace reconstruction. React
 // never uses eval() in production, so prod's CSP stays as strict as before.
 const isDev = process.env.NODE_ENV !== 'production';
-// The Brand & Design Control Panel (docs/brand-control-panel-prd.md) loads
-// Google Fonts stylesheets to preview type pairings. Only Preview builds
-// set this env var, so Production's CSP never carries the extra allowance.
-const brandChooserEnabled = process.env.NEXT_PUBLIC_BRAND_CHOOSER === 'true';
+// Fonts April picks in the Site settings panel load from Google Fonts on every
+// public page, so production allows them too (not just brand-chooser previews).
 const CSP = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
-  `style-src 'self' 'unsafe-inline'${brandChooserEnabled ? ' https://fonts.googleapis.com' : ''}`,
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   `img-src 'self' data: blob: https://${SUPABASE_HOST}`,
-  `font-src 'self' data:${brandChooserEnabled ? ' https://fonts.gstatic.com' : ''}`,
+  "font-src 'self' data: https://fonts.gstatic.com",
   "connect-src 'self'",
   "frame-ancestors 'none'",
   "base-uri 'self'",
@@ -44,6 +42,8 @@ const config: NextConfig = {
   // sets VERCEL=1 during its build, so this only ever applies off-Vercel.
   output: process.env.VERCEL ? undefined : 'standalone',
   turbopack: { root: process.cwd() },
+  // Keeps the Next.js dev badge out of review screenshots; it never ships in production builds anyway.
+  devIndicators: false,
   images: {
     remotePatterns: [{ protocol: 'https', hostname: SUPABASE_HOST, pathname: '/storage/v1/object/public/**' }],
   },

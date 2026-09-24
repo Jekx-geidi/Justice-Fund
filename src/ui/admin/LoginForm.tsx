@@ -82,7 +82,7 @@ export function LoginForm({ initialReason }: { initialReason?: string }) {
             type="email"
             autoComplete="username"
             required
-            placeholder="admin@justicefund.org.au"
+            placeholder="name@justicefund.org.au"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
