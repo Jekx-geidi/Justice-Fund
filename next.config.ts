@@ -21,7 +21,8 @@ const CSP = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   `img-src 'self' data: blob: https://${SUPABASE_HOST}`,
   "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self'",
+  // Export design fetches her Google fonts to embed them in the offline copy of the site.
+  "connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

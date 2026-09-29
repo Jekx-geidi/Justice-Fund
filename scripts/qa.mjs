@@ -2,6 +2,7 @@ import { chromium } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
 const base = process.env.QA_URL || 'http://localhost:3100';
 await mkdir('qa-output', { recursive: true });
 const browser = await chromium.launch();
@@ -52,21 +53,39 @@ await page.goto(base+'/?editor');
 assert.equal(await page.locator('.ss-launcher').count(),1,'Visitors get the Site settings gear');
 assert.equal(await page.locator('#site-settings').getByRole('button',{name:'Publish',exact:true}).count(),0,'Visitors have no Publish button');
 assert.equal(await page.locator('#site-settings a.ss-login').count(),0,'"Log in to publish" is replaced by Export design');
-// Visitors export their picks in a format they can open and share: PDF, Word, text, Markdown, or JSON for us.
-const exportFile = async (label, ext) => {
-  if (await page.locator('#ss-export-formats').count() === 0) await page.getByRole('button',{name:'Export design'}).click();
-  const [download] = await Promise.all([page.waitForEvent('download'), page.locator('#ss-export-formats').getByRole('button',{name:label}).click()]);
-  assert.match(download.suggestedFilename(),new RegExp(`^iejf-design-\\d{4}-\\d{2}-\\d{2}\\.${ext}$`));
-  return readFile(await download.path());
-};
-const exported = JSON.parse(await exportFile('For the web team','json'));
-assert.equal(exported.kind,'iejf-site-design');
-assert.equal(exported.page,'/');
-assert.equal(typeof exported.design.headingFont,'string');
-assert.match(String(await exportFile('Text','txt')),/^IEJF website design choices\n[\s\S]*Background: Pale dunes/);
-assert.match(String(await exportFile('Markdown','md')),/^# IEJF website design choices\n/);
-assert.equal(String((await exportFile('PDF','pdf')).subarray(0,5)),'%PDF-');
-assert.equal(String((await exportFile('Word','docx')).subarray(0,2)),'PK','Word file is a .docx (zip) package');
+// Export design saves an offline copy of the site with the visitor's picks, for Ange to open and approve.
+await page.locator('#site-settings summary',{hasText:'Layout'}).click();
+await page.locator('#site-settings').getByRole('button',{name:'Split'}).click();
+const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button',{name:'Export design'}).click()]);
+assert.match(download.suggestedFilename(),/^iejf-design-\d{4}-\d{2}-\d{2}\.html$/);
+const offlinePath = new URL('../qa-output/offline-export.html', import.meta.url);
+await download.saveAs(fileURLToPath(offlinePath));
+const offline = await readFile(offlinePath,'utf8');
+assert.doesNotMatch(offline,/(src|href)="\/(?!\/)|url\("?\/_next/,'The offline file must not load anything from the site');
+const data = JSON.parse(offline.match(/<script type="application\/json" id="iejf-design">([\s\S]*?)<\/script>/)[1]);
+assert.equal(data.kind,'iejf-site-design');
+assert.equal(data.design.homeLayout,'split','The embedded choices are the ones she made');
+// Open it straight from disk with every network request blocked, like an email attachment on a plane.
+const offlinePage = await context.newPage();
+const requested = [];
+await offlinePage.route(/^https?:/, route => { requested.push(route.request().url()); return route.abort(); });
+await offlinePage.goto(offlinePath.href);
+await offlinePage.evaluate(() => document.fonts.ready);
+assert.equal(await offlinePage.locator('.site-shell').getAttribute('data-home-layout'),'split');
+assert.equal(await offlinePage.locator('#home h1').isVisible(),true,'Home shows first');
+assert.equal(await offlinePage.evaluate(() => document.fonts.check('700 40px Poppins')),true,'Poppins is embedded');
+assert.match(await offlinePage.evaluate(() => getComputedStyle(document.body).backgroundImage),/^url\("data:image\//,'The background is embedded');
+for (const [label,id] of [['About','about'],['Insights','insights'],['Contact','contact'],['Home','home']]) {
+  await offlinePage.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:label,exact:true}).click();
+  assert.equal(await offlinePage.locator('#'+id).isVisible(),true,label+' opens inside the file');
+  assert.equal(await offlinePage.locator('.offline-page:visible').count(),1,'One page at a time');
+  await offlinePage.mouse.move(5,700);
+  await offlinePage.waitForTimeout(350); // underline transition
+  const underlined = await offlinePage.locator('.desktop-nav a').evaluateAll(links => links.filter(a => getComputedStyle(a,'::after').transform === 'matrix(1, 0, 0, 1, 0, 0)').map(a => a.getAttribute('href')));
+  assert.deepEqual(underlined,['#'+id],'The menu underlines the open page');
+}
+assert.deepEqual(requested,[],'Nothing is fetched from the internet');
+await offlinePage.close();
 assert.equal(await page.locator('.brand-chooser').count(),0);
 // Site settings only shows controls that visibly change the page you're on: one pick in every group,
 // and a keystroke in every field, must change the page (screenshotted with the panel hidden).
