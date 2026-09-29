@@ -130,8 +130,18 @@ export interface AboutFields {
 }
 
 export interface ContactFields {
+  /** Shown above the email; empty hides it. */
   location: string;
   email: string;
+  /** Label above the email address; undefined falls back to "Email", empty hides it. */
+  emailLabel?: string;
+}
+
+/** Placeholder box the Insights page shows while no entries are published. Empty values hide that line. */
+export interface InsightsFields {
+  /** Undefined falls back to "Coming soon". */
+  emptyTag?: string;
+  emptyMessage?: string;
 }
 
 export interface InsightEntry {
@@ -166,6 +176,7 @@ export interface SitePage {
   home?: HomeFields;
   about?: AboutFields;
   contact?: ContactFields;
+  insightsPage?: InsightsFields;
 
   blocks: ContentBlock[];
   /** Core pages only — sections an admin has appended beyond the fixed core fields. See PageSection. */

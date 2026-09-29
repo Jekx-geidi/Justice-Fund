@@ -1,7 +1,7 @@
 'use client';
 
 import { PenLine } from 'lucide-react';
-import type { AboutFields } from '@/lib/content/types';
+import type { AboutFields, ContactFields, InsightsFields } from '@/lib/content/types';
 import { SITE_EDITOR_HREF } from '@/lib/design/types';
 import { MaterialTextField } from './material/MaterialControls';
 import { useMaterialWeb } from './material/useMaterialWeb';
@@ -10,7 +10,7 @@ const TEXT_FIELD_LOADERS = [() => import('@material/web/textfield/outlined-text-
 
 /**
  * Core page editors expose only what the public page actually renders. Anything the
- * page no longer shows (old hero, quotes, photo, entity/ABN, location…) stays in the
+ * page no longer shows (old hero, quotes, photo, entity/ABN…) stays in the
  * stored content untouched, it just isn't offered for editing here.
  */
 
@@ -80,5 +80,70 @@ export function AboutFieldsEditor({ value, onChange }: { value: AboutFields; onC
         ))}
       </fieldset>
     </div>
+  );
+}
+
+export function ContactFieldsEditor({ value, onChange }: { value: ContactFields; onChange: (next: ContactFields) => void }) {
+  const materialReady = useMaterialWeb(TEXT_FIELD_LOADERS);
+
+  return (
+    <fieldset className="border border-[var(--line)] p-4 space-y-4">
+      <legend className="text-sm font-medium px-1">Contact content</legend>
+      <p className="text-xs text-[var(--slate)] pb-3">Leave a field empty to hide it on the page.</p>
+      <MaterialTextField
+        ready={materialReady}
+        id="contact-location"
+        label="Location"
+        value={value.location}
+        onChange={(location) => onChange({ ...value, location })}
+        maxLength={200}
+      />
+      <MaterialTextField
+        ready={materialReady}
+        id="contact-email-label"
+        label="Label above email"
+        value={value.emailLabel ?? 'Email'}
+        onChange={(emailLabel) => onChange({ ...value, emailLabel })}
+        maxLength={60}
+      />
+    </fieldset>
+  );
+}
+
+export function InsightsFieldsEditor({
+  value,
+  onChange,
+}: {
+  value: InsightsFields | undefined;
+  onChange: (next: InsightsFields) => void;
+}) {
+  const materialReady = useMaterialWeb(TEXT_FIELD_LOADERS);
+  const fields = { emptyTag: value?.emptyTag ?? 'Coming soon', emptyMessage: value?.emptyMessage ?? '' };
+
+  return (
+    <fieldset className="border border-[var(--line)] p-4 space-y-4">
+      <legend className="text-sm font-medium px-1">Placeholder while no Insights are published</legend>
+      <p className="text-xs text-[var(--slate)] pb-3">
+        Leave both empty to hide the box. It disappears on its own once an Insight is published.
+      </p>
+      <MaterialTextField
+        ready={materialReady}
+        id="insights-empty-tag"
+        label="Heading"
+        value={fields.emptyTag}
+        onChange={(emptyTag) => onChange({ ...fields, emptyTag })}
+        maxLength={60}
+      />
+      <MaterialTextField
+        ready={materialReady}
+        id="insights-empty-message"
+        label="Message"
+        value={fields.emptyMessage}
+        onChange={(emptyMessage) => onChange({ ...fields, emptyMessage })}
+        multiline
+        rows={3}
+        maxLength={500}
+      />
+    </fieldset>
   );
 }

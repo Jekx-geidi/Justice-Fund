@@ -2,7 +2,7 @@ import { PageFrame } from '@/ui/Editorial';
 import type { ContactFields, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
-/** Email only: no form, no phone numbers. */
+/** Location and email only: no form, no phone numbers. */
 export function ContactPageView({
   contact,
   email,
@@ -13,11 +13,13 @@ export function ContactPageView({
   additionalSections?: ContentBlock[];
 }) {
   const address = email ?? contact.email;
+  const emailLabel = contact.emailLabel ?? 'Email';
   return (
     <>
       <PageFrame title="Contact">
         <div className="contact-card">
-          <p className="contact-label">Email</p>
+          {contact.location && <p className="contact-location">{contact.location}</p>}
+          {emailLabel && <p className="contact-label">{emailLabel}</p>}
           <a href={`mailto:${address}`} data-design-text="contactEmail" data-design-mailto="">
             {address}
           </a>

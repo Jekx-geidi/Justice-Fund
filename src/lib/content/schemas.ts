@@ -155,8 +155,14 @@ export const aboutFieldsSchema = z.object({
 });
 
 export const contactFieldsSchema = z.object({
-  location: z.string().min(1).max(200),
+  location: z.string().max(200),
   email: z.string().email().max(200),
+  emailLabel: z.string().max(60).optional(),
+});
+
+export const insightsFieldsSchema = z.object({
+  emptyTag: z.string().max(60).optional(),
+  emptyMessage: z.string().max(500).optional(),
 });
 
 export const pageStatusSchema = z.enum(['draft', 'published', 'unpublished']);
@@ -193,6 +199,7 @@ export const pagePatchSchema = z.object({
   home: homeFieldsSchema.optional(),
   about: aboutFieldsSchema.optional(),
   contact: contactFieldsSchema.optional(),
+  insightsPage: insightsFieldsSchema.optional(),
   additionalSections: z.array(pageSectionSchema).max(30).optional(),
 });
 

@@ -1,24 +1,33 @@
 import { PageFrame } from '@/ui/Editorial';
-import type { InsightEntry, ContentBlock } from '@/lib/content/types';
+import type { InsightEntry, InsightsFields, ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
-/** Entries sit in black boxes, matching the About focus areas; a neutral empty state shows until real entries are published. */
+/**
+ * Entries sit in black boxes, matching the About focus areas; an admin-editable
+ * placeholder shows until real entries are published (hidden if both its lines are cleared).
+ */
 export function InsightsPageView({
   entries,
+  fields,
   additionalSections = [],
 }: {
   entries: InsightEntry[];
+  fields?: InsightsFields;
   additionalSections?: ContentBlock[];
 }) {
+  const emptyTag = fields?.emptyTag ?? 'Coming soon';
+  const emptyMessage = fields?.emptyMessage ?? '';
   return (
     <>
       <PageFrame title="Insights">
         <div className="case-list">
           {entries.length === 0 ? (
-            <div className="case-item case-item-dark case-empty">
-              <p className="case-tag">Coming soon</p>
-              <p>Insights will be added here.</p>
-            </div>
+            (emptyTag || emptyMessage) && (
+              <div className="case-item case-item-dark case-empty">
+                {emptyTag && <p className="case-tag">{emptyTag}</p>}
+                {emptyMessage && <p>{emptyMessage}</p>}
+              </div>
+            )
           ) : (
             entries.map((entry) => (
               <article className="case-item case-item-dark" key={entry.id}>

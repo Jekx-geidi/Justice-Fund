@@ -18,7 +18,7 @@ export default async function Insights({ searchParams }: { searchParams: Promise
   return (
     <>
       {version === 'draft' && <PreviewBanner />}
-      <InsightsPageView entries={entries} additionalSections={additionalSections} />
+      <InsightsPageView entries={entries} fields={insightsPage?.insightsPage} additionalSections={additionalSections} />
     </>
   );
 }

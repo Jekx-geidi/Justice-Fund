@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import type { AboutFields, SitePage } from '@/lib/content/types';
-import { AboutFieldsEditor, SiteSettingsNotice } from './CoreContentEditors';
+import { AboutFieldsEditor, ContactFieldsEditor, InsightsFieldsEditor, SiteSettingsNotice } from './CoreContentEditors';
 import { BlockEditor } from './BlockEditor';
 import { PublishBar } from './PublishBar';
 import { UnsavedChangesGuard } from './UnsavedChangesGuard';
@@ -60,6 +60,7 @@ export function PageEditorClient({
               home: page.home,
               about: page.about,
               contact: page.contact,
+              insightsPage: page.insightsPage,
               additionalSections: page.additionalSections,
             },
           ],
@@ -205,10 +206,16 @@ export function PageEditorClient({
       {page.coreKey === 'about' && page.about && (
         <AboutFieldsEditor value={page.about} onChange={(about) => update({ about })} />
       )}
+      {page.coreKey === 'contact' && page.contact && (
+        <ContactFieldsEditor value={page.contact} onChange={(contact) => update({ contact })} />
+      )}
       {page.coreKey === 'contact' && (
         <SiteSettingsNotice title="Contact email">
           The email address on this page is a site-level setting, managed from the public Site Settings panel (Text).
         </SiteSettingsNotice>
+      )}
+      {page.coreKey === 'insights' && (
+        <InsightsFieldsEditor value={page.insightsPage} onChange={(insightsPage) => update({ insightsPage })} />
       )}
       {page.coreKey === 'insights' && (
         <p className="text-sm text-[var(--slate)]">
