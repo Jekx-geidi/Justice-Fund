@@ -52,13 +52,21 @@ await page.goto(base+'/?editor');
 assert.equal(await page.locator('.ss-launcher').count(),1,'Visitors get the Site settings gear');
 assert.equal(await page.locator('#site-settings').getByRole('button',{name:'Publish',exact:true}).count(),0,'Visitors have no Publish button');
 assert.equal(await page.locator('#site-settings a.ss-login').count(),0,'"Log in to publish" is replaced by Export design');
-// Visitors export their picks as a .json file to email to us.
-const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button',{name:'Export design'}).click()]);
-assert.match(download.suggestedFilename(),/^iejf-design-\d{4}-\d{2}-\d{2}\.json$/);
-const exported = JSON.parse(await readFile(await download.path(),'utf8'));
+// Visitors export their picks in a format they can open and share: PDF, Word, text, Markdown, or JSON for us.
+const exportFile = async (label, ext) => {
+  if (await page.locator('#ss-export-formats').count() === 0) await page.getByRole('button',{name:'Export design'}).click();
+  const [download] = await Promise.all([page.waitForEvent('download'), page.locator('#ss-export-formats').getByRole('button',{name:label}).click()]);
+  assert.match(download.suggestedFilename(),new RegExp(`^iejf-design-\\d{4}-\\d{2}-\\d{2}\\.${ext}$`));
+  return readFile(await download.path());
+};
+const exported = JSON.parse(await exportFile('For the web team','json'));
 assert.equal(exported.kind,'iejf-site-design');
 assert.equal(exported.page,'/');
 assert.equal(typeof exported.design.headingFont,'string');
+assert.match(String(await exportFile('Text','txt')),/^IEJF website design choices\n[\s\S]*Background: Pale dunes/);
+assert.match(String(await exportFile('Markdown','md')),/^# IEJF website design choices\n/);
+assert.equal(String((await exportFile('PDF','pdf')).subarray(0,5)),'%PDF-');
+assert.equal(String((await exportFile('Word','docx')).subarray(0,2)),'PK','Word file is a .docx (zip) package');
 assert.equal(await page.locator('.brand-chooser').count(),0);
 // Site settings only shows controls that visibly change the page you're on: one pick in every group,
 // and a keystroke in every field, must change the page (screenshotted with the panel hidden).

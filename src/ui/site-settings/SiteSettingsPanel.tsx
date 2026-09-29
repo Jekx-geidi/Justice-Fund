@@ -13,7 +13,7 @@ import {
   OPEN_EDITOR_PARAM,
   type SiteDesign,
 } from '@/lib/design/types';
-import { designExport } from '@/lib/design/export';
+import { buildDesignFile, EXPORT_FORMATS, type ExportFormat } from './export-files';
 import { SITE_LOGOS } from '@/lib/brand/logo-concepts';
 import { LOGO_PREVIEW_EVENT } from '@/ui/Header';
 
@@ -131,6 +131,7 @@ export function SiteSettingsPanel({
   const [saveState, setSaveState] = useState<SaveState>('saved');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latest = useRef(draft);
   // Saves run one after another, so the last change always wins and Publish can wait for them.
@@ -261,16 +262,23 @@ export function SiteSettingsPanel({
     setMessage('');
   }
 
-  /** Visitors can't publish, so they download their picks as a .json file to email to us. */
-  function exportDesign() {
-    const { filename, json } = designExport(latest.current, pathname, new Date());
-    const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setMessage(`Saved ${filename}. Please attach it to an email to us.`);
+  /** Visitors can't publish, so they download their picks in a format they can open and share, then email it to us. */
+  async function exportDesign(format: ExportFormat) {
+    setBusy(true);
+    try {
+      const { filename, blob } = await buildDesignFile(format, latest.current, pathname);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setExportOpen(false);
+      setMessage(`Saved ${filename} to your downloads. Please attach it to an email to us.`);
+    } catch {
+      setMessage("Couldn't create the file. Please try again or pick another format.");
+    }
+    setBusy(false);
   }
 
   const unpublished = !same(draft, live);
@@ -549,12 +557,30 @@ export function SiteSettingsPanel({
               <button type="button" className="ss-reset" disabled={!unpublished} onClick={undoPreview}>
                 Undo
               </button>
-              <button type="button" className="ss-publish" onClick={exportDesign}>
+              <button
+                type="button"
+                className="ss-publish"
+                aria-expanded={exportOpen}
+                aria-controls="ss-export-formats"
+                onClick={() => setExportOpen(!exportOpen)}
+              >
                 Export design
               </button>
             </div>
           )}
-          {!canSave && <p className="ss-hint">Saves your choices as a file. Email it to us and we&apos;ll apply it to the site.</p>}
+          {!canSave && exportOpen && (
+            <div id="ss-export-formats" className="ss-export" role="group" aria-label="Export format">
+              <p className="ss-label">Save as</p>
+              <div className="ss-grid ss-grid-2">
+                {EXPORT_FORMATS.map((f) => (
+                  <button key={f.id} type="button" className="ss-choice" disabled={busy} onClick={() => void exportDesign(f.id)}>
+                    {f.label} <small>.{f.ext}</small>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {!canSave && <p className="ss-hint">Saves your choices as a file on your computer. Email it to us and we&apos;ll apply it to the site.</p>}
           <button type="button" className="ss-restore" disabled={busy} onClick={restoreDefaults}>
             <RotateCcw size={13} aria-hidden="true" /> Restore original design
           </button>
