@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BACKGROUND_IMAGES, DARK_COLOURS, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
+import { ACCENT_COLOURS, BACKGROUND_IMAGES, DARK_COLOURS, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
 import { PHOTO_OPTIONS } from './page-photos.ts';
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 
@@ -29,6 +29,9 @@ export const siteDesignSchema = z.object({
   menuSize: z.number().int().min(11).max(18),
   headingColour: z.string().refine((c) => HEADING_COLOURS.some((h) => h.value === c), 'Unknown colour'),
   buttonColour: z.string().refine((c) => DARK_COLOURS.some((b) => b.value === c), 'Unknown colour'),
+  headerColour: pageColour,
+  footerColour: darkColour,
+  accentColour: z.string().refine((c) => ACCENT_COLOURS.some((a) => a.value === c), 'Unknown colour'),
   headerStyle: z.enum(['split', 'centred']),
   logo: z.string().refine((id) => id === '' || SITE_LOGO_IDS.includes(id), 'Unknown logo'),
   text: z.object({

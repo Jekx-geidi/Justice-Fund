@@ -155,3 +155,33 @@ test('slate is offered for boxes, the button and backgrounds', () => {
   assert.ok(DARK_COLOURS.some((c) => c.name === 'Slate' && c.value === '#1f2428'));
   assert.ok(PAGE_COLOURS.some((c) => c.name === 'Slate' && c.value === '#1f2428'));
 });
+
+// Reil (30 Sep): customise everything, so the header, footer and accent lines have colours too.
+import { ACCENT_COLOURS } from './types.ts';
+
+test('the header, footer and accent start as in April\u2019s export: white header, black footer, gold lines', () => {
+  assert.equal(DEFAULT_DESIGN.headerColour, '#ffffff');
+  assert.equal(DEFAULT_DESIGN.footerColour, '#231f20');
+  assert.equal(DEFAULT_DESIGN.accentColour, '#c9a15a');
+});
+
+test('the header text turns white on a dark header and stays dark on a light one', () => {
+  assert.ok(designCss({ ...DEFAULT_DESIGN, headerColour: '#1f3a5f' }).includes('--header-bg:#1f3a5f;--header-text:#ffffff'));
+  assert.ok(designCss({ ...DEFAULT_DESIGN, headerColour: '#f5f3f1' }).includes('--header-bg:#f5f3f1;--header-text:#231f20'));
+});
+
+test('the stylesheet sets the footer and accent colours', () => {
+  const css = designCss({ ...DEFAULT_DESIGN, footerColour: '#1f6b6b', accentColour: '#7b2d26' });
+  assert.ok(css.includes('--footer-bg:#1f6b6b'));
+  assert.ok(css.includes('--gold:#7b2d26'));
+});
+
+test('the accent palette includes gold and April\u2019s dark blue and teal', () => {
+  for (const name of ['Gold', 'Dark blue', 'Teal']) assert.ok(ACCENT_COLOURS.some((c) => c.name === name), name);
+});
+
+test('only palette colours can be saved for the header, footer and accent', () => {
+  for (const key of ['headerColour', 'footerColour', 'accentColour'] as const) {
+    assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, [key]: 'red;}' }).success, false, key);
+  }
+});

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Settings, X, Check, RotateCcw } from 'lucide-react';
 import {
+  ACCENT_COLOURS,
   BACKGROUND_IMAGES,
   DEFAULT_DESIGN,
   FONTS,
@@ -514,6 +515,12 @@ export function SiteSettingsPanel({
                   <Swatches colours={DARK_COLOURS} current={draft.pageColours[sitePage.id].box} onPick={(v) => setPageColour(sitePage.id, 'box', v)} />
                 </>
               )}
+              <p className="ss-label">Header (all pages)</p>
+              <Swatches colours={PAGE_COLOURS} current={draft.headerColour} onPick={(v) => set('headerColour', v)} />
+              <p className="ss-label">Footer (all pages)</p>
+              <Swatches colours={DARK_COLOURS} current={draft.footerColour} onPick={(v) => set('footerColour', v)} />
+              <p className="ss-label">Accent lines (all pages)</p>
+              <Swatches colours={ACCENT_COLOURS} current={draft.accentColour} onPick={(v) => set('accentColour', v)} />
               {isHome && (
                 <>
                   {/* Only the Get Involved button; its text stays white, so every option is dark enough for it. */}

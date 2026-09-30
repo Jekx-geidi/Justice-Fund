@@ -26,6 +26,10 @@ export interface SiteDesign {
   headingColour: string;
   /** The Get Involved button's background, a DARK_COLOURS hex; its text is always white. */
   buttonColour: string;
+  /** Site-wide: header background (PAGE_COLOURS; its text turns white when dark), footer (DARK_COLOURS), accent lines (ACCENT_COLOURS). */
+  headerColour: string;
+  footerColour: string;
+  accentColour: string;
   headerStyle: HeaderStyle;
   /** A logo concept id (src/lib/brand/logo-concepts.ts); empty shows the name as text. Used by the header and admin login. */
   logo: string;
@@ -103,6 +107,15 @@ export const DARK_COLOURS: { name: string; value: string }[] = [
   { name: 'Maroon', value: '#7b2d26' },
 ];
 
+/** The accent: box top borders, the menu underline, link underlines. */
+export const ACCENT_COLOURS: { name: string; value: string }[] = [
+  { name: 'Gold', value: '#c9a15a' },
+  { name: 'Teal', value: '#1f6b6b' },
+  { name: 'Dark blue', value: '#1f3a5f' },
+  { name: 'Maroon', value: '#7b2d26' },
+  { name: 'Dark brown', value: '#4a3222' },
+];
+
 export const PAGE_COLOURS: { name: string; value: string; light?: boolean }[] = [
   { name: 'White', value: '#ffffff', light: true },
   { name: 'Natural', value: '#f5f3f1', light: true },
@@ -142,6 +155,9 @@ export const DEFAULT_DESIGN: SiteDesign = {
   menuSize: 13,
   headingColour: '#6b4a2e',
   buttonColour: '#1f6b6b',
+  headerColour: '#ffffff',
+  footerColour: '#231f20',
+  accentColour: '#c9a15a',
   headerStyle: 'split',
   logo: '',
   pageColours: {
@@ -211,6 +227,15 @@ export function backgroundUrl(design: SiteDesign): string | null {
   return (BACKGROUND_IMAGES.find((b) => b.id === bg.imageId) ?? BACKGROUND_IMAGES[0]).url;
 }
 
+/** Whether dark text reads better than white on this hex colour (WCAG relative luminance). */
+function isLight(hex: string): boolean {
+  const [r, g, b] = [1, 3, 5]
+    .map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return (l + 0.05) / 0.05 > 1.05 / (l + 0.05);
+}
+
 function cssUrl(url: string): string {
   return `url("${url.replace(/["\\\n\r<>]/g, '')}")`;
 }
@@ -229,7 +254,7 @@ export function designCss(design: SiteDesign): string {
     lines.push(`@import url("https://fonts.googleapis.com/css2?${[...new Set(families)].join('&')}&display=swap");`);
   }
   lines.push(
-    `:root{--font-heading:${heading.stack};--font-body:${body.stack};--heading-scale:${design.headingSize / 100};--body-size:${design.bodySize}px;--menu-size:${design.menuSize}px;--heading-colour:${design.headingColour};--button-bg:${design.buttonColour};}`,
+    `:root{--font-heading:${heading.stack};--font-body:${body.stack};--heading-scale:${design.headingSize / 100};--body-size:${design.bodySize}px;--menu-size:${design.menuSize}px;--heading-colour:${design.headingColour};--button-bg:${design.buttonColour};--header-bg:${design.headerColour};--header-text:${isLight(design.headerColour) ? '#231f20' : '#ffffff'};--footer-bg:${design.footerColour};--gold:${design.accentColour};}`,
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`
       : `html body{background:${design.background.kind === 'colour' && design.background.colour ? design.background.colour : '#fff'};}`,

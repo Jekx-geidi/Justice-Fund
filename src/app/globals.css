@@ -19,7 +19,7 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .lead { font-size:1.12rem; color:var(--slate); max-width:640px; margin-top:18px; } .gold { color:var(--gold); } .muted { color:#797273; } .paper { background:var(--paper); }
 @media(max-width:860px) { h1 { font-size:1.9rem; } }
 .skip-link { position:fixed; top:8px; left:16px; padding:12px 20px; background:white; color:var(--ink); z-index:100; transform:translateY(-160%); } .skip-link:focus { transform:translateY(0); }
-.site-header { position:sticky; top:0; z-index:30; background:#fff; border-bottom:1px solid var(--line); border-top:3px solid var(--ink); }
+.site-header { position:sticky; top:0; z-index:30; background:var(--header-bg,#fff); color:var(--header-text,var(--ink)); border-bottom:1px solid var(--line); border-top:3px solid var(--ink); }
 .header-inner { display:flex; align-items:center; justify-content:space-between; min-height:100px; gap:24px; }
 .brand { font-weight:700; font-size:1.02rem; letter-spacing:.01em; }
 .desktop-nav { display:flex; align-items:center; gap:35px; } .desktop-nav a { font-size:var(--menu-size,13px); position:relative; min-height:44px; display:flex; align-items:center; gap:18px; }
@@ -136,7 +136,7 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 
 /* Footer: the legal bar. */
 /* Plain Abaddon Black bar; .wrap lines its text up with the header and page content. */
-.site-footer { background:var(--ink); color:#d8d4d1; padding-block:18px; border-top:1px solid color-mix(in srgb,var(--gold) 55%,transparent); }
+.site-footer { background:var(--footer-bg,var(--ink)); color:color-mix(in srgb,#fff 85%,var(--footer-bg,var(--ink))); padding-block:18px; border-top:1px solid color-mix(in srgb,var(--gold) 55%,transparent); }
 .footer-bottom { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px 24px; font-size:0.8rem; line-height:1.5; }
 .footer-legal { display:flex; flex-wrap:wrap; gap:0 8px; }
 .site-footer a { text-decoration:underline; text-decoration-color:#d8d4d166; text-underline-offset:3px; }
@@ -231,7 +231,8 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 [data-brand="b"] { --ink:#231f20; --deep:#1a1717; --paper:#f5f3f1; --line:#e3e0dd; --gold:#c9a15a; --slate:#5b5758; --brand-ground:#fff; --brand-surface:#fff; --brand-accent-contrast:#1a1717; --brand-radius:0px; --brand-texture:none; --brand-texture-opacity:0; --brand-logo-blend:multiply; --brand-logo-invert:0; }
 [data-brand="c"] { --ink:#1f2428; --deep:#15181b; --paper:#eef1f3; --line:#dde2e6; --gold:#5b7a99; --slate:#5c6770; --brand-ground:#eef1f3; --brand-surface:#f8fafb; --brand-accent-contrast:#000; --brand-radius:2px; --brand-texture:none; --brand-texture-opacity:0; --brand-logo-blend:multiply; --brand-logo-invert:0; }
 body { background:var(--brand-ground,#fff); }
-html:is([data-brand="a"],[data-brand="c"]) :is(.site-header,.block-card,.skip-link,.field input,.field textarea) { background:var(--brand-surface); border-color:var(--line); }
+/* The header colour is a Site settings choice, so the brand directions leave it alone. */
+html:is([data-brand="a"],[data-brand="c"]) :is(.block-card,.skip-link,.field input,.field textarea) { background:var(--brand-surface); border-color:var(--line); }
 html:is([data-brand="a"],[data-brand="c"]) :is(.button,.block-card,.field input,.field textarea) { border-radius:var(--brand-radius); }
 html:is([data-brand="a"],[data-brand="c"]) .button-gold { color:var(--brand-accent-contrast); }
 html:is([data-brand="a"],[data-brand="c"]) :focus-visible { outline-color:var(--gold); }
