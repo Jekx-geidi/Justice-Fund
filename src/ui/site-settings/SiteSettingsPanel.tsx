@@ -575,6 +575,8 @@ export function SiteSettingsPanel({
               <Swatches colours={PAGE_COLOURS} current={draft.headerColour} onPick={(v) => set('headerColour', v)} />
               <p className="ss-label">Footer (all pages)</p>
               <Swatches colours={DARK_COLOURS} current={draft.footerColour} onPick={(v) => set('footerColour', v)} />
+              <p className="ss-label">Hover colour (all pages)</p>
+              <Swatches colours={DARK_COLOURS} current={draft.hoverColour} onPick={(v) => set('hoverColour', v)} />
               <p className="ss-label">Accent lines (all pages)</p>
               <Swatches colours={ACCENT_COLOURS} current={draft.accentColour} onPick={(v) => set('accentColour', v)} />
               {isHome && (

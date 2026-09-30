@@ -185,3 +185,23 @@ test('only palette colours can be saved for the header, footer and accent', () =
     assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, [key]: 'red;}' }).success, false, key);
   }
 });
+
+// Reil (30 Sep): the colour menu links turn on hover is customisable.
+test('menu links hover maroon by default, as before', () => {
+  assert.equal(DEFAULT_DESIGN.hoverColour, '#7b2d26');
+  assert.ok(designCss(DEFAULT_DESIGN).includes('--hover:#7b2d26'));
+});
+
+test('every hover colour reads on a white header (at least 4.5:1)', () => {
+  for (const c of DARK_COLOURS) assert.ok(contrast(c.value, '#ffffff') >= 4.5, c.name);
+});
+
+test('on a dark header the hover colour is lightened so it still shows', () => {
+  const css = designCss({ ...DEFAULT_DESIGN, headerColour: '#1f3a5f', hoverColour: '#1f6b6b' });
+  assert.ok(css.includes('--hover:color-mix(in srgb,#1f6b6b 35%,#fff)'));
+  assert.ok(css.includes('--hover-raw:#1f6b6b'));
+});
+
+test('only palette hover colours can be saved', () => {
+  assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, hoverColour: 'red;}' }).success, false);
+});

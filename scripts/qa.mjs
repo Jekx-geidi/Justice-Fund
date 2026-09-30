@@ -118,6 +118,8 @@ await page.setViewportSize({width:1280,height:900});
 const pageShot = async () => {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForLoadState('networkidle');
+  // Always hover the same menu link, so the hover colour shows up and every shot is taken the same way.
+  await page.locator('.desktop-nav a').last().hover();
   await page.addStyleTag({content:'#site-settings,.ss-launcher{visibility:hidden!important} .ss-focus{outline:none!important;box-shadow:none!important}'}).then(tag => tag.evaluate(el => el.setAttribute('data-qa-hide','')));
   const shot = await page.screenshot({fullPage:true,animations:'disabled'});
   await page.evaluate(() => document.querySelectorAll('[data-qa-hide]').forEach(el => el.remove()));

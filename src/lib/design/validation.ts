@@ -32,6 +32,7 @@ export const siteDesignSchema = z.object({
   headerColour: pageColour,
   footerColour: darkColour,
   accentColour: z.string().refine((c) => ACCENT_COLOURS.some((a) => a.value === c), 'Unknown colour'),
+  hoverColour: darkColour,
   headerStyle: z.enum(['split', 'centred']),
   logo: z.string().refine((id) => id === '' || SITE_LOGO_IDS.includes(id), 'Unknown logo'),
   text: z.object({

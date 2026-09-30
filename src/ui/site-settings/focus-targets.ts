@@ -22,7 +22,7 @@ const RULES: [RegExp, string][] = [
   [/^abn/, '[data-design-text="abn"]'],
   [/^headings/, 'main h1, main h2, main h3'],
   [/^body text/, 'main p'],
-  [/^menu/, '.desktop-nav, .menu-trigger'],
+  [/^menu|^hover colour/, '.desktop-nav, .menu-trigger'],
 ];
 
 export function focusSelector(label: string): string | null {

@@ -31,6 +31,7 @@ test('fonts and sizes point at headings, body text or the menu', () => {
   assert.equal(focusSelector('Headings'), 'main h1, main h2, main h3');
   assert.equal(focusSelector('Body text'), 'main p');
   assert.equal(focusSelector('Menu'), '.desktop-nav, .menu-trigger');
+  assert.equal(focusSelector('Hover colour (all pages)'), '.desktop-nav, .menu-trigger');
 });
 
 test('search settings have nothing on the page to highlight', () => {
