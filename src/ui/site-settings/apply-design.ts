@@ -21,6 +21,5 @@ export function applyDesignContent(root: ParentNode, design: SiteDesign) {
     img.removeAttribute('srcset');
     img.src = photo.src;
     img.alt = photo.alt;
-    img.style.objectPosition = photo.position;
   }
 }

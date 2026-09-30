@@ -58,3 +58,33 @@ test('only that page’s own photos can be saved', () => {
   assert.ok(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, photos: { ...DEFAULT_DESIGN.photos, contact: 'kings-park-night' } }).success);
   assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, photos: { ...DEFAULT_DESIGN.photos, contact: 'earth-clouds' } }).success, false);
 });
+
+// Reil (30 Sep): every page photo can be dragged to reposition it and zoomed in or out.
+import { designCss } from './types.ts';
+import { defaultFrame } from './page-photos.ts';
+
+test('a photo starts framed where it was chosen to sit, at normal size', () => {
+  assert.deepEqual(defaultFrame(PHOTO_OPTIONS.about[0]), { x: 50, y: 70, zoom: 100, opacity: 100 });
+  assert.deepEqual(defaultFrame(PHOTO_OPTIONS.home[0]), { x: 50, y: 50, zoom: 100, opacity: 100 });
+});
+
+test('each page starts with its default photo\u2019s framing', () => {
+  for (const page of SITE_PAGES) assert.deepEqual(DEFAULT_DESIGN.photoFrames[page.id], defaultFrame(PHOTO_OPTIONS[page.id][0]), page.id);
+});
+
+test('the stylesheet positions and zooms each page\u2019s photo', () => {
+  const design = { ...DEFAULT_DESIGN, photoFrames: { ...DEFAULT_DESIGN.photoFrames, contact: { x: 20, y: 80, zoom: 150, opacity: 60 } } };
+  assert.ok(designCss(design).includes('--photo-x:20%;--photo-y:80%;--photo-zoom:1.5;--photo-opacity:0.6'));
+});
+
+// Reil (30 Sep): the Home photo's opacity too (all page photos get it).
+test('photo position stays inside the photo, zoom is 100-250% and opacity 20-100%', () => {
+  const frame = (f: object) => ({ ...DEFAULT_DESIGN, photoFrames: { ...DEFAULT_DESIGN.photoFrames, home: { x: 50, y: 50, zoom: 100, opacity: 100, ...f } } });
+  assert.ok(siteDesignSchema.safeParse(frame({ x: 0, y: 100, zoom: 250, opacity: 20 })).success);
+  for (const bad of [{ x: -1 }, { y: 101 }, { zoom: 90 }, { zoom: 260 }, { opacity: 10 }, { opacity: 101 }]) assert.equal(siteDesignSchema.safeParse(frame(bad)).success, false, JSON.stringify(bad));
+});
+
+test('settings saved before framing existed get the defaults', () => {
+  const { photoFrames: _dropped, ...old } = DEFAULT_DESIGN;
+  assert.deepEqual(withDefaults(old as never).photoFrames, DEFAULT_DESIGN.photoFrames);
+});

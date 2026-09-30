@@ -53,11 +53,12 @@ for(const route of ['/team','/cases','/environment']) assert.equal((await page.g
 // April (29 Sep): no "Charity · Perth, WA" caption in the header, on any page or in the phone menu.
 for (const route of ROUTES) { await page.goto(base+route); assert.doesNotMatch(await page.content(),/CHARITY · PERTH/i,route+' still shows the header caption'); }
 // April (29 Sep): a photo on each page. About, Insights and Contact show theirs at the top of the page frame.
-for (const [route, words] of [['/about',/planting/i],['/insights',/river/i],['/contact',/Perth/]]) {
+// Any of the page's five photos may be chosen (Site settings), so check it describes itself rather than which one it is.
+for (const route of ['/about','/insights','/contact']) {
   await page.goto(base+route);
   const photo = page.locator('.page-frame .page-photo');
   assert.equal(await photo.count(),1,route+' has its photo');
-  assert.match(await photo.getAttribute('alt'),words,route+' photo alt text');
+  assert.ok((await photo.getAttribute('alt')).length > 10,route+' photo alt text');
   assert.equal(await photo.evaluate(img => img.complete && img.naturalWidth > 0),true,route+' photo loads');
 }
 // Logged-out visitors can try Site settings, but only as an on-screen preview: no Publish, no saving.
@@ -85,7 +86,8 @@ await offlinePage.goto(offlinePath.href);
 await offlinePage.evaluate(() => document.fonts.ready);
 assert.equal(await offlinePage.locator('.site-shell').getAttribute('data-home-layout'),'split');
 assert.equal(await offlinePage.locator('#home h1').isVisible(),true,'Home shows first');
-assert.equal(await offlinePage.evaluate(() => document.fonts.check('700 40px Poppins')),true,'Poppins is embedded');
+// Whichever heading font the design uses (the published look can change) must be embedded and load offline.
+assert.equal(await offlinePage.evaluate(font => document.fonts.check(`700 40px "${font}"`), data.design.headingFont),true,`${data.design.headingFont} is embedded`);
 // A photo background is embedded; plain white has none. Either way nothing loads from the web.
 assert.match(await offlinePage.evaluate(() => getComputedStyle(document.body).backgroundImage),/^(none|url\("data:image\/)/,'The background is embedded or plain');
 for (const [label,id] of [['About','about'],['Insights','insights'],['Contact','contact'],['Home','home']]) {
@@ -100,6 +102,25 @@ for (const [label,id] of [['About','about'],['Insights','insights'],['Contact','
 assert.deepEqual(requested,[],'Nothing is fetched from the internet');
 await offlinePage.close();
 assert.equal(await page.locator('.brand-chooser').count(),0);
+// Page photos (Reil, 30 Sep): drag to reposition, zoom in or out, change the opacity, and reset.
+await page.setViewportSize({width:1280,height:900});
+await page.goto(base+'/contact?editor');
+const photoPanel = page.locator('#site-settings');
+const contactPhoto = page.locator('img[data-page-photo="contact"]');
+const photoStyle = () => contactPhoto.evaluate(img => { const s = getComputedStyle(img); return { position: s.objectPosition, transform: s.transform, opacity: s.opacity }; });
+const before = await photoStyle();
+await photoPanel.getByRole('group',{name:'Zoom size'}).getByRole('button',{name:'Close',exact:true}).click();
+assert.equal((await photoStyle()).transform,'matrix(1.6, 0, 0, 1.6, 0, 0)','Zoom scales the photo');
+await photoPanel.getByRole('group',{name:'Opacity size'}).getByRole('button',{name:'Soft'}).click();
+assert.equal((await photoStyle()).opacity,'0.6','Opacity fades the photo');
+const box = await contactPhoto.boundingBox();
+await page.mouse.move(box.x + box.width * 0.75, box.y + box.height / 2);
+await page.mouse.down();
+await page.mouse.move(box.x + box.width * 0.35, box.y + box.height / 2, { steps: 6 });
+await page.mouse.up();
+assert.notEqual((await photoStyle()).position, before.position, 'Dragging the photo moves it');
+await photoPanel.getByRole('button',{name:'Reset photo'}).click();
+assert.deepEqual(await photoStyle(), before, 'Reset photo puts it back');
 // Focus mode (Reil, 30 Sep): touching a control highlights what it changes; switched off, nothing is highlighted.
 await page.setViewportSize({width:1280,height:900});
 await page.goto(base+'/about?editor');
@@ -155,11 +176,11 @@ assert.equal(await page.locator('.home-box').evaluate(el=>getComputedStyle(el).a
 assert.equal(await page.locator('.home-box').evaluate(el => el.getBoundingClientRect().top < innerHeight),true,'The hero starts in the first screen');
 assert.equal(await page.getByRole('link',{name:'Get Involved'}).getAttribute('href'),'/contact');
 assert.equal(await page.getByRole('link',{name:'Learn More'}).getAttribute('href'),'/about');
-assert.match(await page.locator('.home-photo').getAttribute('alt'),/Earth/,'The Home photo describes itself');
+assert.ok((await page.locator('.home-photo').getAttribute('alt')).length > 10,'The Home photo describes itself');
 assert.equal(await page.locator('.home-photo').evaluate(img => img.complete && img.naturalWidth > 0),true,'The Home photo loads');
 for (const name of ['What We Do','Why Intergenerational Justice Matters']) assert.equal(await page.getByRole('heading',{level:2,name}).count(),1,name);
 assert.equal(await page.locator('.home-card').count(),2,'Strategic Litigation and Policy Reform cards');
 await writeFile('qa-output/results.json',JSON.stringify({results,failures,checks:['menu focus trap','Escape and focus restoration','scroll lock','menu navigation','contact is email-only','removed routes 404','reduced motion','home hero, buttons, photo and sections']},null,2));
 await browser.close();
 assert.deepEqual(failures,[]);
-console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, Home hero and sections, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on, Focus mode.`);
+console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, Home hero and sections, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on, Focus mode, photo drag/zoom/opacity.`);

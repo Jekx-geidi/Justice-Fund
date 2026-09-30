@@ -62,6 +62,15 @@ export const PHOTO_OPTIONS: Record<SitePage, PagePhoto[]> = {
   ],
 };
 
+/** How a page's photo sits: position in % (dragged on the page), zoom 100-250%, opacity 20-100%. */
+export type PhotoFrame = { x: number; y: number; zoom: number; opacity: number };
+
+/** A photo's own best framing: its object-position, normal size, fully opaque. */
+export function defaultFrame(photo: PagePhoto): PhotoFrame {
+  const [x, y] = photo.position.split(' ').map((v) => Math.round(parseFloat(v)));
+  return { x, y, zoom: 100, opacity: 100 };
+}
+
 /** The photo picked for a page, or the page's first photo if none (or someone else's) is picked. */
 export function pagePhoto(page: SitePage, id: string | undefined): PagePhoto {
   return PHOTO_OPTIONS[page].find((p) => p.id === id) ?? PHOTO_OPTIONS[page][0];

@@ -28,7 +28,13 @@ const design: SiteDesign = {
     insights: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
     contact: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
   },
-  photos: { home: 'earth-clouds', about: 'people-planting', insights: 'rainforest-river', contact: 'perth-evening' },
+  photos: { home: 'earth-clouds', about: 'forest-planting', insights: 'rainforest-river', contact: 'perth-skyline-night' },
+  photoFrames: {
+    home: { x: 50, y: 50, zoom: 100, opacity: 100 },
+    about: { x: 50, y: 70, zoom: 100, opacity: 100 },
+    insights: { x: 50, y: 60, zoom: 100, opacity: 100 },
+    contact: { x: 50, y: 50, zoom: 100, opacity: 100 },
+  },
 };
 
 test('the file holds every selection, so it can be loaded back as a SiteDesign later', () => {

@@ -20,17 +20,19 @@ export function PageFrame({ title, page, photo: photoId, children }: { title: st
       </header>
       <div className="page-frame-body">
         {/* Near the top of the page, so it loads first; never wider than the 1100px frame. */}
-        <Image
-          className="page-photo"
-          data-page-photo={page}
-          src={photo.src}
-          alt={photo.alt}
-          width={photo.width}
-          height={photo.height}
-          sizes="(max-width: 1100px) 100vw, 1100px"
-          priority
-          style={{ objectPosition: photo.position }}
-        />
+        <div className="page-photo-frame">
+          <Image
+            className="page-photo"
+            data-page-photo={page}
+            src={photo.src}
+            alt={photo.alt}
+            width={photo.width}
+            height={photo.height}
+            sizes="(max-width: 1100px) 100vw, 1100px"
+            priority
+            draggable={false}
+          />
+        </div>
         {children}
       </div>
     </div>

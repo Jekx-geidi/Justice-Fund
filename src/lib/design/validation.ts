@@ -47,6 +47,19 @@ export const siteDesignSchema = z.object({
     keywords: plainText(300),
   }),
   pageColours: z.object(Object.fromEntries(SITE_PAGES.map((p) => [p.id, pageColours])) as Record<SitePage, typeof pageColours>),
+  photoFrames: z.object(
+    Object.fromEntries(
+      SITE_PAGES.map((p) => [
+        p.id,
+        z.object({
+          x: z.number().int().min(0).max(100),
+          y: z.number().int().min(0).max(100),
+          zoom: z.number().int().min(100).max(250),
+          opacity: z.number().int().min(20).max(100),
+        }),
+      ])
+    ) as Record<SitePage, z.ZodObject<{ x: z.ZodNumber; y: z.ZodNumber; zoom: z.ZodNumber; opacity: z.ZodNumber }>>
+  ),
   // Only that page's own photos.
   photos: z.object(
     Object.fromEntries(

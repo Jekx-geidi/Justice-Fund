@@ -47,7 +47,9 @@ export function HomePageView({
           </div>
         </div>
         {/* The first thing on screen, so it loads first; full width in the centred and band layouts. */}
-        <Image className="home-photo" data-page-photo="home" src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="100vw" priority style={{ objectPosition: photo.position }} />
+        <div className="home-photo-frame">
+          <Image className="home-photo" data-page-photo="home" src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="100vw" priority draggable={false} />
+        </div>
       </section>
       <div className="wrap home-sections">
         {whatWeDo.heading && (

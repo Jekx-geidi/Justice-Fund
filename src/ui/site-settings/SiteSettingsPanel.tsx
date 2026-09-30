@@ -22,7 +22,7 @@ import {
 import { buildOfflineSite } from './export-files';
 import { applyDesignContent } from './apply-design';
 import { focusSelector } from './focus-targets';
-import { PHOTO_OPTIONS } from '@/lib/design/page-photos';
+import { PHOTO_OPTIONS, defaultFrame, pagePhoto, type PhotoFrame } from '@/lib/design/page-photos';
 import { SITE_LOGOS } from '@/lib/brand/logo-concepts';
 import { LOGO_PREVIEW_EVENT } from '@/ui/Header';
 
@@ -272,7 +272,56 @@ export function SiteSettingsPanel({
   const set = <K extends keyof SiteDesign>(key: K, value: SiteDesign[K]) => update({ ...draft, [key]: value });
   const setText = (key: TextKey, value: string) => update({ ...draft, text: { ...draft.text, [key]: value } });
   const setSeo = (key: keyof SiteDesign['seo'], value: string) => update({ ...draft, seo: { ...draft.seo, [key]: value } });
-  const setPhoto = (page: SitePage, id: string) => update({ ...draft, photos: { ...draft.photos, [page]: id } });
+  // A new photo starts from its own best framing.
+  const setPhoto = (page: SitePage, id: string) =>
+    update({
+      ...draft,
+      photos: { ...draft.photos, [page]: id },
+      photoFrames: { ...draft.photoFrames, [page]: defaultFrame(pagePhoto(page, id)) },
+    });
+  const setFrame = (page: SitePage, frame: Partial<PhotoFrame>) =>
+    update({ ...latest.current, photoFrames: { ...latest.current.photoFrames, [page]: { ...latest.current.photoFrames[page], ...frame } } });
+
+  // The drag listeners live for the whole time the panel is open, so they call the latest setFrame through a ref.
+  const setFrameRef = useRef(setFrame);
+  setFrameRef.current = setFrame;
+
+  // While the panel is open, page photos can be dragged to choose which part of the photo shows.
+  useEffect(() => {
+    if (!open) return;
+    document.documentElement.dataset.photoEdit = '';
+    let drag: { page: SitePage; x: number; y: number; zoom: number; startX: number; startY: number; w: number; h: number } | null = null;
+    const onDown = (e: PointerEvent) => {
+      const img = e.target instanceof Element ? e.target.closest<HTMLImageElement>('img[data-page-photo]') : null;
+      if (!img) return;
+      e.preventDefault();
+      const page = img.dataset.pagePhoto as SitePage;
+      const frame = latest.current.photoFrames[page];
+      const box = img.getBoundingClientRect();
+      drag = { page, x: frame.x, y: frame.y, zoom: frame.zoom / 100, startX: e.clientX, startY: e.clientY, w: box.width, h: box.height };
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!drag) return;
+      // Dragging right reveals more of the left, so the position moves the other way; zoomed in, it moves more gently.
+      const clamp = (v: number) => Math.round(Math.min(100, Math.max(0, v)));
+      setFrameRef.current(drag.page, {
+        x: clamp(drag.x - ((e.clientX - drag.startX) / drag.w) * 100 / drag.zoom),
+        y: clamp(drag.y - ((e.clientY - drag.startY) / drag.h) * 100 / drag.zoom),
+      });
+    };
+    const onUp = () => {
+      drag = null;
+    };
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+    return () => {
+      delete document.documentElement.dataset.photoEdit;
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+    };
+  }, [open]);
   const setPageColour = (page: SitePage, key: 'background' | 'text' | 'title' | 'box', value: string) =>
     update({ ...draft, pageColours: { ...draft.pageColours, [page]: { ...draft.pageColours[page], [key]: value } } });
 
@@ -423,6 +472,14 @@ export function SiteSettingsPanel({
                     <img src={photo.thumb} alt="" />
                   </button>
                 ))}
+              </div>
+              <Slider label="Zoom" value={draft.photoFrames[sitePage.id].zoom} min={100} max={250} unit="%" presets={[['Fit', 100], ['Closer', 130], ['Close', 160], ['Very close', 200]]} onChange={(v) => setFrame(sitePage.id, { zoom: v })} />
+              <Slider label="Opacity" value={draft.photoFrames[sitePage.id].opacity} min={20} max={100} unit="%" presets={[['Faint', 40], ['Soft', 60], ['Strong', 80], ['Full', 100]]} onChange={(v) => setFrame(sitePage.id, { opacity: v })} />
+              <div className="ss-photo-tools">
+                <p className="ss-hint">Drag the photo on the page to move it.</p>
+                <button type="button" onClick={() => setFrame(sitePage.id, defaultFrame(pagePhoto(sitePage.id, draft.photos[sitePage.id])))}>
+                  Reset photo
+                </button>
               </div>
             </details>
           )}

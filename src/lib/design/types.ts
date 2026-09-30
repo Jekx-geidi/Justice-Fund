@@ -2,7 +2,7 @@
 
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 import { HOME_HERO } from '../content/home-sections.ts';
-import { PHOTO_OPTIONS } from './page-photos.ts';
+import { PHOTO_OPTIONS, defaultFrame, type PhotoFrame } from './page-photos.ts';
 
 /** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
 export type BackgroundKind = 'image' | 'white' | 'colour';
@@ -41,6 +41,8 @@ export interface SiteDesign {
   pageColours: PageColours;
   /** Each page's photo, an id from that page's PHOTO_OPTIONS. */
   photos: Record<SitePage, string>;
+  /** Each page photo's position, zoom and opacity (Site settings: drag the photo, Zoom, Opacity). */
+  photoFrames: Record<SitePage, PhotoFrame>;
 }
 
 /** A Site settings text field; page markup marks where each one shows with data-design-text. */
@@ -175,6 +177,12 @@ export const DEFAULT_DESIGN: SiteDesign = {
     insights: PHOTO_OPTIONS.insights[0].id,
     contact: PHOTO_OPTIONS.contact[0].id,
   },
+  photoFrames: {
+    home: defaultFrame(PHOTO_OPTIONS.home[0]),
+    about: defaultFrame(PHOTO_OPTIONS.about[0]),
+    insights: defaultFrame(PHOTO_OPTIONS.insights[0]),
+    contact: defaultFrame(PHOTO_OPTIONS.contact[0]),
+  },
   text: {
     // Ange's hero copy (April's email, 30 Sep) on April's layout.
     homeHeading: HOME_HERO.heading,
@@ -217,6 +225,9 @@ export function withDefaults(saved: Partial<SiteDesign> | null | undefined): Sit
       SITE_PAGES.map(({ id }) => [id, { ...d.pageColours[id], ...saved.pageColours?.[id] }])
     ) as PageColours,
     photos: { ...d.photos, ...saved.photos },
+    photoFrames: Object.fromEntries(
+      SITE_PAGES.map(({ id }) => [id, { ...d.photoFrames[id], ...saved.photoFrames?.[id] }])
+    ) as Record<SitePage, PhotoFrame>,
   };
 }
 
@@ -261,7 +272,7 @@ export function designCss(design: SiteDesign): string {
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`
       : `html body{background:${design.background.kind === 'colour' && design.background.colour ? design.background.colour : '#fff'};}`,
-    ...SITE_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};--page-title:${design.pageColours[id].title};--page-box:${design.pageColours[id].box};}`)
+    ...SITE_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};--page-title:${design.pageColours[id].title};--page-box:${design.pageColours[id].box};--photo-x:${design.photoFrames[id].x}%;--photo-y:${design.photoFrames[id].y}%;--photo-zoom:${design.photoFrames[id].zoom / 100};--photo-opacity:${design.photoFrames[id].opacity / 100};}`)
   );
   return lines.join('\n');
 }
