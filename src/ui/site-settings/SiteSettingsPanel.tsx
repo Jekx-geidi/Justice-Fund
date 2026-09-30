@@ -21,6 +21,7 @@ import {
 } from '@/lib/design/types';
 import { buildOfflineSite } from './export-files';
 import { applyDesignContent } from './apply-design';
+import { focusSelector } from './focus-targets';
 import { PHOTO_OPTIONS } from '@/lib/design/page-photos';
 import { SITE_LOGOS } from '@/lib/brand/logo-concepts';
 import { LOGO_PREVIEW_EVENT } from '@/ui/Header';
@@ -39,6 +40,21 @@ function applyToPage(design: SiteDesign) {
   }
   window.dispatchEvent(new CustomEvent(LOGO_PREVIEW_EVENT, { detail: design.logo }));
   applyDesignContent(document, design);
+}
+
+const FOCUS_KEY = 'ss-focus-mode';
+
+/** The label a control shows in the panel: its field label, slider label, the label above its swatches, or its section. */
+function controlLabel(target: Element): string | null {
+  const field = target.closest('.ss-field');
+  if (field) return field.firstChild?.textContent ?? null;
+  const slider = target.closest('.ss-slider');
+  if (slider) return slider.querySelector('span')?.firstChild?.textContent ?? null;
+  const group = target.closest('.ss-grid, .ss-swatches');
+  if (!group) return null;
+  const above = group.previousElementSibling;
+  if (above?.classList.contains('ss-label')) return above.textContent;
+  return group.closest('details')?.querySelector('summary')?.textContent ?? null;
 }
 
 const same = (a: SiteDesign, b: SiteDesign) => JSON.stringify(a) === JSON.stringify(b);
@@ -154,6 +170,42 @@ export function SiteSettingsPanel({
   // Saves run one after another, so the last change always wins and Publish can wait for them.
   const inflight = useRef<Promise<boolean>>(Promise.resolve(true));
   const panelRef = useRef<HTMLDivElement>(null);
+  // Focus mode: highlight the part of the page a control changes. On unless she switches it off (remembered per browser).
+  const [focusMode, setFocusMode] = useState(true);
+  const focusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(FOCUS_KEY) === 'off') setFocusMode(false);
+    } catch {}
+  }, []);
+
+  function toggleFocusMode(on: boolean) {
+    setFocusMode(on);
+    if (!on) clearFocus();
+    try {
+      localStorage.setItem(FOCUS_KEY, on ? 'on' : 'off');
+    } catch {}
+  }
+
+  function clearFocus() {
+    if (focusTimer.current) clearTimeout(focusTimer.current);
+    for (const el of document.querySelectorAll('.ss-focus')) el.classList.remove('ss-focus');
+  }
+
+  /** Highlights and scrolls to what the touched control changes. */
+  function showFocus(target: EventTarget | null) {
+    if (!focusMode || !(target instanceof Element)) return;
+    const label = controlLabel(target);
+    const selector = label && focusSelector(label);
+    if (!selector) return;
+    clearFocus();
+    const els = [...document.querySelectorAll<HTMLElement>(selector)].filter((el) => !el.closest('#site-settings, .ss-launcher'));
+    for (const el of els) el.classList.add('ss-focus');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    els[0]?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    focusTimer.current = setTimeout(clearFocus, 2600);
+  }
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -342,13 +394,17 @@ export function SiteSettingsPanel({
             <p className={`ss-status ss-status-${saveState}`} role="status">
               {status}
             </p>
+            <label className="ss-focus-toggle">
+              <input type="checkbox" checked={focusMode} onChange={(e) => toggleFocusMode(e.target.checked)} />
+              Focus mode <small>(highlight what I’m editing)</small>
+            </label>
           </div>
           <button type="button" className="ss-icon" aria-label="Close site settings" onClick={() => setOpen(false)}>
             <X size={18} aria-hidden="true" />
           </button>
         </div>
 
-        <div className="ss-body">
+        <div className="ss-body" onPointerDownCapture={(e) => showFocus(e.target)} onFocusCapture={(e) => showFocus(e.target)}>
                     {/* The current page's photo candidates come first: the image April changes most. */}
           {sitePage && (
             <details open>

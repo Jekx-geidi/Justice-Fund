@@ -100,13 +100,25 @@ for (const [label,id] of [['About','about'],['Insights','insights'],['Contact','
 assert.deepEqual(requested,[],'Nothing is fetched from the internet');
 await offlinePage.close();
 assert.equal(await page.locator('.brand-chooser').count(),0);
+// Focus mode (Reil, 30 Sep): touching a control highlights what it changes; switched off, nothing is highlighted.
+await page.setViewportSize({width:1280,height:900});
+await page.goto(base+'/about?editor');
+await page.locator('#site-settings summary',{hasText:'Colour'}).click();
+const boxSwatch = page.locator('#site-settings .ss-label',{hasText:'About boxes'}).locator('xpath=following-sibling::div[1]').getByRole('button').nth(1);
+await boxSwatch.click();
+assert.equal(await page.locator('.focus-card.ss-focus').count(),3,'Focus mode highlights the About boxes');
+await page.getByLabel(/Focus mode/).uncheck();
+assert.equal(await page.locator('.ss-focus').count(),0,'Turning Focus mode off clears the highlight');
+await boxSwatch.click();
+assert.equal(await page.locator('.ss-focus').count(),0,'Focus mode off: nothing is highlighted');
+await page.getByLabel(/Focus mode/).check();
 // Site settings only shows controls that visibly change the page you're on: one pick in every group,
 // and a keystroke in every field, must change the page (screenshotted with the panel hidden).
 await page.setViewportSize({width:1280,height:900});
 const pageShot = async () => {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForLoadState('networkidle');
-  await page.addStyleTag({content:'#site-settings,.ss-launcher{visibility:hidden!important}'}).then(tag => tag.evaluate(el => el.setAttribute('data-qa-hide','')));
+  await page.addStyleTag({content:'#site-settings,.ss-launcher{visibility:hidden!important} .ss-focus{outline:none!important;box-shadow:none!important}'}).then(tag => tag.evaluate(el => el.setAttribute('data-qa-hide','')));
   const shot = await page.screenshot({fullPage:true,animations:'disabled'});
   await page.evaluate(() => document.querySelectorAll('[data-qa-hide]').forEach(el => el.remove()));
   return shot;
@@ -148,4 +160,4 @@ assert.equal(await page.locator('.home-card').count(),2,'Strategic Litigation an
 await writeFile('qa-output/results.json',JSON.stringify({results,failures,checks:['menu focus trap','Escape and focus restoration','scroll lock','menu navigation','contact is email-only','removed routes 404','reduced motion','home hero, buttons, photo and sections']},null,2));
 await browser.close();
 assert.deepEqual(failures,[]);
-console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, Home hero and sections, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on.`);
+console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, Home hero and sections, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on, Focus mode.`);
