@@ -1,15 +1,15 @@
 # Page photos
 
 One photo per page, requested by April French (29 Sep 2026). April's own references were search-result
-screenshots (pngtree, Bing) without a licence, so these are close matches that are **free to use under the
-[Unsplash License](https://unsplash.com/license)**: commercial use allowed, no permission or attribution
-required (credited here anyway). Resized to WebP under 300 KB. Replace freely if April or Ange supply their own.
+screenshots (pngtree, Bing) without a licence, so these are close matches from Pexels, **free to use under the
+[Pexels License](https://www.pexels.com/license/)**: commercial use allowed, no permission or attribution required
+(credited here anyway). Resized to WebP under 300 KB. Give a replacement photo a new file name: next/image and the CDN cache resized images by URL. Replace freely if April or Ange supply their own.
 
 | Page | File | Photo | Photographer | Source |
 | --- | --- | --- | --- | --- |
-| Home | `home.webp` | Ocean clouds seen from space (cropped to remove a satellite) | NASA | https://unsplash.com/photos/yZygONrUBe8 |
-| About | `about.webp` | Planting young trees in a forest, Addis Ababa | Eyoel Kahssay | https://unsplash.com/photos/FyCjvyPG9Pg |
-| Insights | `insights.webp` | Rio Sucuri from above, Bonito, Brazil | Paulo Freitas | https://unsplash.com/photos/cv9_7yqwKzE |
-| Contact | `contact.webp` | Perth skyline over the Swan River | Eddie Mark Blair | https://unsplash.com/photos/XU3sz-IJANk |
+| Home | `earth-clouds.webp` | Stunning Aerial View of Earth from Space | Zelch Csaba | https://www.pexels.com/photo/stunning-aerial-view-of-earth-from-space-30596252/ |
+| About | `people-planting.webp` | People Planting Together | Anna Shvets | https://www.pexels.com/photo/people-planting-together-5029929/ |
+| Insights | `rainforest-river.webp` | Amazon Rainforest in Birds Eye View | K (@kelly) | https://www.pexels.com/photo/amazon-rainforest-in-birds-eye-view-16562858/ |
+| Contact | `perth-evening.webp` | Vibrant Evening Skyline of Perth, Australia | Sergey Guk | https://www.pexels.com/photo/vibrant-evening-skyline-of-perth-australia-30835052/ |
 
-Checked 30 Sep 2026: each photo page says "Free to use under the Unsplash License" (none are Unsplash+).
+Checked 30 Sep 2026: each photo page shows it as free under the Pexels License.

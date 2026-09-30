@@ -1,7 +1,6 @@
 /** Site-wide look and copy that April edits from the on-page "Site settings" panel. Shared by server and browser. */
 
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
-import { HOME_HERO } from '../content/home-sections.ts';
 
 /** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
 export type BackgroundKind = 'image' | 'white';
@@ -98,13 +97,14 @@ export const PAGE_COLOURS: { name: string; value: string; light?: boolean }[] = 
 /**
  * The site's pages, in menu order: their own colours, photo and offline-export section. Each page view marks its content
  * with data-page="<id>". The flags say what Site settings can change there, so it only offers controls that visibly work:
- * `pageText` (text outside dark boxes, for the page text colour) and `colouredHeading` (a section heading for Heading colour).
+ * `siteBackground` (the site background shows around the page; Home's photo covers it),
+ * `pageText` (text outside dark boxes, for the page text colour) and `colouredHeading` (a section heading for Heading colour; Home's title stays in its box's text colour).
  */
 export const SITE_PAGES = [
-  { id: 'home', path: '/', label: 'Home', pageText: true, colouredHeading: true },
-  { id: 'about', path: '/about', label: 'About', pageText: true, colouredHeading: true },
-  { id: 'insights', path: '/insights', label: 'Insights', pageText: false, colouredHeading: false },
-  { id: 'contact', path: '/contact', label: 'Contact', pageText: false, colouredHeading: false },
+  { id: 'home', path: '/', label: 'Home', siteBackground: false, pageText: true, colouredHeading: false },
+  { id: 'about', path: '/about', label: 'About', siteBackground: true, pageText: true, colouredHeading: true },
+  { id: 'insights', path: '/insights', label: 'Insights', siteBackground: true, pageText: false, colouredHeading: false },
+  { id: 'contact', path: '/contact', label: 'Contact', siteBackground: true, pageText: false, colouredHeading: false },
 ] as const;
 export type SitePage = (typeof SITE_PAGES)[number]['id'];
 export type PageColours = Record<SitePage, { background: string; text: string }>;
@@ -129,8 +129,8 @@ export const DEFAULT_DESIGN: SiteDesign = {
     contact: { background: '#f5f3f1', text: '#231f20' },
   },
   text: {
-    homeHeading: HOME_HERO.heading,
-    homeTagline: HOME_HERO.paragraph,
+    homeHeading: 'Intergenerational Justice Fund',
+    homeTagline: 'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
     contactEmail: 'hello@justicefund.org.au',
     abn: '51 656 623 719',
   },

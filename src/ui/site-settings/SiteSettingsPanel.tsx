@@ -350,6 +350,7 @@ export function SiteSettingsPanel({
         </div>
 
         <div className="ss-body">
+          {sitePage?.siteBackground !== false && (
           <details open>
             <summary>Background</summary>
             <div className="ss-grid ss-grid-3">
@@ -376,6 +377,7 @@ export function SiteSettingsPanel({
               </button>
             </div>
           </details>
+          )}
 
           <details>
             <summary>Layout</summary>
@@ -450,7 +452,10 @@ export function SiteSettingsPanel({
           <details>
             <summary>Sizes</summary>
             <Slider label="Headings" value={draft.headingSize} min={80} max={140} unit="%" presets={[['Small', 80], ['Medium', 100], ['Large', 115], ['Extra large', 130]]} onChange={(v) => set('headingSize', v)} />
-            <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
+            {/* Home's only body text is the tagline. */}
+            {(!isHome || Boolean(draft.text.homeTagline)) && (
+              <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
+            )}
             <Slider label="Menu" value={draft.menuSize} min={11} max={18} unit="px" presets={[['Small', 12], ['Default', 13], ['Large', 15], ['Extra large', 17]]} onChange={(v) => set('menuSize', v)} />
           </details>
 

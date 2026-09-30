@@ -138,14 +138,6 @@ export const homeFieldsSchema = z.object({
   heroImage: mediaReferenceSchema.nullish(),
   quotes: z.array(homeQuoteSchema).max(12),
   bottomLine: z.string().max(300),
-  whatWeDo: z
-    .object({
-      heading: z.string().max(120),
-      intro: z.string().max(1000),
-      cards: z.array(z.object({ title: z.string().max(120), text: z.string().max(1000) })).max(6),
-    })
-    .optional(),
-  why: z.object({ heading: z.string().max(120), body: z.string().max(4000) }).optional(),
 });
 
 export const aboutFocusAreaSchema = z.object({

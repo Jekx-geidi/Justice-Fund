@@ -136,15 +136,14 @@ for (const route of ROUTES) {
 await page.emulateMedia({reducedMotion:'reduce'});
 await page.goto(base);
 assert.equal(await page.locator('.home-box').evaluate(el=>getComputedStyle(el).animationName),'none');
-// Ange's Home page (30 Sep): hero with two buttons and the page photo in the first screen, then What We Do and Why.
-assert.equal(await page.locator('.home-box').evaluate(el => el.getBoundingClientRect().top < innerHeight),true,'The hero starts in the first screen');
-assert.equal(await page.getByRole('link',{name:'Get Involved'}).getAttribute('href'),'/contact');
-assert.equal(await page.getByRole('link',{name:'Learn More'}).getAttribute('href'),'/about');
+// April's export (29 Sep) is the Home layout: the dark box with the fund name and her tagline, the page photo
+// beside or behind it, and nothing else, so it fits one screen.
+assert.equal(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight),true,'Home must fit one screen');
+assert.equal(await page.locator('.home-box h1').innerText(),'Intergenerational Justice Fund');
+assert.equal(await page.locator('main a, main .home-sections').count(),0,'Home has no buttons or extra sections');
 assert.match(await page.locator('.home-photo').getAttribute('alt'),/Earth/,'The Home photo describes itself');
 assert.equal(await page.locator('.home-photo').evaluate(img => img.complete && img.naturalWidth > 0),true,'The Home photo loads');
-for (const name of ['What We Do','Why Intergenerational Justice Matters']) assert.equal(await page.getByRole('heading',{level:2,name}).count(),1,name);
-assert.equal(await page.locator('.home-card').count(),2,'Strategic Litigation and Policy Reform cards');
-await writeFile('qa-output/results.json',JSON.stringify({results,failures,checks:['menu focus trap','Escape and focus restoration','scroll lock','menu navigation','contact is email-only','removed routes 404','reduced motion','home hero, buttons, photo and sections']},null,2));
+await writeFile('qa-output/results.json',JSON.stringify({results,failures,checks:['menu focus trap','Escape and focus restoration','scroll lock','menu navigation','contact is email-only','removed routes 404','reduced motion','home fits one screen with its photo']},null,2));
 await browser.close();
 assert.deepEqual(failures,[]);
-console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, Home hero and sections, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on.`);
+console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, one-screen Home with photo, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on.`);
