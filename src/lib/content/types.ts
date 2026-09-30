@@ -137,16 +137,18 @@ export interface ContactFields {
   /** Shown above the email; empty hides it. */
   location: string;
   email: string;
-  /** Label above the email address; undefined falls back to "Email", empty hides it. */
+  /** Label above the email address; undefined falls back to DEFAULT_EMAIL_LABEL, empty hides it. */
   emailLabel?: string;
 }
+export const DEFAULT_EMAIL_LABEL = 'Email';
 
 /** Placeholder box the Insights page shows while no entries are published. Empty values hide that line. */
 export interface InsightsFields {
-  /** Undefined falls back to "Coming soon". */
+  /** Undefined falls back to DEFAULT_INSIGHTS_TAG. */
   emptyTag?: string;
   emptyMessage?: string;
 }
+export const DEFAULT_INSIGHTS_TAG = 'Coming soon';
 
 export interface InsightEntry {
   id: string;

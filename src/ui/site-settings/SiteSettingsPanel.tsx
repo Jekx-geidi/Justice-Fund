@@ -8,23 +8,20 @@ import {
   DEFAULT_DESIGN,
   FONTS,
   HEADING_COLOURS,
-  COLOUR_PAGES,
+  SITE_PAGES,
   PAGE_COLOURS,
-  type ColourPage,
+  type SitePage,
   designCss,
   fontByName,
   OPEN_EDITOR_PARAM,
   type SiteDesign,
+  type TextKey,
 } from '@/lib/design/types';
 import { buildOfflineSite } from './export-files';
 import { SITE_LOGOS } from '@/lib/brand/logo-concepts';
 import { LOGO_PREVIEW_EVENT } from '@/ui/Header';
 
-/** Pages built on the shared PageFrame, the only ones the page layout changes. */
-const FRAMED_PAGES = ['/about', '/insights', '/contact'];
-
 type SaveState = 'saved' | 'saving' | 'error';
-type TextKey = keyof SiteDesign['text'];
 
 /** Pushes a settings object onto the live page so every change shows immediately. */
 function applyToPage(design: SiteDesign) {
@@ -68,9 +65,7 @@ function Choice<T extends string>({
   );
 }
 
-const LIGHT = ['#ffffff', '#f5f3f1'];
-
-function Swatches({ colours, current, onPick }: { colours: { name: string; value: string }[]; current: string; onPick: (v: string) => void }) {
+function Swatches({ colours, current, onPick }: { colours: { name: string; value: string; light?: boolean }[]; current: string; onPick: (v: string) => void }) {
   return (
     <div className="ss-swatches">
       {colours.map((c) => (
@@ -78,7 +73,7 @@ function Swatches({ colours, current, onPick }: { colours: { name: string; value
           key={c.value}
           type="button"
           className="ss-swatch"
-          data-light={LIGHT.includes(c.value) || undefined}
+          data-light={c.light || undefined}
           aria-pressed={current === c.value}
           aria-label={c.name}
           title={c.name}
@@ -145,15 +140,11 @@ export function SiteSettingsPanel({
   canSave: boolean;
 }) {
   const pathname = usePathname() ?? '';
-  // Only offer controls that change the page on screen, so a pick never looks like it did nothing.
-  const isHome = pathname === '/';
-  const isFramed = FRAMED_PAGES.includes(pathname);
-  // The heading colour styles section headings (About focus areas, Home's What We Do); page titles stay white on black.
-  const hasColouredHeading = pathname === '/about' || isHome;
-  // Home, About, Insights and Contact each have their own background colour.
-  const colourPage = COLOUR_PAGES.find((p) => p.path === pathname);
-  // Insights and Contact keep all their text in dark boxes, so only Home and About have page text to colour.
-  const hasPageText = colourPage?.id === 'home' || colourPage?.id === 'about';
+  // Only offer controls that change the page on screen (see the SITE_PAGES flags), so a pick never looks like it did nothing.
+  const sitePage = SITE_PAGES.find((p) => p.path === pathname);
+  const isHome = sitePage?.id === 'home';
+  // About, Insights and Contact are built on the shared PageFrame, the only pages the page layout changes.
+  const isFramed = Boolean(sitePage) && !isHome;
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(initialDraft);
   const [live, setLive] = useState(initialLive);
@@ -231,7 +222,7 @@ export function SiteSettingsPanel({
   const set = <K extends keyof SiteDesign>(key: K, value: SiteDesign[K]) => update({ ...draft, [key]: value });
   const setText = (key: TextKey, value: string) => update({ ...draft, text: { ...draft.text, [key]: value } });
   const setSeo = (key: keyof SiteDesign['seo'], value: string) => update({ ...draft, seo: { ...draft.seo, [key]: value } });
-  const setPageColour = (page: ColourPage, key: 'background' | 'text', value: string) =>
+  const setPageColour = (page: SitePage, key: 'background' | 'text', value: string) =>
     update({ ...draft, pageColours: { ...draft.pageColours, [page]: { ...draft.pageColours[page], [key]: value } } });
 
   async function flush() {
@@ -463,26 +454,26 @@ export function SiteSettingsPanel({
             <Slider label="Menu" value={draft.menuSize} min={11} max={18} unit="px" presets={[['Small', 12], ['Default', 13], ['Large', 15], ['Extra large', 17]]} onChange={(v) => set('menuSize', v)} />
           </details>
 
-          {colourPage && (
+          {sitePage && (
             <details>
               <summary>Colour</summary>
-              <p className="ss-label">{colourPage.label} page background</p>
+              <p className="ss-label">{sitePage.label} page background</p>
               <Swatches
                 colours={PAGE_COLOURS}
-                current={draft.pageColours[colourPage.id].background}
-                onPick={(v) => setPageColour(colourPage.id, 'background', v)}
+                current={draft.pageColours[sitePage.id].background}
+                onPick={(v) => setPageColour(sitePage.id, 'background', v)}
               />
-              {hasPageText && (
+              {sitePage.pageText && (
                 <>
-                  <p className="ss-label">{colourPage.label} page text</p>
+                  <p className="ss-label">{sitePage.label} page text</p>
                   <Swatches
                     colours={PAGE_COLOURS}
-                    current={draft.pageColours[colourPage.id].text}
-                    onPick={(v) => setPageColour(colourPage.id, 'text', v)}
+                    current={draft.pageColours[sitePage.id].text}
+                    onPick={(v) => setPageColour(sitePage.id, 'text', v)}
                   />
                 </>
               )}
-              {hasColouredHeading && (
+              {sitePage.colouredHeading && (
                 <>
                   <p className="ss-label">Heading colour</p>
                   <Swatches colours={HEADING_COLOURS} current={draft.headingColour} onPick={(v) => set('headingColour', v)} />
@@ -536,7 +527,7 @@ export function SiteSettingsPanel({
                 </label>
               </>
             )}
-            {pathname === '/contact' && (
+            {sitePage?.id === 'contact' && (
               <label className="ss-field">
                 Contact email
                 <input type="email" value={draft.text.contactEmail} maxLength={200} onChange={(e) => setText('contactEmail', e.target.value)} />

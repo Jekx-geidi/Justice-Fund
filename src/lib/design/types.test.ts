@@ -22,7 +22,7 @@ test('the default homepage heading and tagline are Ange’s hero copy', () => {
 });
 
 // April (29 Sep): toggle the background and font colours on each page; add dark blue and teal to the palette.
-import { COLOUR_PAGES, PAGE_COLOURS, HEADING_COLOURS, designCss, withDefaults } from './types.ts';
+import { SITE_PAGES, PAGE_COLOURS, HEADING_COLOURS, designCss, withDefaults } from './types.ts';
 import { siteDesignSchema } from './validation.ts';
 
 const hex = (name: string) => PAGE_COLOURS.find((c) => c.name === name)!.value;
@@ -36,8 +36,8 @@ test('dark blue and teal are also heading colours', () => {
 });
 
 test('every page (Home, About, Insights, Contact) has its own background and text colour', () => {
-  assert.deepEqual(COLOUR_PAGES.map((p) => p.id), ['home', 'about', 'insights', 'contact']);
-  for (const p of COLOUR_PAGES) assert.ok(DEFAULT_DESIGN.pageColours[p.id].background && DEFAULT_DESIGN.pageColours[p.id].text, p.id);
+  assert.deepEqual(SITE_PAGES.map((p) => p.id), ['home', 'about', 'insights', 'contact']);
+  for (const p of SITE_PAGES) assert.ok(DEFAULT_DESIGN.pageColours[p.id].background && DEFAULT_DESIGN.pageColours[p.id].text, p.id);
 });
 
 test('the defaults keep today\u2019s look: black Home box with white text, natural pages with black text', () => {

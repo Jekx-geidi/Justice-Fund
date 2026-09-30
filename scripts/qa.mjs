@@ -4,6 +4,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 const base = process.env.QA_URL || 'http://localhost:3100';
+// The site's four pages (SITE_PAGES in src/lib/design/types.ts).
+const ROUTES = ['/', '/about', '/insights', '/contact'];
 await mkdir('qa-output', { recursive: true });
 const browser = await chromium.launch();
 const context = await browser.newContext();
@@ -13,7 +15,7 @@ const results = [];
 page.on('pageerror', error => failures.push(error.message));
 for (const width of [320,375,390,430,768,820,1024,1280,1440,1920]) {
   await page.setViewportSize({ width, height: 1000 });
-  for (const route of ['/', '/about', '/insights', '/contact']) {
+  for (const route of ROUTES) {
     const response = await page.goto(base + route);
     assert.equal(response.status(), 200);
     await page.evaluate(() => document.fonts.ready);
@@ -49,7 +51,7 @@ assert.equal(await page.locator('main form').count(),0,'Contact page must not ha
 assert.match(await page.locator('main a[href^="mailto:"]').getAttribute('href'),/^mailto:.+@/);
 for(const route of ['/team','/cases','/environment']) assert.equal((await page.goto(base+route)).status(),404);
 // April (29 Sep): no "Charity · Perth, WA" caption in the header, on any page or in the phone menu.
-for (const route of ['/','/about','/insights','/contact']) { await page.goto(base+route); assert.doesNotMatch(await page.content(),/CHARITY · PERTH/i,route+' still shows the header caption'); }
+for (const route of ROUTES) { await page.goto(base+route); assert.doesNotMatch(await page.content(),/CHARITY · PERTH/i,route+' still shows the header caption'); }
 // April (29 Sep): a photo on each page. About, Insights and Contact show theirs at the top of the page frame.
 for (const [route, words] of [['/about',/planting/i],['/insights',/river/i],['/contact',/Perth/]]) {
   await page.goto(base+route);
@@ -108,26 +110,27 @@ const pageShot = async () => {
   await page.evaluate(() => document.querySelectorAll('[data-qa-hide]').forEach(el => el.remove()));
   return shot;
 };
-for (const route of ['/','/about','/insights','/contact']) {
+for (const route of ROUTES) {
   await page.goto(base+route+'?editor');
   const panel = page.locator('#site-settings');
   await panel.locator('details').evaluateAll(sections => sections.forEach(d => { d.open = true; }));
+  // Each change's screenshot is the next change's starting point.
+  let shot = await pageShot();
+  const changed = async () => { const next = await pageShot(); const same = shot.equals(next); shot = next; return !same; };
   const groups = panel.locator('.ss-body :is(.ss-grid,.ss-swatches,.ss-presets)');
   for (let i = 0; i < await groups.count(); i++) {
     const option = groups.nth(i).locator('button[aria-pressed="false"]').first();
     const group = (await groups.nth(i).getAttribute('aria-label')) ?? (await groups.nth(i).evaluate(el => el.previousElementSibling?.textContent ?? el.closest('details').querySelector('summary').textContent));
     const name = `${group}: ${(await option.getAttribute('aria-label')) || (await option.innerText()).trim()}`;
-    const before = await pageShot();
     await option.click();
-    if (before.equals(await pageShot())) failures.push(`${route}: Site settings option "${name}" changes nothing on this page`);
+    if (!(await changed())) failures.push(`${route}: Site settings option "${name}" changes nothing on this page`);
   }
   const fields = panel.locator('.ss-body :is(input:not([type=range]),textarea)');
   for (let i = 0; i < await fields.count(); i++) {
     const field = fields.nth(i);
     const name = (await field.evaluate(el => el.closest('label')?.firstChild?.textContent ?? '')).trim();
-    const before = await pageShot();
     await field.fill((await field.inputValue()) + ' QA');
-    if (before.equals(await pageShot())) failures.push(`${route}: Site settings field "${name}" changes nothing on this page`);
+    if (!(await changed())) failures.push(`${route}: Site settings field "${name}" changes nothing on this page`);
   }
 }
 await page.emulateMedia({reducedMotion:'reduce'});

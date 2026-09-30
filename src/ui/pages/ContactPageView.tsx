@@ -1,5 +1,5 @@
 import { PageFrame } from '@/ui/Editorial';
-import type { ContactFields, ContentBlock } from '@/lib/content/types';
+import { DEFAULT_EMAIL_LABEL, type ContactFields, type ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
 /** Location and email only: no form, no phone numbers. */
@@ -13,7 +13,7 @@ export function ContactPageView({
   additionalSections?: ContentBlock[];
 }) {
   const address = email ?? contact.email;
-  const emailLabel = contact.emailLabel ?? 'Email';
+  const emailLabel = contact.emailLabel ?? DEFAULT_EMAIL_LABEL;
   return (
     <>
       <PageFrame title="Contact" page="contact">

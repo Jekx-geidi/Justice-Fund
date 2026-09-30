@@ -199,33 +199,35 @@ export function PageEditorClient({
       </fieldset>
 
       {page.coreKey === 'home' && (
-        <SiteSettingsNotice title="Homepage heading and look">
-          The homepage heading, paragraph, colours and layout are managed directly from the public Site Settings panel.
-        </SiteSettingsNotice>
+        <>
+          <SiteSettingsNotice title="Homepage heading and look">
+            The homepage heading, paragraph, colours and layout are managed directly from the public Site Settings panel.
+          </SiteSettingsNotice>
+          {page.home && <HomeSectionsEditor value={page.home} onChange={(home) => update({ home })} />}
+        </>
       )}
-      {page.coreKey === 'home' && page.home && <HomeSectionsEditor value={page.home} onChange={(home) => update({ home })} />}
       {page.coreKey === 'about' && page.about && (
         <AboutFieldsEditor value={page.about} onChange={(about) => update({ about })} />
       )}
-      {page.coreKey === 'contact' && page.contact && (
-        <ContactFieldsEditor value={page.contact} onChange={(contact) => update({ contact })} />
-      )}
       {page.coreKey === 'contact' && (
-        <SiteSettingsNotice title="Contact email">
-          The email address on this page is a site-level setting, managed from the public Site Settings panel (Text).
-        </SiteSettingsNotice>
+        <>
+          {page.contact && <ContactFieldsEditor value={page.contact} onChange={(contact) => update({ contact })} />}
+          <SiteSettingsNotice title="Contact email">
+            The email address on this page is a site-level setting, managed from the public Site Settings panel (Text).
+          </SiteSettingsNotice>
+        </>
       )}
       {page.coreKey === 'insights' && (
-        <InsightsFieldsEditor value={page.insightsPage} onChange={(insightsPage) => update({ insightsPage })} />
-      )}
-      {page.coreKey === 'insights' && (
-        <p className="text-sm text-[var(--slate)]">
-          Insights entries are managed separately.{' '}
-          <Link href="/admin/insights" className="underline">
-            Go to Insights
-          </Link>
-          .
-        </p>
+        <>
+          <InsightsFieldsEditor value={page.insightsPage} onChange={(insightsPage) => update({ insightsPage })} />
+          <p className="text-sm text-[var(--slate)]">
+            Insights entries are managed separately.{' '}
+            <Link href="/admin/insights" className="underline">
+              Go to Insights
+            </Link>
+            .
+          </p>
+        </>
       )}
       {!page.isCore && (
         <div>

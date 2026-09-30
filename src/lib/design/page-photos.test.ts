@@ -1,12 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { statSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { PAGE_PHOTOS } from './page-photos.ts';
-import { COLOUR_PAGES } from './types.ts';
+import { SITE_PAGES } from './types.ts';
 
 // April (29 Sep): a photo on each page. These are licensed stand-ins for her references.
 test('every page has a photo', () => {
-  assert.deepEqual(Object.keys(PAGE_PHOTOS).sort(), COLOUR_PAGES.map((p) => p.id).sort());
+  assert.deepEqual(Object.keys(PAGE_PHOTOS).sort(), SITE_PAGES.map((p) => p.id).sort());
 });
 
 test('each photo is a small webp shipped with the site', () => {
@@ -17,10 +17,14 @@ test('each photo is a small webp shipped with the site', () => {
   }
 });
 
-test('each photo describes itself for screen readers and credits its photographer', () => {
-  for (const [page, photo] of Object.entries(PAGE_PHOTOS)) {
-    assert.ok(photo.alt.length > 10, `${page} alt text`);
-    assert.ok(photo.credit.length > 0, `${page} credit`);
-    assert.match(photo.source, /^https:\/\/unsplash\.com\/photos\//, `${page} source`);
+test('each photo describes itself for screen readers', () => {
+  for (const [page, photo] of Object.entries(PAGE_PHOTOS)) assert.ok(photo.alt.length > 10, `${page} alt text`);
+});
+
+test('CREDITS.md credits every photo with its Unsplash source', () => {
+  const credits = readFileSync(new URL('../../../public/images/pages/CREDITS.md', import.meta.url), 'utf8');
+  for (const photo of Object.values(PAGE_PHOTOS)) {
+    const file = photo.src.split('/').pop()!;
+    assert.match(credits, new RegExp(`\`${file}\`.*https://unsplash\\.com/photos/`), file);
   }
 });

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { designExport, exportFilename } from './export.ts';
+import { designJson, exportFilename } from './export.ts';
 import type { SiteDesign } from './types.ts';
 
 const design: SiteDesign = {
@@ -26,13 +26,13 @@ const design: SiteDesign = {
 };
 
 test('the file holds every selection, so it can be loaded back as a SiteDesign later', () => {
-  const { json } = designExport(design, '/about', new Date(2026, 8, 24, 14, 5));
+  const json = designJson(design, '/about', new Date(2026, 8, 24, 14, 5));
   assert.deepEqual(JSON.parse(json).design, design);
 });
 
 test('the file says what it is, which page it came from and when', () => {
   const now = new Date(2026, 8, 24, 14, 5);
-  const file = JSON.parse(designExport(design, '/about', now).json);
+  const file = JSON.parse(designJson(design, '/about', now));
   assert.equal(file.kind, 'iejf-site-design');
   assert.equal(file.version, 1);
   assert.equal(file.page, '/about');
@@ -40,15 +40,10 @@ test('the file says what it is, which page it came from and when', () => {
 });
 
 test('the file is named after the local date it was exported', () => {
-  const { filename } = designExport(design, '/', new Date(2026, 8, 4, 23, 59));
-  assert.equal(filename, 'iejf-design-2026-09-04.json');
+  assert.equal(exportFilename(new Date(2026, 8, 4, 23, 59), 'html'), 'iejf-design-2026-09-04.html');
 });
 
-test('the json is indented so it reads cleanly in an email attachment', () => {
-  const { json } = designExport(design, '/', new Date(2026, 8, 24));
+test('the json is indented so it reads cleanly when opened', () => {
+  const json = designJson(design, '/', new Date(2026, 8, 24));
   assert.match(json, /\n  "design": \{/);
-});
-
-test('the offline page gets the same dated file name with its own extension', () => {
-  assert.equal(exportFilename(new Date(2026, 8, 29, 13, 26), 'html'), 'iejf-design-2026-09-29.html');
 });

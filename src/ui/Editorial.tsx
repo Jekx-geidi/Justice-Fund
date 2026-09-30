@@ -1,5 +1,6 @@
 import type { AboutFocusArea } from '@/lib/content/types';
-import { DEFAULT_DESIGN, LEGAL_NAME, type ColourPage } from '@/lib/design/types';
+import { DEFAULT_DESIGN, LEGAL_NAME, type SitePage } from '@/lib/design/types';
+import Image from 'next/image';
 import { PAGE_PHOTOS } from '@/lib/design/page-photos';
 /**
  * Shared frame for About, Insights and Contact so all three keep the same
@@ -7,7 +8,7 @@ import { PAGE_PHOTOS } from '@/lib/design/page-photos';
  * centred) comes from the nearest [data-page-layout] ancestor.
  */
 /** `page` picks up that page's own background and text colours from Site settings (see designCss) and its photo (April, 29 Sep). */
-export function PageFrame({ title, page, children }: { title: string; page: ColourPage; children: React.ReactNode }) {
+export function PageFrame({ title, page, children }: { title: string; page: SitePage; children: React.ReactNode }) {
   const photo = PAGE_PHOTOS[page];
   return (
     <div className="wrap page-frame" data-page={page}>
@@ -15,7 +16,17 @@ export function PageFrame({ title, page, children }: { title: string; page: Colo
         <h1 className="page-title">{title}</h1>
       </header>
       <div className="page-frame-body">
-        <img className="page-photo" src={photo.src} alt={photo.alt} style={{ objectPosition: photo.position }} />
+        {/* Near the top of the page, so it loads first; never wider than the 1100px frame. */}
+        <Image
+          className="page-photo"
+          src={photo.src}
+          alt={photo.alt}
+          width={photo.width}
+          height={photo.height}
+          sizes="(max-width: 1100px) 100vw, 1100px"
+          priority
+          style={{ objectPosition: photo.position }}
+        />
         {children}
       </div>
     </div>

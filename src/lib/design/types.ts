@@ -31,6 +31,9 @@ export interface SiteDesign {
   pageColours: PageColours;
 }
 
+/** A Site settings text field; page markup marks where each one shows with data-design-text. */
+export type TextKey = keyof SiteDesign['text'];
+
 export interface BackgroundOption {
   id: string;
   label: string;
@@ -82,24 +85,29 @@ export const HEADING_COLOURS: { name: string; value: string }[] = [
 ];
 
 /** Background and text colours April can set per page: the natural colour with dark brown, black, dark blue and teal (29 Sep). */
-export const PAGE_COLOURS: { name: string; value: string }[] = [
-  { name: 'White', value: '#ffffff' },
-  { name: 'Natural', value: '#f5f3f1' },
+/** `light` swatches get a dark tick in the panel. */
+export const PAGE_COLOURS: { name: string; value: string; light?: boolean }[] = [
+  { name: 'White', value: '#ffffff', light: true },
+  { name: 'Natural', value: '#f5f3f1', light: true },
   { name: 'Dark brown', value: '#4a3222' },
   { name: 'Black', value: '#231f20' },
   { name: 'Dark blue', value: '#1f3a5f' },
   { name: 'Teal', value: '#1f6b6b' },
 ];
 
-/** The pages with their own colours. Each page view marks its content with data-page="<id>". */
-export const COLOUR_PAGES = [
-  { id: 'home', path: '/', label: 'Home' },
-  { id: 'about', path: '/about', label: 'About' },
-  { id: 'insights', path: '/insights', label: 'Insights' },
-  { id: 'contact', path: '/contact', label: 'Contact' },
+/**
+ * The site's pages, in menu order: their own colours, photo and offline-export section. Each page view marks its content
+ * with data-page="<id>". The flags say what Site settings can change there, so it only offers controls that visibly work:
+ * `pageText` (text outside dark boxes, for the page text colour) and `colouredHeading` (a section heading for Heading colour).
+ */
+export const SITE_PAGES = [
+  { id: 'home', path: '/', label: 'Home', pageText: true, colouredHeading: true },
+  { id: 'about', path: '/about', label: 'About', pageText: true, colouredHeading: true },
+  { id: 'insights', path: '/insights', label: 'Insights', pageText: false, colouredHeading: false },
+  { id: 'contact', path: '/contact', label: 'Contact', pageText: false, colouredHeading: false },
 ] as const;
-export type ColourPage = (typeof COLOUR_PAGES)[number]['id'];
-export type PageColours = Record<ColourPage, { background: string; text: string }>;
+export type SitePage = (typeof SITE_PAGES)[number]['id'];
+export type PageColours = Record<SitePage, { background: string; text: string }>;
 
 /** April's export of 29 Sep: the look they approved to build on. */
 export const DEFAULT_DESIGN: SiteDesign = {
@@ -158,7 +166,7 @@ export function withDefaults(saved: Partial<SiteDesign> | null | undefined): Sit
     text: { ...d.text, ...saved.text },
     seo: { ...d.seo, ...saved.seo },
     pageColours: Object.fromEntries(
-      COLOUR_PAGES.map(({ id }) => [id, { ...d.pageColours[id], ...saved.pageColours?.[id] }])
+      SITE_PAGES.map(({ id }) => [id, { ...d.pageColours[id], ...saved.pageColours?.[id] }])
     ) as PageColours,
   };
 }
@@ -195,7 +203,7 @@ export function designCss(design: SiteDesign): string {
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`
       : 'html body{background:#fff;}',
-    ...COLOUR_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};}`)
+    ...SITE_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};}`)
   );
   return lines.join('\n');
 }

@@ -4,18 +4,14 @@
  * gathering the pages, styles and images happens in the browser (src/ui/site-settings/export-files.ts).
  */
 
-/** The pages in the file, in menu order. `id` is the in-file anchor. */
-export const OFFLINE_PAGES = [
-  { id: 'home', path: '/' },
-  { id: 'about', path: '/about' },
-  { id: 'insights', path: '/insights' },
-  { id: 'contact', path: '/contact' },
-] as const;
+import { SITE_PAGES } from './types.ts';
+
+// The file holds every page in SITE_PAGES, in menu order; each page's `id` is its in-file anchor.
 
 /** Where a link should go inside the file: a page anchor, unchanged if it leaves the site, or null for a page that isn't included. */
 export function offlineHref(href: string): string | null {
   if (!href.startsWith('/') || href.startsWith('//')) return href;
-  const page = OFFLINE_PAGES.find((p) => p.path === href.split(/[?#]/)[0]);
+  const page = SITE_PAGES.find((p) => p.path === href.split(/[?#]/)[0]);
   return page ? `#${page.id}` : null;
 }
 

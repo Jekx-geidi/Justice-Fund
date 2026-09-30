@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { OFFLINE_PAGES, offlineDocument, offlineHref, stripWoffFallbacks } from './offline.ts';
+import { offlineDocument, offlineHref, stripWoffFallbacks } from './offline.ts';
 
 test('menu links to the four pages point inside the file', () => {
   assert.equal(offlineHref('/'), '#home');
@@ -17,10 +17,6 @@ test('links to pages that are not in the file lead nowhere rather than to a brok
 test('outside links and email links keep working', () => {
   assert.equal(offlineHref('mailto:hello@justicefund.org.au'), 'mailto:hello@justicefund.org.au');
   assert.equal(offlineHref('https://www.acnc.gov.au/'), 'https://www.acnc.gov.au/');
-});
-
-test('the file holds all four pages, in menu order', () => {
-  assert.deepEqual(OFFLINE_PAGES.map((p) => p.id), ['home', 'about', 'insights', 'contact']);
 });
 
 const parts = {

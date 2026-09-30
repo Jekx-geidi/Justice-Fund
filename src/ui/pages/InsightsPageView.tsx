@@ -1,5 +1,5 @@
 import { PageFrame } from '@/ui/Editorial';
-import type { InsightEntry, InsightsFields, ContentBlock } from '@/lib/content/types';
+import { DEFAULT_INSIGHTS_TAG, type InsightEntry, type InsightsFields, type ContentBlock } from '@/lib/content/types';
 import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 
 /**
@@ -15,7 +15,7 @@ export function InsightsPageView({
   fields?: InsightsFields;
   additionalSections?: ContentBlock[];
 }) {
-  const emptyTag = fields?.emptyTag ?? 'Coming soon';
+  const emptyTag = fields?.emptyTag ?? DEFAULT_INSIGHTS_TAG;
   const emptyMessage = fields?.emptyMessage ?? '';
   return (
     <>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { HomeFields, AboutFields, ContentBlock } from '@/lib/content/types';
 import { HOME_HERO, homeSections, paragraphs } from '@/lib/content/home-sections';
@@ -42,7 +43,8 @@ export function HomePageView({
             ))}
           </div>
         </div>
-        <img className="home-photo" src={photo.src} alt={photo.alt} style={{ objectPosition: photo.position }} />
+        {/* The first thing on screen, so it loads first; full width in the centred and band layouts. */}
+        <Image className="home-photo" src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="100vw" priority style={{ objectPosition: photo.position }} />
       </section>
       <div className="wrap home-sections">
         {whatWeDo.heading && (

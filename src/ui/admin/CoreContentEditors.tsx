@@ -1,7 +1,7 @@
 'use client';
 
 import { PenLine } from 'lucide-react';
-import type { AboutFields, ContactFields, HomeFields, InsightsFields } from '@/lib/content/types';
+import { DEFAULT_EMAIL_LABEL, DEFAULT_INSIGHTS_TAG, type AboutFields, type ContactFields, type HomeFields, type InsightsFields } from '@/lib/content/types';
 import { homeSections } from '@/lib/content/home-sections';
 import { SITE_EDITOR_HREF } from '@/lib/design/types';
 import { MaterialTextField } from './material/MaterialControls';
@@ -178,7 +178,7 @@ export function ContactFieldsEditor({ value, onChange }: { value: ContactFields;
         ready={materialReady}
         id="contact-email-label"
         label="Label above email"
-        value={value.emailLabel ?? 'Email'}
+        value={value.emailLabel ?? DEFAULT_EMAIL_LABEL}
         onChange={(emailLabel) => onChange({ ...value, emailLabel })}
         maxLength={60}
       />
@@ -194,7 +194,7 @@ export function InsightsFieldsEditor({
   onChange: (next: InsightsFields) => void;
 }) {
   const materialReady = useMaterialWeb(TEXT_FIELD_LOADERS);
-  const fields = { emptyTag: value?.emptyTag ?? 'Coming soon', emptyMessage: value?.emptyMessage ?? '' };
+  const fields = { emptyTag: value?.emptyTag ?? DEFAULT_INSIGHTS_TAG, emptyMessage: value?.emptyMessage ?? '' };
 
   return (
     <fieldset className="border border-[var(--line)] p-4 space-y-4">

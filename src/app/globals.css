@@ -82,7 +82,7 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .page-frame { margin-block:var(--page-top) clamp(40px,6vw,88px); padding:var(--page-pad); background:var(--page-bg,var(--paper)); color:var(--page-text,var(--ink)); }
 /* The page title sits in an Abaddon Black band across the top of the frame (edge to edge), white on black. */
 .page-title { color:#fff; font-size:calc(clamp(2.4rem,5vw,3.6rem) * var(--heading-scale,1)); line-height:1.1; max-width:none; }
-.page-photo { display:block; width:100%; aspect-ratio:21 / 9; object-fit:cover; margin-bottom:clamp(28px,3.5vw,48px); }
+.page-photo { display:block; width:100%; height:auto; aspect-ratio:21 / 9; object-fit:cover; margin-bottom:clamp(28px,3.5vw,48px); }
 @media(max-width:699px) { .page-photo { aspect-ratio:4 / 3; } }
 .page-frame-head { margin:calc(var(--page-pad) * -1) calc(var(--page-pad) * -1) clamp(28px,3.5vw,48px); padding:clamp(28px,4vw,48px) var(--page-pad); background:var(--ink); }
 /* The heading column sizes to its title (never narrower than its longest word, never wider than 40%) so one-word titles don't spill out of the black box. */
