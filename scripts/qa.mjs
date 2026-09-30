@@ -48,6 +48,8 @@ assert.equal(await page.getByRole('dialog').isVisible(),false);
 assert.equal(await page.locator('main form').count(),0,'Contact page must not have a form');
 assert.match(await page.locator('main a[href^="mailto:"]').getAttribute('href'),/^mailto:.+@/);
 for(const route of ['/team','/cases','/environment']) assert.equal((await page.goto(base+route)).status(),404);
+// April (29 Sep): no "Charity · Perth, WA" caption in the header, on any page or in the phone menu.
+for (const route of ['/','/about','/insights','/contact']) { await page.goto(base+route); assert.doesNotMatch(await page.content(),/CHARITY · PERTH/i,route+' still shows the header caption'); }
 // Logged-out visitors can try Site settings, but only as an on-screen preview: no Publish, no saving.
 await page.goto(base+'/?editor');
 assert.equal(await page.locator('.ss-launcher').count(),1,'Visitors get the Site settings gear');

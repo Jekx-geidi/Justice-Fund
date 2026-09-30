@@ -45,7 +45,7 @@ export default function Header({ navigation, logo }: { navigation: NavItem[]; lo
         </Link>
       ) : (
         <Link href="/" className="brand" aria-label="Intergenerational Justice Fund home">
-          Intergenerational Justice Fund Limited<span className="brand-caption">CHARITY · PERTH, WA</span>
+          Intergenerational Justice Fund Limited
         </Link>
       )}
       <nav aria-label="Main navigation" className="desktop-nav">
@@ -64,7 +64,7 @@ export default function Header({ navigation, logo }: { navigation: NavItem[]; lo
       <div className="mobile-panel">
         <div className="flex items-center justify-between"><span className="eyebrow">IEJF · NAVIGATION</span><button className="icon-button" aria-label="Close navigation" onClick={() => setOpen(false)}><X aria-hidden="true" /></button></div>
         <nav aria-label="Mobile navigation">{navigation.map((item, index) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} onClick={() => setOpen(false)}><span className="nav-number">0{index + 1}</span>{item.label}</Link>)}</nav>
-        <p className="mobile-caption">Intergenerational Justice Fund Limited — CHARITY · PERTH, WA</p>
+        <p className="mobile-caption">Intergenerational Justice Fund Limited</p>
       </div>
     </dialog>
   </header>;
