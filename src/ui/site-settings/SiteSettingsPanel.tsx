@@ -648,6 +648,11 @@ export function SiteSettingsPanel({
 
           <details>
             <summary>Header</summary>
+            <label className="ss-label">
+              <input type="checkbox" role="switch" checked={draft.stickyHeader} onChange={(e) => set('stickyHeader', e.target.checked)} aria-describedby="sticky-header-help" />{' '}
+              Stick to place header
+            </label>
+            <p id="sticky-header-help">Keep the header visible while scrolling. Turn off to let it scroll with the page.</p>
             <div className="ss-grid ss-grid-2">
               <Choice value="split" current={draft.headerStyle} onPick={(v) => set('headerStyle', v)}>
                 <span className="ss-mini ss-mini-header-split" aria-hidden="true">

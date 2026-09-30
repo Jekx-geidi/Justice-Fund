@@ -33,6 +33,7 @@ export interface SiteDesign {
   /** The colour menu links turn on hover (DARK_COLOURS); lightened automatically on a dark header. */
   hoverColour: string;
   headerStyle: HeaderStyle;
+  stickyHeader: boolean;
   /** A logo concept id (src/lib/brand/logo-concepts.ts); empty shows the name as text. Used by the header and admin login. */
   logo: string;
   text: { homeHeading: string; homeTagline: string; contactEmail: string; abn: string };
@@ -164,6 +165,7 @@ export const DEFAULT_DESIGN: SiteDesign = {
   accentColour: '#c9a15a',
   hoverColour: '#7b2d26',
   headerStyle: 'split',
+  stickyHeader: true,
   logo: '',
   pageColours: {
     home: { background: '#231f20', text: '#ffffff', title: '#231f20', box: '#231f20' },
@@ -268,6 +270,7 @@ export function designCss(design: SiteDesign): string {
     lines.push(`@import url("https://fonts.googleapis.com/css2?${[...new Set(families)].join('&')}&display=swap");`);
   }
   lines.push(
+    `.site-shell .site-header{position:${design.stickyHeader === false ? 'static' : 'sticky'};}`,
     `:root{--font-heading:${heading.stack};--font-body:${body.stack};--heading-scale:${design.headingSize / 100};--body-size:${design.bodySize}px;--menu-size:${design.menuSize}px;--heading-colour:${design.headingColour};--button-bg:${design.buttonColour};--header-bg:${design.headerColour};--header-text:${isLight(design.headerColour) ? '#231f20' : '#ffffff'};--footer-bg:${design.footerColour};--gold:${design.accentColour};--hover:${isLight(design.headerColour) ? design.hoverColour : `color-mix(in srgb,${design.hoverColour} 35%,#fff)`};--hover-raw:${design.hoverColour};}`,
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`

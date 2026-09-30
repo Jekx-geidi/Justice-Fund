@@ -34,6 +34,7 @@ export const siteDesignSchema = z.object({
   accentColour: z.string().refine((c) => ACCENT_COLOURS.some((a) => a.value === c), 'Unknown colour'),
   hoverColour: darkColour,
   headerStyle: z.enum(['split', 'centred']),
+  stickyHeader: z.boolean().default(true),
   logo: z.string().refine((id) => id === '' || SITE_LOGO_IDS.includes(id), 'Unknown logo'),
   text: z.object({
     homeHeading: plainText(120).refine((s) => s.trim().length > 0, 'Heading is required'),

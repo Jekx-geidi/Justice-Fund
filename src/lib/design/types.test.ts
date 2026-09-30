@@ -27,6 +27,22 @@ import { siteDesignSchema } from './validation.ts';
 
 const hex = (name: string) => PAGE_COLOURS.find((c) => c.name === name)!.value;
 
+test('older settings keep the header sticky by default', () => {
+  const { stickyHeader, ...legacy } = DEFAULT_DESIGN;
+  assert.equal(withDefaults(legacy).stickyHeader, true);
+  assert.equal(siteDesignSchema.parse(legacy).stickyHeader, true);
+});
+
+test('both header choices survive validation and saved-settings loading', () => {
+  for (const stickyHeader of [true, false]) {
+    const saved = siteDesignSchema.parse({ ...DEFAULT_DESIGN, stickyHeader });
+    const restored = withDefaults(JSON.parse(JSON.stringify(saved)));
+    assert.equal(restored.stickyHeader, stickyHeader);
+    assert.ok(designCss(restored).includes(`.site-shell .site-header{position:${stickyHeader ? 'sticky' : 'static'};}`));
+  }
+  assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, stickyHeader: 'false' }).success, false);
+});
+
 test('the page colour palette has the natural colour, dark brown, black, dark blue and teal', () => {
   for (const name of ['Natural', 'Dark brown', 'Black', 'Dark blue', 'Teal']) assert.ok(PAGE_COLOURS.some((c) => c.name === name), name);
 });

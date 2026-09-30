@@ -19,6 +19,7 @@ const design: SiteDesign = {
   accentColour: '#c9a15a',
   hoverColour: '#7b2d26',
   headerStyle: 'centred',
+  stickyHeader: true,
   logo: '',
   text: { homeHeading: 'Intergenerational Justice Fund', homeTagline: '', contactEmail: 'hello@justicefund.org.au', abn: '51 656 623 719' },
   seo: { title: 'IEJF', description: 'About the fund', keywords: 'justice' },
