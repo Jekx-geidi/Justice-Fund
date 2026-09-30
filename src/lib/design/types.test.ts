@@ -15,11 +15,10 @@ test('the default type is Poppins throughout with headings at 80%', () => {
   assert.equal(DEFAULT_DESIGN.headingSize, 80);
 });
 
-test('the default homepage tagline is the one April wrote', () => {
-  assert.equal(
-    DEFAULT_DESIGN.text.homeTagline,
-    'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed'
-  );
+// Ange's Home page (30 Sep) supersedes April's tagline: her hero heading and paragraph are the defaults.
+test('the default homepage heading and tagline are Ange’s hero copy', () => {
+  assert.equal(DEFAULT_DESIGN.text.homeHeading, 'We’re using law to drive systemic change for future generations');
+  assert.match(DEFAULT_DESIGN.text.homeTagline, /^We target legal issues/);
 });
 
 // April (29 Sep): toggle the background and font colours on each page; add dark blue and teal to the palette.

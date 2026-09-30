@@ -125,8 +125,15 @@ for (const route of ['/','/about','/insights','/contact']) {
 await page.emulateMedia({reducedMotion:'reduce'});
 await page.goto(base);
 assert.equal(await page.locator('.home-box').evaluate(el=>getComputedStyle(el).animationName),'none');
-assert.equal(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight),true,'Home must fit one screen');
-await writeFile('qa-output/results.json',JSON.stringify({results,failures,checks:['menu focus trap','Escape and focus restoration','scroll lock','menu navigation','contact is email-only','removed routes 404','reduced motion','home fits one screen']},null,2));
+// Ange's Home page (30 Sep): hero with two buttons and the page photo in the first screen, then What We Do and Why.
+assert.equal(await page.locator('.home-box').evaluate(el => el.getBoundingClientRect().top < innerHeight),true,'The hero starts in the first screen');
+assert.equal(await page.getByRole('link',{name:'Get Involved'}).getAttribute('href'),'/contact');
+assert.equal(await page.getByRole('link',{name:'Learn More'}).getAttribute('href'),'/about');
+assert.match(await page.locator('.home-photo').getAttribute('alt'),/Earth/,'The Home photo describes itself');
+assert.equal(await page.locator('.home-photo').evaluate(img => img.complete && img.naturalWidth > 0),true,'The Home photo loads');
+for (const name of ['What We Do','Why Intergenerational Justice Matters']) assert.equal(await page.getByRole('heading',{level:2,name}).count(),1,name);
+assert.equal(await page.locator('.home-card').count(),2,'Strategic Litigation and Policy Reform cards');
+await writeFile('qa-output/results.json',JSON.stringify({results,failures,checks:['menu focus trap','Escape and focus restoration','scroll lock','menu navigation','contact is email-only','removed routes 404','reduced motion','home hero, buttons, photo and sections']},null,2));
 await browser.close();
 assert.deepEqual(failures,[]);
-console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, one-screen home, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on.`);
+console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, Home hero and sections, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on.`);

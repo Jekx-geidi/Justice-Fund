@@ -148,16 +148,14 @@ export function SiteSettingsPanel({
   // Only offer controls that change the page on screen, so a pick never looks like it did nothing.
   const isHome = pathname === '/';
   const isFramed = FRAMED_PAGES.includes(pathname);
-  // The heading colour only styles the About focus-areas heading; Home and the page titles stay white on black.
-  const hasColouredHeading = pathname === '/about';
+  // The heading colour styles section headings (About focus areas, Home's What We Do); page titles stay white on black.
+  const hasColouredHeading = pathname === '/about' || isHome;
   // Home, About, Insights and Contact each have their own background colour.
   const colourPage = COLOUR_PAGES.find((p) => p.path === pathname);
   // Insights and Contact keep all their text in dark boxes, so only Home and About have page text to colour.
   const hasPageText = colourPage?.id === 'home' || colourPage?.id === 'about';
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(initialDraft);
-  // Home has no body text unless a tagline is set.
-  const hasBodyText = !isHome || Boolean(draft.text.homeTagline);
   const [live, setLive] = useState(initialLive);
   const [saveState, setSaveState] = useState<SaveState>('saved');
   const [message, setMessage] = useState('');
@@ -460,10 +458,8 @@ export function SiteSettingsPanel({
 
           <details>
             <summary>Sizes</summary>
-            <Slider label="Headings" value={draft.headingSize} min={80} max={140} unit="%" presets={[['Small', 90], ['Default', 100], ['Large', 115], ['Extra large', 130]]} onChange={(v) => set('headingSize', v)} />
-            {hasBodyText && (
-              <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
-            )}
+            <Slider label="Headings" value={draft.headingSize} min={80} max={140} unit="%" presets={[['Small', 80], ['Medium', 100], ['Large', 115], ['Extra large', 130]]} onChange={(v) => set('headingSize', v)} />
+            <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
             <Slider label="Menu" value={draft.menuSize} min={11} max={18} unit="px" presets={[['Small', 12], ['Default', 13], ['Large', 15], ['Extra large', 17]]} onChange={(v) => set('menuSize', v)} />
           </details>
 

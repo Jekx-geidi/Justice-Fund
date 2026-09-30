@@ -1,6 +1,7 @@
 /** Site-wide look and copy that April edits from the on-page "Site settings" panel. Shared by server and browser. */
 
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
+import { HOME_HERO } from '../content/home-sections.ts';
 
 /** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
 export type BackgroundKind = 'image' | 'white';
@@ -120,8 +121,8 @@ export const DEFAULT_DESIGN: SiteDesign = {
     contact: { background: '#f5f3f1', text: '#231f20' },
   },
   text: {
-    homeHeading: 'Intergenerational Justice Fund',
-    homeTagline: 'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
+    homeHeading: HOME_HERO.heading,
+    homeTagline: HOME_HERO.paragraph,
     contactEmail: 'hello@justicefund.org.au',
     abn: '51 656 623 719',
   },

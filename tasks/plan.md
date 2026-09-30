@@ -23,7 +23,7 @@ Previous plan (mockup reversion) is complete; see git history `79d54b2..72fe858`
    Insights aerial rainforest/river, Contact Perth city at night. Stored in `public/images/pages/`, with
    source + licence recorded in `public/images/pages/CREDITS.md`. Editable later via the media library.
    - Accept: photos render on each page, optimised (webp, <300 KB), alt text, embedded in the offline export.
-5. **[pending]** Home page per Ange's mock-up: split hero (heading, paragraph, Get Involved -> /contact,
+5. **[done]** Home page per Ange's mock-up: split hero (heading, paragraph, Get Involved -> /contact,
    Learn More -> /about, photo right), "What We Do" (intro + Strategic Litigation / Policy Reform cards),
    "Why Intergenerational Justice Matters". Copy editable in Admin -> Pages -> Home.
    - Accept: matches mock-up structure on desktop and phone; QA a11y + overflow green; one h1.

@@ -11,8 +11,8 @@ export const PAGE_PHOTOS: Record<ColourPage, { src: string; alt: string; credit:
     alt: 'Earth seen from space, with ocean and clouds below',
     credit: 'NASA',
     source: 'https://unsplash.com/photos/yZygONrUBe8',
-    // The satellite sits top right; keep the frame on the clouds.
-    position: '20% 60%',
+    // Cropped to the left 72% of the original to drop the satellite; frame low to keep the horizon's edge out.
+    position: '50% 70%',
   },
   about: {
     src: '/images/pages/about.webp',
