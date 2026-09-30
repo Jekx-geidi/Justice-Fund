@@ -1,6 +1,6 @@
 /** Site-wide look and copy that April edits from the on-page "Site settings" panel. Shared by server and browser. */
 
-import { SITE_LOGO_IDS } from '@/lib/brand/logo-concepts';
+import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 
 /** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
 export type BackgroundKind = 'image' | 'white';
@@ -76,13 +76,14 @@ export const HEADING_COLOURS: { name: string; value: string }[] = [
   { name: 'Black', value: '#231f20' },
 ];
 
+/** April's export of 29 Sep: the look they approved to build on. */
 export const DEFAULT_DESIGN: SiteDesign = {
-  background: { kind: 'image', imageId: 'desert', customUrl: '' },
-  homeLayout: 'centred',
+  background: { kind: 'white', imageId: 'desert', customUrl: '' },
+  homeLayout: 'split',
   pageLayout: 'stacked',
   headingFont: 'Poppins',
   bodyFont: 'Poppins',
-  headingSize: 100,
+  headingSize: 80,
   bodySize: 16,
   menuSize: 13,
   headingColour: '#6b4a2e',
@@ -90,7 +91,7 @@ export const DEFAULT_DESIGN: SiteDesign = {
   logo: '',
   text: {
     homeHeading: 'Intergenerational Justice Fund',
-    homeTagline: '',
+    homeTagline: 'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
     contactEmail: 'hello@justicefund.org.au',
     abn: '51 656 623 719',
   },

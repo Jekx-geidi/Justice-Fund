@@ -12,7 +12,7 @@ Previous plan (mockup reversion) is complete; see git history `79d54b2..72fe858`
 
 1. **[done]** Remove "CHARITY · PERTH, WA" from the header (desktop caption and mobile menu caption).
    - Accept: no page renders the caption; QA asserts it.
-2. **[pending]** Make April's export the default design (`DEFAULT_DESIGN`): white, split, stacked, 80%, her tagline.
+2. **[done]** Make April's export the default design (`DEFAULT_DESIGN`): white, split, stacked, 80%, her tagline.
    The live published design is data (Supabase), applied separately by an admin Publish (task 7).
    - Accept: unit test on DEFAULT_DESIGN; "Restore original design" returns to her look.
 3. **[pending]** Colour palette: add Dark blue and Teal. Per page (Home, About, Insights, Contact) the panel
