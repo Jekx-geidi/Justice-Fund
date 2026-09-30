@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { BACKGROUND_IMAGES, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
+import { PHOTO_OPTIONS } from './page-photos.ts';
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 
 const fontName = z.string().refine((name) => FONTS.some((f) => f.name === name), 'Unknown font');
@@ -39,4 +40,10 @@ export const siteDesignSchema = z.object({
     keywords: plainText(300),
   }),
   pageColours: z.object(Object.fromEntries(SITE_PAGES.map((p) => [p.id, pageColours])) as Record<SitePage, typeof pageColours>),
+  // Only that page's own photos.
+  photos: z.object(
+    Object.fromEntries(
+      SITE_PAGES.map((p) => [p.id, z.string().refine((id) => PHOTO_OPTIONS[p.id].some((o) => o.id === id), 'Unknown photo')])
+    ) as Record<SitePage, z.ZodString>
+  ),
 });

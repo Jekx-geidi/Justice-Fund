@@ -1,15 +1,18 @@
 import type { AboutFocusArea } from '@/lib/content/types';
 import { DEFAULT_DESIGN, LEGAL_NAME, type SitePage } from '@/lib/design/types';
 import Image from 'next/image';
-import { PAGE_PHOTOS } from '@/lib/design/page-photos';
+import { pagePhoto } from '@/lib/design/page-photos';
 /**
  * Shared frame for About, Insights and Contact so all three keep the same
  * layout, sizing and styling. Its arrangement (stacked, heading on the side,
  * centred) comes from the nearest [data-page-layout] ancestor.
  */
-/** `page` picks up that page's own background and text colours from Site settings (see designCss) and its photo (April, 29 Sep). */
-export function PageFrame({ title, page, children }: { title: string; page: SitePage; children: React.ReactNode }) {
-  const photo = PAGE_PHOTOS[page];
+/**
+ * `page` picks up that page's own background and text colours from Site settings (see designCss); `photo` is its
+ * chosen photo id (April, 29 Sep), defaulting to the page's first. `data-page-photo` lets Site settings swap it live.
+ */
+export function PageFrame({ title, page, photo: photoId, children }: { title: string; page: SitePage; photo?: string; children: React.ReactNode }) {
+  const photo = pagePhoto(page, photoId);
   return (
     <div className="wrap page-frame" data-page={page}>
       <header className="page-frame-head">
@@ -19,6 +22,7 @@ export function PageFrame({ title, page, children }: { title: string; page: Site
         {/* Near the top of the page, so it loads first; never wider than the 1100px frame. */}
         <Image
           className="page-photo"
+          data-page-photo={page}
           src={photo.src}
           alt={photo.alt}
           width={photo.width}

@@ -23,6 +23,7 @@ const design: SiteDesign = {
     insights: { background: '#f5f3f1', text: '#231f20' },
     contact: { background: '#f5f3f1', text: '#231f20' },
   },
+  photos: { home: 'earth-clouds', about: 'people-planting', insights: 'rainforest-river', contact: 'perth-evening' },
 };
 
 test('the file holds every selection, so it can be loaded back as a SiteDesign later', () => {

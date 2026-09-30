@@ -18,6 +18,8 @@ import {
   type TextKey,
 } from '@/lib/design/types';
 import { buildOfflineSite } from './export-files';
+import { applyDesignContent } from './apply-design';
+import { PHOTO_OPTIONS } from '@/lib/design/page-photos';
 import { SITE_LOGOS } from '@/lib/brand/logo-concepts';
 import { LOGO_PREVIEW_EVENT } from '@/ui/Header';
 
@@ -34,13 +36,7 @@ function applyToPage(design: SiteDesign) {
     shell.dataset.headerStyle = design.headerStyle;
   }
   window.dispatchEvent(new CustomEvent(LOGO_PREVIEW_EVENT, { detail: design.logo }));
-  for (const el of document.querySelectorAll<HTMLElement>('[data-design-text]')) {
-    const key = el.dataset.designText as TextKey;
-    const value = design.text[key] ?? '';
-    el.textContent = value;
-    if (key === 'homeTagline') el.hidden = !value;
-    if (el.hasAttribute('data-design-mailto')) el.setAttribute('href', `mailto:${value}`);
-  }
+  applyDesignContent(document, design);
 }
 
 const same = (a: SiteDesign, b: SiteDesign) => JSON.stringify(a) === JSON.stringify(b);
@@ -222,6 +218,7 @@ export function SiteSettingsPanel({
   const set = <K extends keyof SiteDesign>(key: K, value: SiteDesign[K]) => update({ ...draft, [key]: value });
   const setText = (key: TextKey, value: string) => update({ ...draft, text: { ...draft.text, [key]: value } });
   const setSeo = (key: keyof SiteDesign['seo'], value: string) => update({ ...draft, seo: { ...draft.seo, [key]: value } });
+  const setPhoto = (page: SitePage, id: string) => update({ ...draft, photos: { ...draft.photos, [page]: id } });
   const setPageColour = (page: SitePage, key: 'background' | 'text', value: string) =>
     update({ ...draft, pageColours: { ...draft.pageColours, [page]: { ...draft.pageColours[page], [key]: value } } });
 
@@ -450,9 +447,30 @@ export function SiteSettingsPanel({
           <details>
             <summary>Sizes</summary>
             <Slider label="Headings" value={draft.headingSize} min={80} max={140} unit="%" presets={[['Small', 80], ['Medium', 100], ['Large', 115], ['Extra large', 130]]} onChange={(v) => set('headingSize', v)} />
-            <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
+            <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
             <Slider label="Menu" value={draft.menuSize} min={11} max={18} unit="px" presets={[['Small', 12], ['Default', 13], ['Large', 15], ['Extra large', 17]]} onChange={(v) => set('menuSize', v)} />
           </details>
+
+          {sitePage && (
+            <details>
+              <summary>Photo</summary>
+              <div className="ss-grid ss-grid-3">
+                {PHOTO_OPTIONS[sitePage.id].map((photo) => (
+                  <button
+                    key={photo.id}
+                    type="button"
+                    className="ss-thumb"
+                    aria-pressed={draft.photos[sitePage.id] === photo.id}
+                    aria-label={photo.alt}
+                    title={photo.alt}
+                    onClick={() => setPhoto(sitePage.id, photo.id)}
+                  >
+                    <img src={photo.thumb} alt="" />
+                  </button>
+                ))}
+              </div>
+            </details>
+          )}
 
           {sitePage && (
             <details>

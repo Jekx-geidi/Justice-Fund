@@ -16,7 +16,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ p
   return (
     <>
       {version === 'draft' && <PreviewBanner />}
-      <HomePageView home={homePage.home} heading={design.text.homeHeading} tagline={design.text.homeTagline} />
+      <HomePageView home={homePage.home} heading={design.text.homeHeading} tagline={design.text.homeTagline} photo={design.photos.home} />
     </>
   );
 }

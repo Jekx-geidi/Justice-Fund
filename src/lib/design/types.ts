@@ -2,6 +2,7 @@
 
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 import { HOME_HERO } from '../content/home-sections.ts';
+import { PHOTO_OPTIONS } from './page-photos.ts';
 
 /** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
 export type BackgroundKind = 'image' | 'white';
@@ -29,6 +30,8 @@ export interface SiteDesign {
   seo: { title: string; description: string; keywords: string };
   /** Hex values from PAGE_COLOURS: the Home box, or the page frame on About, Insights and Contact. */
   pageColours: PageColours;
+  /** Each page's photo, an id from that page's PHOTO_OPTIONS. */
+  photos: Record<SitePage, string>;
 }
 
 /** A Site settings text field; page markup marks where each one shows with data-design-text. */
@@ -128,6 +131,12 @@ export const DEFAULT_DESIGN: SiteDesign = {
     insights: { background: '#f5f3f1', text: '#231f20' },
     contact: { background: '#f5f3f1', text: '#231f20' },
   },
+  photos: {
+    home: PHOTO_OPTIONS.home[0].id,
+    about: PHOTO_OPTIONS.about[0].id,
+    insights: PHOTO_OPTIONS.insights[0].id,
+    contact: PHOTO_OPTIONS.contact[0].id,
+  },
   text: {
     // Ange's hero copy (April's email, 30 Sep) on April's layout.
     homeHeading: HOME_HERO.heading,
@@ -169,6 +178,7 @@ export function withDefaults(saved: Partial<SiteDesign> | null | undefined): Sit
     pageColours: Object.fromEntries(
       SITE_PAGES.map(({ id }) => [id, { ...d.pageColours[id], ...saved.pageColours?.[id] }])
     ) as PageColours,
+    photos: { ...d.photos, ...saved.photos },
   };
 }
 

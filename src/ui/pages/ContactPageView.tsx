@@ -6,17 +6,19 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 export function ContactPageView({
   contact,
   email,
+  photo,
   additionalSections = [],
 }: {
   contact: ContactFields;
   email?: string;
+  photo?: string;
   additionalSections?: ContentBlock[];
 }) {
   const address = email ?? contact.email;
   const emailLabel = contact.emailLabel ?? DEFAULT_EMAIL_LABEL;
   return (
     <>
-      <PageFrame title="Contact" page="contact">
+      <PageFrame title="Contact" page="contact" photo={photo}>
         <div className="contact-card">
           {contact.location && <p className="contact-location">{contact.location}</p>}
           {emailLabel && <p className="contact-label">{emailLabel}</p>}

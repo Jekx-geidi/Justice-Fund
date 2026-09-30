@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { HomeFields, AboutFields, ContentBlock } from '@/lib/content/types';
 import { HOME_HERO, homeSections, paragraphs } from '@/lib/content/home-sections';
-import { PAGE_PHOTOS } from '@/lib/design/page-photos';
+import { pagePhoto } from '@/lib/design/page-photos';
 
 /**
  * Home follows Ange's suggestion (April's email, 30 Sep): a hero box with the heading, a paragraph and two buttons
@@ -14,17 +14,20 @@ export function HomePageView({
   home,
   heading,
   tagline,
+  photo: photoId,
 }: {
   home: HomeFields;
   about?: AboutFields;
   additionalSections?: ContentBlock[];
   heading?: string;
   tagline?: string;
+  /** Chosen photo id; the page default when missing. */
+  photo?: string;
 }) {
   const title = heading ?? home.heading;
   const line = tagline ?? '';
   const { whatWeDo, why } = homeSections(home);
-  const photo = PAGE_PHOTOS.home;
+  const photo = pagePhoto('home', photoId);
   return (
     <>
       <section className="home-stage" data-page="home">
@@ -44,7 +47,7 @@ export function HomePageView({
           </div>
         </div>
         {/* The first thing on screen, so it loads first; full width in the centred and band layouts. */}
-        <Image className="home-photo" src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="100vw" priority style={{ objectPosition: photo.position }} />
+        <Image className="home-photo" data-page-photo="home" src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="100vw" priority style={{ objectPosition: photo.position }} />
       </section>
       <div className="wrap home-sections">
         {whatWeDo.heading && (

@@ -1,4 +1,5 @@
-import { designCss, SITE_PAGES, type SiteDesign, type TextKey } from '@/lib/design/types';
+import { designCss, SITE_PAGES, type SiteDesign } from '@/lib/design/types';
+import { applyDesignContent } from './apply-design';
 import { designJson, exportFilename } from '@/lib/design/export';
 import { offlineDocument, offlineHref, stripWoffFallbacks } from '@/lib/design/offline';
 
@@ -78,15 +79,9 @@ async function collectCss(design: SiteDesign, inline: Inline) {
   return [...(css.match(IMPORT) ?? []), css.replace(IMPORT, '')].join('\n');
 }
 
-/** Her text edits, the in-file links and embedded images, applied to one piece of markup. */
+/** Her text and photo picks, the in-file links and embedded images, applied to one piece of markup. */
 async function prepare(root: Element, design: SiteDesign, inline: Inline) {
-  for (const el of root.querySelectorAll<HTMLElement>('[data-design-text]')) {
-    const key = el.dataset.designText as TextKey;
-    const value = design.text[key] ?? '';
-    el.textContent = value;
-    if (key === 'homeTagline') el.hidden = !value;
-    if (el.hasAttribute('data-design-mailto')) el.setAttribute('href', `mailto:${value}`);
-  }
+  applyDesignContent(root, design);
   for (const a of root.querySelectorAll('a[href]')) {
     // The page on screen is marked current; offline the menu follows the open page instead (see offlineDocument).
     a.removeAttribute('aria-current');

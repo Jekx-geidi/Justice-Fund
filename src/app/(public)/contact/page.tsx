@@ -17,7 +17,7 @@ export default async function Contact({ searchParams }: { searchParams: Promise<
   return (
     <>
       {version === 'draft' && <PreviewBanner />}
-      <ContactPageView contact={contactPage.contact} email={design.text.contactEmail || contactPage.contact.email} additionalSections={additionalSections} />
+      <ContactPageView contact={contactPage.contact} email={design.text.contactEmail || contactPage.contact.email} photo={design.photos.contact} additionalSections={additionalSections} />
     </>
   );
 }

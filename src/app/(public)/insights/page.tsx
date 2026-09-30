@@ -1,4 +1,5 @@
 import { getSiteContent } from '@/lib/content/content';
+import { getViewerDesign } from '@/lib/design/viewer';
 import { resolveVersion } from '@/lib/content/preview';
 import { PreviewBanner } from '@/ui/PreviewBanner';
 import { InsightsPageView } from '@/ui/pages/InsightsPageView';
@@ -8,7 +9,7 @@ export const generateMetadata = () => corePageMetadata('insights', 'Insights');
 
 export default async function Insights({ searchParams }: { searchParams: Promise<{ preview?: string }> }) {
   const version = await resolveVersion(await searchParams);
-  const content = await getSiteContent(version);
+  const [content, { design }] = await Promise.all([getSiteContent(version), getViewerDesign()]);
   const entries = content.insights
     .filter((entry) => version === 'draft' || entry.status === 'published')
     .sort((a, b) => a.order - b.order);
@@ -18,7 +19,7 @@ export default async function Insights({ searchParams }: { searchParams: Promise
   return (
     <>
       {version === 'draft' && <PreviewBanner />}
-      <InsightsPageView entries={entries} fields={insightsPage?.insightsPage} additionalSections={additionalSections} />
+      <InsightsPageView entries={entries} photo={design.photos.insights} fields={insightsPage?.insightsPage} additionalSections={additionalSections} />
     </>
   );
 }

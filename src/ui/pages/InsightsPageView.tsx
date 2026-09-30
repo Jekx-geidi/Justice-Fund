@@ -9,17 +9,19 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 export function InsightsPageView({
   entries,
   fields,
+  photo,
   additionalSections = [],
 }: {
   entries: InsightEntry[];
   fields?: InsightsFields;
+  photo?: string;
   additionalSections?: ContentBlock[];
 }) {
   const emptyTag = fields?.emptyTag ?? DEFAULT_INSIGHTS_TAG;
   const emptyMessage = fields?.emptyMessage ?? '';
   return (
     <>
-      <PageFrame title="Insights" page="insights">
+      <PageFrame title="Insights" page="insights" photo={photo}>
         <div className="case-list">
           {entries.length === 0 ? (
             (emptyTag || emptyMessage) && (
