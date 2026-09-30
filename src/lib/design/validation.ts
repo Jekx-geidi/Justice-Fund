@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BACKGROUND_IMAGES, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
+import { BACKGROUND_IMAGES, BUTTON_COLOURS, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
 import { PHOTO_OPTIONS } from './page-photos.ts';
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 
@@ -11,12 +11,13 @@ const plainText = (max: number) => z.string().max(max).refine((s) => !/[<>]/.tes
 /** Everything here ends up inside a <style> tag or page markup, so it is strictly whitelisted. */
 export const siteDesignSchema = z.object({
   background: z.object({
-    kind: z.enum(['image', 'white']),
+    kind: z.enum(['image', 'white', 'colour']),
     imageId: z.string().refine((id) => BACKGROUND_IMAGES.some((b) => b.id === id), 'Unknown background'),
     customUrl: z
       .string()
       .max(500)
       .refine((u) => u === '' || /^(https:\/\/|\/(?!\/))[^\s"'()<>\\]+$/.test(u), 'Invalid image address'),
+    colour: z.string().refine((c) => c === '' || PAGE_COLOURS.some((p) => p.value === c), 'Unknown colour'),
   }),
   homeLayout: z.enum(['centred', 'split', 'band']),
   pageLayout: z.enum(['stacked', 'side', 'centred']),
@@ -26,6 +27,7 @@ export const siteDesignSchema = z.object({
   bodySize: z.number().int().min(14).max(20),
   menuSize: z.number().int().min(11).max(18),
   headingColour: z.string().refine((c) => HEADING_COLOURS.some((h) => h.value === c), 'Unknown colour'),
+  buttonColour: z.string().refine((c) => BUTTON_COLOURS.some((b) => b.value === c), 'Unknown colour'),
   headerStyle: z.enum(['split', 'centred']),
   logo: z.string().refine((id) => id === '' || SITE_LOGO_IDS.includes(id), 'Unknown logo'),
   text: z.object({

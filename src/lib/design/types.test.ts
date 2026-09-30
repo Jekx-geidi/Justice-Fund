@@ -68,3 +68,41 @@ test('only palette colours can be saved, because they end up inside a <style> ta
   const bad = { ...DEFAULT_DESIGN, pageColours: { ...DEFAULT_DESIGN.pageColours, home: { background: 'red;}body{display:none', text: hex('White') } } };
   assert.equal(siteDesignSchema.safeParse(bad).success, false);
 });
+
+// Reil (30 Sep): the Get Involved button's colour is customisable, its text stays white.
+import { BUTTON_COLOURS, backgroundUrl } from './types.ts';
+
+const luminance = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+test('every button colour keeps white text readable (at least 4.5:1)', () => {
+  for (const c of BUTTON_COLOURS) assert.ok(1.05 / (luminance(c.value) + 0.05) >= 4.5, c.name);
+});
+
+test('the button offers April\u2019s dark blue and teal, and starts on teal', () => {
+  for (const name of ['Dark blue', 'Teal']) assert.ok(BUTTON_COLOURS.some((c) => c.name === name), name);
+  assert.equal(DEFAULT_DESIGN.buttonColour, BUTTON_COLOURS.find((c) => c.name === 'Teal')!.value);
+});
+
+test('the stylesheet colours the button', () => {
+  assert.ok(designCss({ ...DEFAULT_DESIGN, buttonColour: '#1f3a5f' }).includes('--button-bg:#1f3a5f'));
+});
+
+test('only palette button colours can be saved', () => {
+  assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, buttonColour: 'red;}' }).success, false);
+});
+
+// Reil (30 Sep): the site background can also be one of April's colours, not just plain white.
+test('the site background can be one of April\u2019s colours', () => {
+  const teal = { ...DEFAULT_DESIGN, background: { ...DEFAULT_DESIGN.background, kind: 'colour' as const, colour: '#1f6b6b' } };
+  assert.ok(siteDesignSchema.safeParse(teal).success);
+  assert.ok(designCss(teal).includes('html body{background:#1f6b6b;}'));
+  assert.equal(backgroundUrl(teal), null);
+});
+
+test('only palette background colours can be saved', () => {
+  const bad = { ...DEFAULT_DESIGN, background: { ...DEFAULT_DESIGN.background, kind: 'colour' as const, colour: 'url(x)' } };
+  assert.equal(siteDesignSchema.safeParse(bad).success, false);
+});

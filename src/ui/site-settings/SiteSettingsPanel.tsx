@@ -7,6 +7,7 @@ import {
   BACKGROUND_IMAGES,
   DEFAULT_DESIGN,
   FONTS,
+  BUTTON_COLOURS,
   HEADING_COLOURS,
   SITE_PAGES,
   PAGE_COLOURS,
@@ -395,6 +396,12 @@ export function SiteSettingsPanel({
                 <span>Plain white</span>
               </button>
             </div>
+            <p className="ss-label">Or a colour</p>
+            <Swatches
+              colours={PAGE_COLOURS.filter((c) => c.name !== 'White')}
+              current={draft.background.kind === 'colour' ? draft.background.colour : ''}
+              onPick={(v) => set('background', { ...draft.background, kind: 'colour', colour: v })}
+            />
           </details>
 
           <details>
@@ -497,6 +504,13 @@ export function SiteSettingsPanel({
                 <>
                   <p className="ss-label">Heading colour</p>
                   <Swatches colours={HEADING_COLOURS} current={draft.headingColour} onPick={(v) => set('headingColour', v)} />
+                </>
+              )}
+              {isHome && (
+                <>
+                  {/* Only the Get Involved button; its text stays white, so every option is dark enough for it. */}
+                  <p className="ss-label">Get Involved button</p>
+                  <Swatches colours={BUTTON_COLOURS} current={draft.buttonColour} onPick={(v) => set('buttonColour', v)} />
                 </>
               )}
             </details>

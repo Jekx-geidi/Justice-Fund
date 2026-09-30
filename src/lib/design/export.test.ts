@@ -4,7 +4,7 @@ import { designJson, exportFilename } from './export.ts';
 import type { SiteDesign } from './types.ts';
 
 const design: SiteDesign = {
-  background: { kind: 'image', imageId: 'desert', customUrl: '' },
+  background: { kind: 'image', imageId: 'desert', customUrl: '', colour: '' },
   homeLayout: 'split',
   pageLayout: 'side',
   headingFont: 'Poppins',
@@ -13,6 +13,7 @@ const design: SiteDesign = {
   bodySize: 17,
   menuSize: 13,
   headingColour: '#6b4a2e',
+  buttonColour: '#1f6b6b',
   headerStyle: 'centred',
   logo: '',
   text: { homeHeading: 'Intergenerational Justice Fund', homeTagline: '', contactEmail: 'hello@justicefund.org.au', abn: '51 656 623 719' },

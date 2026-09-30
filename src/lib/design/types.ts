@@ -5,13 +5,14 @@ import { HOME_HERO } from '../content/home-sections.ts';
 import { PHOTO_OPTIONS } from './page-photos.ts';
 
 /** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
-export type BackgroundKind = 'image' | 'white';
+export type BackgroundKind = 'image' | 'white' | 'colour';
 export type HomeLayout = 'centred' | 'split' | 'band';
 export type PageLayout = 'stacked' | 'side' | 'centred';
 export type HeaderStyle = 'split' | 'centred';
 
 export interface SiteDesign {
-  background: { kind: BackgroundKind; imageId: string; customUrl: string };
+  /** `colour` is a PAGE_COLOURS hex, used when kind is 'colour'. */
+  background: { kind: BackgroundKind; imageId: string; customUrl: string; colour: string };
   homeLayout: HomeLayout;
   pageLayout: PageLayout;
   headingFont: string;
@@ -23,6 +24,8 @@ export interface SiteDesign {
   /** Pixels. */
   menuSize: number;
   headingColour: string;
+  /** The Get Involved button's background, a BUTTON_COLOURS hex; its text is always white. */
+  buttonColour: string;
   headerStyle: HeaderStyle;
   /** A logo concept id (src/lib/brand/logo-concepts.ts); empty shows the name as text. Used by the header and admin login. */
   logo: string;
@@ -89,6 +92,15 @@ export const HEADING_COLOURS: { name: string; value: string }[] = [
 
 /** Background and text colours April can set per page: the natural colour with dark brown, black, dark blue and teal (29 Sep). */
 /** `light` swatches get a dark tick in the panel. */
+/** Get Involved button colours: all dark enough for its white text (at least 4.5:1). */
+export const BUTTON_COLOURS: { name: string; value: string }[] = [
+  { name: 'Teal', value: '#1f6b6b' },
+  { name: 'Dark blue', value: '#1f3a5f' },
+  { name: 'Dark brown', value: '#4a3222' },
+  { name: 'Black', value: '#231f20' },
+  { name: 'Maroon', value: '#7b2d26' },
+];
+
 export const PAGE_COLOURS: { name: string; value: string; light?: boolean }[] = [
   { name: 'White', value: '#ffffff', light: true },
   { name: 'Natural', value: '#f5f3f1', light: true },
@@ -114,7 +126,7 @@ export type PageColours = Record<SitePage, { background: string; text: string }>
 
 /** April's export of 29 Sep: the look they approved to build on. */
 export const DEFAULT_DESIGN: SiteDesign = {
-  background: { kind: 'white', imageId: 'desert', customUrl: '' },
+  background: { kind: 'white', imageId: 'desert', customUrl: '', colour: '' },
   homeLayout: 'split',
   pageLayout: 'stacked',
   headingFont: 'Poppins',
@@ -123,6 +135,7 @@ export const DEFAULT_DESIGN: SiteDesign = {
   bodySize: 16,
   menuSize: 13,
   headingColour: '#6b4a2e',
+  buttonColour: '#1f6b6b',
   headerStyle: 'split',
   logo: '',
   pageColours: {
@@ -188,7 +201,7 @@ export function fontByName(name: string): FontOption {
 
 export function backgroundUrl(design: SiteDesign): string | null {
   const bg = design.background;
-  if (bg.kind === 'white') return null;
+  if (bg.kind !== 'image') return null;
   return (BACKGROUND_IMAGES.find((b) => b.id === bg.imageId) ?? BACKGROUND_IMAGES[0]).url;
 }
 
@@ -210,10 +223,10 @@ export function designCss(design: SiteDesign): string {
     lines.push(`@import url("https://fonts.googleapis.com/css2?${[...new Set(families)].join('&')}&display=swap");`);
   }
   lines.push(
-    `:root{--font-heading:${heading.stack};--font-body:${body.stack};--heading-scale:${design.headingSize / 100};--body-size:${design.bodySize}px;--menu-size:${design.menuSize}px;--heading-colour:${design.headingColour};}`,
+    `:root{--font-heading:${heading.stack};--font-body:${body.stack};--heading-scale:${design.headingSize / 100};--body-size:${design.bodySize}px;--menu-size:${design.menuSize}px;--heading-colour:${design.headingColour};--button-bg:${design.buttonColour};}`,
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`
-      : 'html body{background:#fff;}',
+      : `html body{background:${design.background.kind === 'colour' && design.background.colour ? design.background.colour : '#fff'};}`,
     ...SITE_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};}`)
   );
   return lines.join('\n');
