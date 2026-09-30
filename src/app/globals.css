@@ -47,19 +47,33 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .site-shell:has(.home-stage) .site-header { position:static; }
 /* The home panel is a dim veil, not a solid block: the fixed site background photo shows through,
    darkened in the active colour direction's ink (so a Control panel colour change retints it). */
-.home-stage { flex:1; display:flex; position:relative; min-height:min(60dvh,420px); }
+.home-stage { flex:1; display:flex; position:relative; min-height:min(70dvh,560px); }
 .home-box { position:relative; z-index:1; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:16px; background:color-mix(in srgb,var(--page-bg,var(--ink)) var(--home-dim,85%),transparent); color:var(--page-text,#fff); padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px); }
 /* 11.5em fits the long first word but not the whole name, so it breaks as "Intergenerational / Justice Fund" at every width.
    The vw cap keeps that first word inside narrow phones even when the heading size setting is raised. */
-.home-title { color:inherit; font-size:min(calc(clamp(2rem,6vw,5.5rem) * var(--heading-scale,1)),8.2vw); line-height:1.08; max-width:11.5em; text-wrap:balance; overflow-wrap:break-word; }
-.home-tagline { color:color-mix(in srgb,currentColor 85%,transparent); font-size:1.1em; max-width:52ch; }
+.home-title { color:inherit; font-size:min(calc(clamp(1.9rem,4vw,3.6rem) * var(--heading-scale,1)),9vw); line-height:1.15; max-width:16em; text-wrap:balance; overflow-wrap:break-word; }
+.home-tagline { color:color-mix(in srgb,currentColor 85%,transparent); font-size:1.05em; line-height:1.7; max-width:52ch; }
 .home-tagline[hidden] { display:none; }
 [data-home-layout="split"] .home-stage { padding:0; }
 [data-home-layout="split"] .home-box { flex:0 0 50%; align-items:flex-start; text-align:left; }
 [data-home-layout="band"] .home-stage { padding:0; align-items:flex-end; }
-/* The page photo (April, 29 Sep): behind the box, or filling the other half when split. */
+/* Ange's hero (30 Sep): buttons under the paragraph, the page photo behind the box (or beside it when split). */
+.home-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px 28px; margin-top:12px; }
+/* Black text: the brand directions darken --gold, and --ink text on it falls below 4.5:1. */
+.home-cta { display:inline-flex; align-items:center; min-height:48px; padding:0 24px; background:var(--gold); color:#000; font-weight:600; font-size:0.95rem; transition:background .2s; }
+.home-cta:hover { background:color-mix(in srgb,var(--gold) 80%,#fff); }
+.home-more { display:inline-flex; align-items:center; min-height:48px; font-weight:600; font-size:0.95rem; text-decoration:underline; text-decoration-color:transparent; text-underline-offset:5px; transition:text-decoration-color .2s; }
+.home-more:hover { text-decoration-color:currentColor; }
 .home-photo { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
 [data-home-layout="split"] .home-photo { position:static; flex:1 1 50%; min-width:0; height:auto; }
+/* What We Do and Why Intergenerational Justice Matters: a solid panel like the other pages' frame, so the text stays readable on a photo background, which still shows around it. */
+.home-sections { margin-block:var(--page-top) clamp(40px,6vw,88px); padding:var(--page-pad); background:var(--paper); }
+.home-sections > section:first-child .section-heading { margin-top:0; }
+.home-intro { font-size:1.05em; line-height:1.8; max-width:var(--measure); margin-top:16px; }
+.home-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:var(--block-gap); margin-top:32px; }
+.home-card { background:#fff; border-left:3px solid var(--gold); padding:clamp(24px,3vw,32px); }
+.home-card h3 { font-size:1.1rem; margin-bottom:10px; }
+.home-card p { color:var(--slate); font-size:0.95em; line-height:1.75; }
 [data-home-layout="band"] .home-box { flex:1 1 100%; flex-grow:0; min-height:38%; align-items:flex-start; text-align:left; padding-inline:max(clamp(20px,4vw,72px),calc((100% - 1100px) / 2)); }
 
 /* About, Insights and Contact share one frame and these tokens, so their width, spacing and styling stay identical.

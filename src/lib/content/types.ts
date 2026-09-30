@@ -1,3 +1,4 @@
+import type { HomeSections } from './home-sections';
 import type { SiteDesign } from '@/lib/design/types';
 
 export type PageStatus ='draft' | 'published' | 'unpublished';
@@ -113,6 +114,9 @@ export interface HomeFields {
   heroImage?: MediaReference | null;
   quotes: HomeQuote[];
   bottomLine: string;
+  /** Ange's sections below the hero (30 Sep); missing means the defaults in home-sections.ts. */
+  whatWeDo?: HomeSections['whatWeDo'];
+  why?: HomeSections['why'];
 }
 
 export interface AboutFocusArea {
