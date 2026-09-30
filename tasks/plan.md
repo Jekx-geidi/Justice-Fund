@@ -27,6 +27,6 @@ Previous plan (mockup reversion) is complete; see git history `79d54b2..72fe858`
    Learn More -> /about, photo right), "What We Do" (intro + Strategic Litigation / Policy Reform cards),
    "Why Intergenerational Justice Matters". Copy editable in Admin -> Pages -> Home.
    - Accept: matches mock-up structure on desktop and phone; QA a11y + overflow green; one h1.
-6. **[pending]** Photos on About / Insights / Contact in the page frame; offline export includes them.
+6. **[done]** Photos on About / Insights / Contact in the page frame; offline export includes them.
 7. **[pending]** Verify on staging (BrowserSkill + QA), apply April's design to the published site (admin
    Publish, needs sign-off), deploy from committed code.

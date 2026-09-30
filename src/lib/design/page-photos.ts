@@ -19,6 +19,7 @@ export const PAGE_PHOTOS: Record<ColourPage, { src: string; alt: string; credit:
     alt: 'People planting young trees together in a forest',
     credit: 'Eyoel Kahssay',
     source: 'https://unsplash.com/photos/FyCjvyPG9Pg',
+    // A tall photo in a wide banner: frame on the girl planting the seedling, the action of the shot.
     position: '50% 70%',
   },
   insights: {

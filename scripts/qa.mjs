@@ -50,6 +50,14 @@ assert.match(await page.locator('main a[href^="mailto:"]').getAttribute('href'),
 for(const route of ['/team','/cases','/environment']) assert.equal((await page.goto(base+route)).status(),404);
 // April (29 Sep): no "Charity · Perth, WA" caption in the header, on any page or in the phone menu.
 for (const route of ['/','/about','/insights','/contact']) { await page.goto(base+route); assert.doesNotMatch(await page.content(),/CHARITY · PERTH/i,route+' still shows the header caption'); }
+// April (29 Sep): a photo on each page. About, Insights and Contact show theirs at the top of the page frame.
+for (const [route, words] of [['/about',/planting/i],['/insights',/river/i],['/contact',/Perth/]]) {
+  await page.goto(base+route);
+  const photo = page.locator('.page-frame .page-photo');
+  assert.equal(await photo.count(),1,route+' has its photo');
+  assert.match(await photo.getAttribute('alt'),words,route+' photo alt text');
+  assert.equal(await photo.evaluate(img => img.complete && img.naturalWidth > 0),true,route+' photo loads');
+}
 // Logged-out visitors can try Site settings, but only as an on-screen preview: no Publish, no saving.
 await page.goto(base+'/?editor');
 assert.equal(await page.locator('.ss-launcher').count(),1,'Visitors get the Site settings gear');

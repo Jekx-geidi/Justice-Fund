@@ -1,18 +1,23 @@
 import type { AboutFocusArea } from '@/lib/content/types';
 import { DEFAULT_DESIGN, LEGAL_NAME, type ColourPage } from '@/lib/design/types';
+import { PAGE_PHOTOS } from '@/lib/design/page-photos';
 /**
  * Shared frame for About, Insights and Contact so all three keep the same
  * layout, sizing and styling. Its arrangement (stacked, heading on the side,
  * centred) comes from the nearest [data-page-layout] ancestor.
  */
-/** `page` picks up that page's own background and text colours from Site settings (see designCss). */
+/** `page` picks up that page's own background and text colours from Site settings (see designCss) and its photo (April, 29 Sep). */
 export function PageFrame({ title, page, children }: { title: string; page: ColourPage; children: React.ReactNode }) {
+  const photo = PAGE_PHOTOS[page];
   return (
     <div className="wrap page-frame" data-page={page}>
       <header className="page-frame-head">
         <h1 className="page-title">{title}</h1>
       </header>
-      <div className="page-frame-body">{children}</div>
+      <div className="page-frame-body">
+        <img className="page-photo" src={photo.src} alt={photo.alt} style={{ objectPosition: photo.position }} />
+        {children}
+      </div>
     </div>
   );
 }
