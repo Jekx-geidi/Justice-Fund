@@ -19,14 +19,14 @@ Previous plan (mockup reversion) is complete; see git history `79d54b2..72fe858`
    offers Background colour (Natural, Dark brown, Black, Dark blue, Teal) and Text colour, shown only on that page.
    Schema + validation + designCss + panel + offline export.
    - Accept: unit tests for designCss per page; QA "every control changes the page" still green.
-4. **[done]** Licensed photos, one per page: Home earth from space, About people working in nature,
+4. **[done]** Licensed photos (now Pexels, e1b5ebe), one per page: Home earth from space, About people working in nature,
    Insights aerial rainforest/river, Contact Perth city at night. Stored in `public/images/pages/`, with
    source + licence recorded in `public/images/pages/CREDITS.md`. Editable later via the media library.
    - Accept: photos render on each page, optimised (webp, <300 KB), alt text, embedded in the offline export.
-5. **[done]** Home page per Ange's mock-up: split hero (heading, paragraph, Get Involved -> /contact,
+5. **[superseded]** Reil (30 Sep): follow April's export instead; Home is her split box + photo (e1b5ebe). Was: Home page per Ange's mock-up: split hero (heading, paragraph, Get Involved -> /contact,
    Learn More -> /about, photo right), "What We Do" (intro + Strategic Litigation / Policy Reform cards),
    "Why Intergenerational Justice Matters". Copy editable in Admin -> Pages -> Home.
    - Accept: matches mock-up structure on desktop and phone; QA a11y + overflow green; one h1.
 6. **[done]** Photos on About / Insights / Contact in the page frame; offline export includes them.
-7. **[pending]** Verify on staging (BrowserSkill + QA), apply April's design to the published site (admin
-   Publish, needs sign-off), deploy from committed code.
+7. **[in progress]** Deploy committed code to staging and run the QA against it: done (e1b5ebe, QA 0 failures on staging);
+   apply April's design to the published site (admin Publish: needs an admin login, left for Reil).
