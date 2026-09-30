@@ -19,10 +19,10 @@ const design: SiteDesign = {
   text: { homeHeading: 'Intergenerational Justice Fund', homeTagline: '', contactEmail: 'hello@justicefund.org.au', abn: '51 656 623 719' },
   seo: { title: 'IEJF', description: 'About the fund', keywords: 'justice' },
   pageColours: {
-    home: { background: '#231f20', text: '#ffffff' },
-    about: { background: '#f5f3f1', text: '#231f20' },
-    insights: { background: '#f5f3f1', text: '#231f20' },
-    contact: { background: '#f5f3f1', text: '#231f20' },
+    home: { background: '#231f20', text: '#ffffff', title: '#231f20', box: '#231f20' },
+    about: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
+    insights: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
+    contact: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
   },
   photos: { home: 'earth-clouds', about: 'people-planting', insights: 'rainforest-river', contact: 'perth-evening' },
 };

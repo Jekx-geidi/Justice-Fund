@@ -1,11 +1,12 @@
 import { z } from 'zod';
-import { BACKGROUND_IMAGES, BUTTON_COLOURS, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
+import { BACKGROUND_IMAGES, DARK_COLOURS, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
 import { PHOTO_OPTIONS } from './page-photos.ts';
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 
 const fontName = z.string().refine((name) => FONTS.some((f) => f.name === name), 'Unknown font');
 const pageColour = z.string().refine((c) => PAGE_COLOURS.some((p) => p.value === c), 'Unknown colour');
-const pageColours = z.object({ background: pageColour, text: pageColour });
+const darkColour = z.string().refine((c) => DARK_COLOURS.some((d) => d.value === c), 'Unknown colour');
+const pageColours = z.object({ background: pageColour, text: pageColour, title: darkColour, box: darkColour });
 const plainText = (max: number) => z.string().max(max).refine((s) => !/[<>]/.test(s), 'No HTML allowed');
 
 /** Everything here ends up inside a <style> tag or page markup, so it is strictly whitelisted. */
@@ -27,7 +28,7 @@ export const siteDesignSchema = z.object({
   bodySize: z.number().int().min(14).max(20),
   menuSize: z.number().int().min(11).max(18),
   headingColour: z.string().refine((c) => HEADING_COLOURS.some((h) => h.value === c), 'Unknown colour'),
-  buttonColour: z.string().refine((c) => BUTTON_COLOURS.some((b) => b.value === c), 'Unknown colour'),
+  buttonColour: z.string().refine((c) => DARK_COLOURS.some((b) => b.value === c), 'Unknown colour'),
   headerStyle: z.enum(['split', 'centred']),
   logo: z.string().refine((id) => id === '' || SITE_LOGO_IDS.includes(id), 'Unknown logo'),
   text: z.object({

@@ -7,7 +7,7 @@ import {
   BACKGROUND_IMAGES,
   DEFAULT_DESIGN,
   FONTS,
-  BUTTON_COLOURS,
+  DARK_COLOURS,
   HEADING_COLOURS,
   SITE_PAGES,
   PAGE_COLOURS,
@@ -220,7 +220,7 @@ export function SiteSettingsPanel({
   const setText = (key: TextKey, value: string) => update({ ...draft, text: { ...draft.text, [key]: value } });
   const setSeo = (key: keyof SiteDesign['seo'], value: string) => update({ ...draft, seo: { ...draft.seo, [key]: value } });
   const setPhoto = (page: SitePage, id: string) => update({ ...draft, photos: { ...draft.photos, [page]: id } });
-  const setPageColour = (page: SitePage, key: 'background' | 'text', value: string) =>
+  const setPageColour = (page: SitePage, key: 'background' | 'text' | 'title' | 'box', value: string) =>
     update({ ...draft, pageColours: { ...draft.pageColours, [page]: { ...draft.pageColours[page], [key]: value } } });
 
   async function flush() {
@@ -506,11 +506,19 @@ export function SiteSettingsPanel({
                   <Swatches colours={HEADING_COLOURS} current={draft.headingColour} onPick={(v) => set('headingColour', v)} />
                 </>
               )}
+              {!isHome && (
+                <>
+                  <p className="ss-label">{sitePage.label} title box</p>
+                  <Swatches colours={DARK_COLOURS} current={draft.pageColours[sitePage.id].title} onPick={(v) => setPageColour(sitePage.id, 'title', v)} />
+                  <p className="ss-label">{sitePage.label} boxes</p>
+                  <Swatches colours={DARK_COLOURS} current={draft.pageColours[sitePage.id].box} onPick={(v) => setPageColour(sitePage.id, 'box', v)} />
+                </>
+              )}
               {isHome && (
                 <>
                   {/* Only the Get Involved button; its text stays white, so every option is dark enough for it. */}
                   <p className="ss-label">Get Involved button</p>
-                  <Swatches colours={BUTTON_COLOURS} current={draft.buttonColour} onPick={(v) => set('buttonColour', v)} />
+                  <Swatches colours={DARK_COLOURS} current={draft.buttonColour} onPick={(v) => set('buttonColour', v)} />
                 </>
               )}
             </details>

@@ -24,7 +24,7 @@ export interface SiteDesign {
   /** Pixels. */
   menuSize: number;
   headingColour: string;
-  /** The Get Involved button's background, a BUTTON_COLOURS hex; its text is always white. */
+  /** The Get Involved button's background, a DARK_COLOURS hex; its text is always white. */
   buttonColour: string;
   headerStyle: HeaderStyle;
   /** A logo concept id (src/lib/brand/logo-concepts.ts); empty shows the name as text. Used by the header and admin login. */
@@ -92,13 +92,14 @@ export const HEADING_COLOURS: { name: string; value: string }[] = [
 
 /** Background and text colours April can set per page: the natural colour with dark brown, black, dark blue and teal (29 Sep). */
 /** `light` swatches get a dark tick in the panel. */
-/** Get Involved button colours: all dark enough for its white text (at least 4.5:1). */
-export const BUTTON_COLOURS: { name: string; value: string }[] = [
+/** Colours for things with white text (the Get Involved button, title boxes, content boxes): all at least 4.5:1. */
+export const DARK_COLOURS: { name: string; value: string }[] = [
   { name: 'Teal', value: '#1f6b6b' },
   { name: 'Dark blue', value: '#1f3a5f' },
   { name: 'Dark brown', value: '#4a3222' },
   { name: 'Black', value: '#231f20' },
   { name: 'Charcoal', value: '#444142' },
+  { name: 'Slate', value: '#1f2428' },
   { name: 'Maroon', value: '#7b2d26' },
 ];
 
@@ -109,6 +110,7 @@ export const PAGE_COLOURS: { name: string; value: string; light?: boolean }[] = 
   { name: 'Black', value: '#231f20' },
   // April's Home box in her export: black at 85% over white.
   { name: 'Charcoal', value: '#444142' },
+  { name: 'Slate', value: '#1f2428' },
   { name: 'Dark blue', value: '#1f3a5f' },
   { name: 'Teal', value: '#1f6b6b' },
 ];
@@ -125,7 +127,8 @@ export const SITE_PAGES = [
   { id: 'contact', path: '/contact', label: 'Contact', pageText: false, colouredHeading: false },
 ] as const;
 export type SitePage = (typeof SITE_PAGES)[number]['id'];
-export type PageColours = Record<SitePage, { background: string; text: string }>;
+/** `title` is the page title box, `box` the dark content boxes (focus cards, Insights entries, Contact card): DARK_COLOURS. */
+export type PageColours = Record<SitePage, { background: string; text: string; title: string; box: string }>;
 
 /** April's export of 29 Sep: the look they approved to build on. */
 export const DEFAULT_DESIGN: SiteDesign = {
@@ -142,10 +145,10 @@ export const DEFAULT_DESIGN: SiteDesign = {
   headerStyle: 'split',
   logo: '',
   pageColours: {
-    home: { background: '#231f20', text: '#ffffff' },
-    about: { background: '#f5f3f1', text: '#231f20' },
-    insights: { background: '#f5f3f1', text: '#231f20' },
-    contact: { background: '#f5f3f1', text: '#231f20' },
+    home: { background: '#231f20', text: '#ffffff', title: '#231f20', box: '#231f20' },
+    about: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
+    insights: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
+    contact: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
   },
   photos: {
     home: PHOTO_OPTIONS.home[0].id,
@@ -230,7 +233,7 @@ export function designCss(design: SiteDesign): string {
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`
       : `html body{background:${design.background.kind === 'colour' && design.background.colour ? design.background.colour : '#fff'};}`,
-    ...SITE_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};}`)
+    ...SITE_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};--page-title:${design.pageColours[id].title};--page-box:${design.pageColours[id].box};}`)
   );
   return lines.join('\n');
 }

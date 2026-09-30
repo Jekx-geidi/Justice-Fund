@@ -41,13 +41,13 @@ test('every page (Home, About, Insights, Contact) has its own background and tex
 });
 
 test('the defaults keep today\u2019s look: black Home box with white text, natural pages with black text', () => {
-  assert.deepEqual(DEFAULT_DESIGN.pageColours.home, { background: hex('Black'), text: hex('White') });
-  assert.deepEqual(DEFAULT_DESIGN.pageColours.about, { background: hex('Natural'), text: hex('Black') });
+  assert.deepEqual(DEFAULT_DESIGN.pageColours.home, { background: hex('Black'), text: hex('White'), title: hex('Black'), box: hex('Black') });
+  assert.deepEqual(DEFAULT_DESIGN.pageColours.about, { background: hex('Natural'), text: hex('Black'), title: hex('Black'), box: hex('Black') });
 });
 
 test('the stylesheet sets each page\u2019s colours on that page only', () => {
-  const design = { ...DEFAULT_DESIGN, pageColours: { ...DEFAULT_DESIGN.pageColours, insights: { background: hex('Teal'), text: hex('White') } } };
-  assert.ok(designCss(design).includes(`[data-page="insights"]{--page-bg:${hex('Teal')};--page-text:${hex('White')};}`));
+  const design = { ...DEFAULT_DESIGN, pageColours: { ...DEFAULT_DESIGN.pageColours, insights: { ...DEFAULT_DESIGN.pageColours.insights, background: hex('Teal'), text: hex('White') } } };
+  assert.ok(designCss(design).includes(`[data-page="insights"]{--page-bg:${hex('Teal')};--page-text:${hex('White')};`));
   assert.ok(designCss(design).includes(`[data-page="about"]{--page-bg:${hex('Natural')};`));
 });
 
@@ -70,7 +70,7 @@ test('only palette colours can be saved, because they end up inside a <style> ta
 });
 
 // Reil (30 Sep): the Get Involved button's colour is customisable, its text stays white.
-import { BUTTON_COLOURS, backgroundUrl } from './types.ts';
+import { DARK_COLOURS, backgroundUrl } from './types.ts';
 
 const luminance = (hex: string) => {
   const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
@@ -78,12 +78,12 @@ const luminance = (hex: string) => {
 };
 
 test('every button colour keeps white text readable (at least 4.5:1)', () => {
-  for (const c of BUTTON_COLOURS) assert.ok(1.05 / (luminance(c.value) + 0.05) >= 4.5, c.name);
+  for (const c of DARK_COLOURS) assert.ok(1.05 / (luminance(c.value) + 0.05) >= 4.5, c.name);
 });
 
 test('the button offers April\u2019s dark blue and teal, and starts on teal', () => {
-  for (const name of ['Dark blue', 'Teal']) assert.ok(BUTTON_COLOURS.some((c) => c.name === name), name);
-  assert.equal(DEFAULT_DESIGN.buttonColour, BUTTON_COLOURS.find((c) => c.name === 'Teal')!.value);
+  for (const name of ['Dark blue', 'Teal']) assert.ok(DARK_COLOURS.some((c) => c.name === name), name);
+  assert.equal(DEFAULT_DESIGN.buttonColour, DARK_COLOURS.find((c) => c.name === 'Teal')!.value);
 });
 
 test('the stylesheet colours the button', () => {
@@ -110,5 +110,48 @@ test('only palette background colours can be saved', () => {
 // Reil (30 Sep): the charcoal of April's Home box (black at 85% over white) is a colour choice too.
 test('charcoal is offered for backgrounds, page colours and the button', () => {
   assert.ok(PAGE_COLOURS.some((c) => c.name === 'Charcoal' && c.value === '#444142'));
-  assert.ok(BUTTON_COLOURS.some((c) => c.name === 'Charcoal' && c.value === '#444142'));
+  assert.ok(DARK_COLOURS.some((c) => c.name === 'Charcoal' && c.value === '#444142'));
+});
+
+// Reil (30 Sep): "let her do everything": the title box and the dark content boxes are customisable per page.
+
+const mix = (hex: string, withWhite: number) =>
+  '#' + [1, 3, 5].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * (1 - withWhite) + 255 * withWhite).toString(16).padStart(2, '0')).join('');
+const contrast = (a: string, b: string) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+
+test('About, Insights and Contact each have a title box and content box colour, black by default', () => {
+  for (const id of ['about', 'insights', 'contact'] as const) {
+    assert.equal(DEFAULT_DESIGN.pageColours[id].title, '#231f20', id);
+    assert.equal(DEFAULT_DESIGN.pageColours[id].box, '#231f20', id);
+  }
+});
+
+test('the stylesheet sets each page\u2019s title box and content box colours', () => {
+  const design = { ...DEFAULT_DESIGN, pageColours: { ...DEFAULT_DESIGN.pageColours, about: { ...DEFAULT_DESIGN.pageColours.about, title: '#1f6b6b', box: '#1f3a5f' } } };
+  const css = designCss(design);
+  assert.ok(css.includes('--page-title:#1f6b6b'));
+  assert.ok(css.includes('--page-box:#1f3a5f'));
+});
+
+test('text inside any box colour stays readable: body text and small labels at least 4.5:1', () => {
+  for (const c of DARK_COLOURS) {
+    assert.ok(contrast('#ffffff', c.value) >= 4.5, `${c.name} headings`);
+    // Box body text is white at 85% over the box; labels are gold at 30% over white.
+    assert.ok(contrast(mix(c.value, 0.85), c.value) >= 4.5, `${c.name} body text`);
+    assert.ok(contrast(mix('#c9a15a', 0.7), c.value) >= 4.5, `${c.name} labels`);
+  }
+});
+
+test('only dark palette colours can be saved for title boxes and boxes', () => {
+  const bad = { ...DEFAULT_DESIGN, pageColours: { ...DEFAULT_DESIGN.pageColours, about: { ...DEFAULT_DESIGN.pageColours.about, box: '#ffffff' } } };
+  assert.equal(siteDesignSchema.safeParse(bad).success, false);
+});
+
+// Reil (30 Sep): #1f2428 (the Slate brand direction's dark) is a colour choice too.
+test('slate is offered for boxes, the button and backgrounds', () => {
+  assert.ok(DARK_COLOURS.some((c) => c.name === 'Slate' && c.value === '#1f2428'));
+  assert.ok(PAGE_COLOURS.some((c) => c.name === 'Slate' && c.value === '#1f2428'));
 });
