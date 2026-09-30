@@ -19,7 +19,7 @@ export function InsightsPageView({
   const emptyMessage = fields?.emptyMessage ?? '';
   return (
     <>
-      <PageFrame title="Insights">
+      <PageFrame title="Insights" page="insights">
         <div className="case-list">
           {entries.length === 0 ? (
             (emptyTag || emptyMessage) && (

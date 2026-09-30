@@ -26,6 +26,8 @@ export interface SiteDesign {
   logo: string;
   text: { homeHeading: string; homeTagline: string; contactEmail: string; abn: string };
   seo: { title: string; description: string; keywords: string };
+  /** Hex values from PAGE_COLOURS: the Home box, or the page frame on About, Insights and Contact. */
+  pageColours: PageColours;
 }
 
 export interface BackgroundOption {
@@ -74,7 +76,29 @@ export const HEADING_COLOURS: { name: string; value: string }[] = [
   { name: 'Warm tan', value: '#8a6440' },
   { name: 'Gold', value: '#9a7432' },
   { name: 'Black', value: '#231f20' },
+  { name: 'Dark blue', value: '#1f3a5f' },
+  { name: 'Teal', value: '#1f6b6b' },
 ];
+
+/** Background and text colours April can set per page: the natural colour with dark brown, black, dark blue and teal (29 Sep). */
+export const PAGE_COLOURS: { name: string; value: string }[] = [
+  { name: 'White', value: '#ffffff' },
+  { name: 'Natural', value: '#f5f3f1' },
+  { name: 'Dark brown', value: '#4a3222' },
+  { name: 'Black', value: '#231f20' },
+  { name: 'Dark blue', value: '#1f3a5f' },
+  { name: 'Teal', value: '#1f6b6b' },
+];
+
+/** The pages with their own colours. Each page view marks its content with data-page="<id>". */
+export const COLOUR_PAGES = [
+  { id: 'home', path: '/', label: 'Home' },
+  { id: 'about', path: '/about', label: 'About' },
+  { id: 'insights', path: '/insights', label: 'Insights' },
+  { id: 'contact', path: '/contact', label: 'Contact' },
+] as const;
+export type ColourPage = (typeof COLOUR_PAGES)[number]['id'];
+export type PageColours = Record<ColourPage, { background: string; text: string }>;
 
 /** April's export of 29 Sep: the look they approved to build on. */
 export const DEFAULT_DESIGN: SiteDesign = {
@@ -89,6 +113,12 @@ export const DEFAULT_DESIGN: SiteDesign = {
   headingColour: '#6b4a2e',
   headerStyle: 'split',
   logo: '',
+  pageColours: {
+    home: { background: '#231f20', text: '#ffffff' },
+    about: { background: '#f5f3f1', text: '#231f20' },
+    insights: { background: '#f5f3f1', text: '#231f20' },
+    contact: { background: '#f5f3f1', text: '#231f20' },
+  },
   text: {
     homeHeading: 'Intergenerational Justice Fund',
     homeTagline: 'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
@@ -126,6 +156,9 @@ export function withDefaults(saved: Partial<SiteDesign> | null | undefined): Sit
     background,
     text: { ...d.text, ...saved.text },
     seo: { ...d.seo, ...saved.seo },
+    pageColours: Object.fromEntries(
+      COLOUR_PAGES.map(({ id }) => [id, { ...d.pageColours[id], ...saved.pageColours?.[id] }])
+    ) as PageColours,
   };
 }
 
@@ -160,7 +193,8 @@ export function designCss(design: SiteDesign): string {
     `:root{--font-heading:${heading.stack};--font-body:${body.stack};--heading-scale:${design.headingSize / 100};--body-size:${design.bodySize}px;--menu-size:${design.menuSize}px;--heading-colour:${design.headingColour};}`,
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`
-      : 'html body{background:#fff;}'
+      : 'html body{background:#fff;}',
+    ...COLOUR_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};}`)
   );
   return lines.join('\n');
 }

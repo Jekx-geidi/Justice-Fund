@@ -8,6 +8,9 @@ import {
   DEFAULT_DESIGN,
   FONTS,
   HEADING_COLOURS,
+  COLOUR_PAGES,
+  PAGE_COLOURS,
+  type ColourPage,
   designCss,
   fontByName,
   OPEN_EDITOR_PARAM,
@@ -62,6 +65,30 @@ function Choice<T extends string>({
     <button type="button" className="ss-choice" aria-pressed={value === current} aria-label={label} onClick={() => onPick(value)}>
       {children}
     </button>
+  );
+}
+
+const LIGHT = ['#ffffff', '#f5f3f1'];
+
+function Swatches({ colours, current, onPick }: { colours: { name: string; value: string }[]; current: string; onPick: (v: string) => void }) {
+  return (
+    <div className="ss-swatches">
+      {colours.map((c) => (
+        <button
+          key={c.value}
+          type="button"
+          className="ss-swatch"
+          data-light={LIGHT.includes(c.value) || undefined}
+          aria-pressed={current === c.value}
+          aria-label={c.name}
+          title={c.name}
+          style={{ background: c.value }}
+          onClick={() => onPick(c.value)}
+        >
+          {current === c.value && <Check size={16} aria-hidden="true" />}
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -123,6 +150,10 @@ export function SiteSettingsPanel({
   const isFramed = FRAMED_PAGES.includes(pathname);
   // The heading colour only styles the About focus-areas heading; Home and the page titles stay white on black.
   const hasColouredHeading = pathname === '/about';
+  // Home, About, Insights and Contact each have their own background colour.
+  const colourPage = COLOUR_PAGES.find((p) => p.path === pathname);
+  // Insights and Contact keep all their text in dark boxes, so only Home and About have page text to colour.
+  const hasPageText = colourPage?.id === 'home' || colourPage?.id === 'about';
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(initialDraft);
   // Home has no body text unless a tagline is set.
@@ -202,6 +233,8 @@ export function SiteSettingsPanel({
   const set = <K extends keyof SiteDesign>(key: K, value: SiteDesign[K]) => update({ ...draft, [key]: value });
   const setText = (key: TextKey, value: string) => update({ ...draft, text: { ...draft.text, [key]: value } });
   const setSeo = (key: keyof SiteDesign['seo'], value: string) => update({ ...draft, seo: { ...draft.seo, [key]: value } });
+  const setPageColour = (page: ColourPage, key: 'background' | 'text', value: string) =>
+    update({ ...draft, pageColours: { ...draft.pageColours, [page]: { ...draft.pageColours[page], [key]: value } } });
 
   async function flush() {
     if (pending.current) {
@@ -434,27 +467,32 @@ export function SiteSettingsPanel({
             <Slider label="Menu" value={draft.menuSize} min={11} max={18} unit="px" presets={[['Small', 12], ['Default', 13], ['Large', 15], ['Extra large', 17]]} onChange={(v) => set('menuSize', v)} />
           </details>
 
-          {hasColouredHeading && (
-          <details>
-            <summary>Colour</summary>
-            <p className="ss-label">Heading colour</p>
-            <div className="ss-swatches">
-              {HEADING_COLOURS.map((c) => (
-                <button
-                  key={c.value}
-                  type="button"
-                  className="ss-swatch"
-                  aria-pressed={draft.headingColour === c.value}
-                  aria-label={c.name}
-                  title={c.name}
-                  style={{ background: c.value }}
-                  onClick={() => set('headingColour', c.value)}
-                >
-                  {draft.headingColour === c.value && <Check size={16} aria-hidden="true" />}
-                </button>
-              ))}
-            </div>
-          </details>
+          {colourPage && (
+            <details>
+              <summary>Colour</summary>
+              <p className="ss-label">{colourPage.label} page background</p>
+              <Swatches
+                colours={PAGE_COLOURS}
+                current={draft.pageColours[colourPage.id].background}
+                onPick={(v) => setPageColour(colourPage.id, 'background', v)}
+              />
+              {hasPageText && (
+                <>
+                  <p className="ss-label">{colourPage.label} page text</p>
+                  <Swatches
+                    colours={PAGE_COLOURS}
+                    current={draft.pageColours[colourPage.id].text}
+                    onPick={(v) => setPageColour(colourPage.id, 'text', v)}
+                  />
+                </>
+              )}
+              {hasColouredHeading && (
+                <>
+                  <p className="ss-label">Heading colour</p>
+                  <Swatches colours={HEADING_COLOURS} current={draft.headingColour} onPick={(v) => set('headingColour', v)} />
+                </>
+              )}
+            </details>
           )}
 
           <details>

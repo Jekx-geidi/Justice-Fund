@@ -1,8 +1,10 @@
 import { z } from 'zod';
-import { BACKGROUND_IMAGES, FONTS, HEADING_COLOURS } from './types';
-import { SITE_LOGO_IDS } from '@/lib/brand/logo-concepts';
+import { BACKGROUND_IMAGES, FONTS, HEADING_COLOURS, PAGE_COLOURS } from './types.ts';
+import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 
 const fontName = z.string().refine((name) => FONTS.some((f) => f.name === name), 'Unknown font');
+const pageColour = z.string().refine((c) => PAGE_COLOURS.some((p) => p.value === c), 'Unknown colour');
+const pageColours = z.object({ background: pageColour, text: pageColour });
 const plainText = (max: number) => z.string().max(max).refine((s) => !/[<>]/.test(s), 'No HTML allowed');
 
 /** Everything here ends up inside a <style> tag or page markup, so it is strictly whitelisted. */
@@ -36,4 +38,5 @@ export const siteDesignSchema = z.object({
     description: plainText(300),
     keywords: plainText(300),
   }),
+  pageColours: z.object({ home: pageColours, about: pageColours, insights: pageColours, contact: pageColours }),
 });

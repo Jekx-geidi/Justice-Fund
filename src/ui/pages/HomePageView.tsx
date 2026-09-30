@@ -20,7 +20,7 @@ export function HomePageView({
   const title = heading ?? home.heading;
   const line = tagline ?? '';
   return (
-    <section className="home-stage">
+    <section className="home-stage" data-page="home">
       <div className="home-box">
         <h1 className="home-title" data-design-text="homeHeading">
           {title}

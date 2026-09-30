@@ -15,7 +15,7 @@ Previous plan (mockup reversion) is complete; see git history `79d54b2..72fe858`
 2. **[done]** Make April's export the default design (`DEFAULT_DESIGN`): white, split, stacked, 80%, her tagline.
    The live published design is data (Supabase), applied separately by an admin Publish (task 7).
    - Accept: unit test on DEFAULT_DESIGN; "Restore original design" returns to her look.
-3. **[pending]** Colour palette: add Dark blue and Teal. Per page (Home, About, Insights, Contact) the panel
+3. **[done]** Colour palette: add Dark blue and Teal. Per page (Home, About, Insights, Contact) the panel
    offers Background colour (Natural, Dark brown, Black, Dark blue, Teal) and Text colour, shown only on that page.
    Schema + validation + designCss + panel + offline export.
    - Accept: unit tests for designCss per page; QA "every control changes the page" still green.

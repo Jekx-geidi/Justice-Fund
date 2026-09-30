@@ -5,7 +5,7 @@ import { BlockRenderer } from '@/ui/blocks/BlockRenderer';
 export function AboutPageView({ about, additionalSections = [] }: { about: AboutFields; additionalSections?: ContentBlock[] }) {
   return (
     <>
-      <PageFrame title="About us">
+      <PageFrame title="About us" page="about">
         <div className="page-text">
           <p>{about.intro}</p>
           <p>{about.body}</p>

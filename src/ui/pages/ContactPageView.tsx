@@ -16,7 +16,7 @@ export function ContactPageView({
   const emailLabel = contact.emailLabel ?? 'Email';
   return (
     <>
-      <PageFrame title="Contact">
+      <PageFrame title="Contact" page="contact">
         <div className="contact-card">
           {contact.location && <p className="contact-location">{contact.location}</p>}
           {emailLabel && <p className="contact-label">{emailLabel}</p>}
