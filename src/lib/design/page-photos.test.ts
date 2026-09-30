@@ -31,11 +31,11 @@ test('each photo describes itself for screen readers', () => {
   for (const photo of Object.values(PHOTO_OPTIONS).flat()) assert.ok(photo.alt.length > 10, `${photo.id} alt text`);
 });
 
-test('CREDITS.md credits every photo with its Pexels source', () => {
+test('CREDITS.md credits every photo with its Pexels or Unsplash source', () => {
   const credits = readFileSync(new URL('../../../public/images/pages/CREDITS.md', import.meta.url), 'utf8');
   for (const photo of Object.values(PHOTO_OPTIONS).flat()) {
     const file = photo.src.split('/').pop()!;
-    assert.match(credits, new RegExp(`\`${file}\`.*https://www\\.pexels\\.com/photo/`), file);
+    assert.match(credits, new RegExp(`\`${file}\`.*https://(www\\.pexels\\.com/photo|unsplash\\.com/photos)/`), file);
   }
 });
 
@@ -44,8 +44,8 @@ test('each page starts on its first photo', () => {
 });
 
 test('the chosen photo is shown, and an unknown one falls back to the page default', () => {
-  assert.equal(pagePhoto('contact', 'perth-sunset').id, 'perth-sunset');
-  assert.equal(pagePhoto('contact', 'earth-africa').id, PHOTO_OPTIONS.contact[0].id, "another page's photo");
+  assert.equal(pagePhoto('contact', 'kings-park-night').id, 'kings-park-night');
+  assert.equal(pagePhoto('contact', 'earth-clouds').id, PHOTO_OPTIONS.contact[0].id, "another page's photo");
   assert.equal(pagePhoto('about', undefined).id, PHOTO_OPTIONS.about[0].id);
 });
 
@@ -55,6 +55,6 @@ test('settings saved before photo choices existed get the defaults', () => {
 });
 
 test('only that page’s own photos can be saved', () => {
-  assert.ok(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, photos: { ...DEFAULT_DESIGN.photos, contact: 'perth-sunset' } }).success);
-  assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, photos: { ...DEFAULT_DESIGN.photos, contact: 'earth-africa' } }).success, false);
+  assert.ok(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, photos: { ...DEFAULT_DESIGN.photos, contact: 'kings-park-night' } }).success);
+  assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, photos: { ...DEFAULT_DESIGN.photos, contact: 'earth-clouds' } }).success, false);
 });

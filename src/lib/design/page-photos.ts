@@ -25,7 +25,7 @@ const photo = (id: string, width: number, height: number, alt: string, position 
 
 /**
  * Five photos per page to pick from in Site settings (April, 29 Sep: a photo on each page; Junrey, 30 Sep: about five
- * each). The first is the page default. All free under the Pexels License; photographers and sources are in
+ * each). The first is the page default. All free under the Pexels or Unsplash License; photographers and sources are in
  * public/images/pages/CREDITS.md. A replacement photo needs a new file name: next/image and the CDN cache by URL.
  */
 export const PHOTO_OPTIONS: Record<SitePage, PagePhoto[]> = {
@@ -38,12 +38,12 @@ export const PHOTO_OPTIONS: Record<SitePage, PagePhoto[]> = {
     photo('earth-hurricane', 1600, 1622, 'A hurricane of white clouds over the ocean, seen from space', '50% 55%'),
   ],
   about: [
-    // Tall photos in a wide banner: frame on the hands planting, the action of the shot.
+    // April: people working in a rainforest or nature. Rainforest first; tall photos framed on the work in hand.
+    photo('forest-planting', 1100, 1650, 'People planting young trees in a forest', '50% 70%'),
+    photo('sierra-leone-planting', 1600, 1065, 'A woman and man planting trees among forest greenery in Sierra Leone'),
+    photo('jungle-field-notes', 1100, 1649, 'A field researcher crouched in the jungle, writing notes in a notebook', '50% 45%'),
     photo('people-planting', 1100, 1650, 'A group of people planting a young tree together', '50% 62%'),
     photo('hands-seedlings', 1100, 1650, 'Several hands holding young seedlings ready to plant', '50% 50%'),
-    photo('group-planting', 1100, 1650, 'Friends of all ages planting a tree together outdoors', '50% 60%'),
-    photo('volunteers-planting', 1600, 1067, 'Volunteers in raincoats planting young trees in a field'),
-    photo('dune-planting', 1600, 1067, 'Volunteers planting trees across sandy dunes to restore the land'),
   ],
   insights: [
     photo('rainforest-river', 1600, 899, 'Aerial drone view of a river winding through rainforest', '50% 60%'),
@@ -53,11 +53,12 @@ export const PHOTO_OPTIONS: Record<SitePage, PagePhoto[]> = {
     photo('forest-canopy', 1300, 867, 'Dense green rainforest canopy seen from a drone'),
   ],
   contact: [
-    photo('perth-evening', 1600, 1067, 'Perth city skyline lit up in the evening over Elizabeth Quay', '50% 55%'),
+    // April: Perth city at night, so no daytime, dusk or sunset shots.
+    photo('perth-skyline-night', 1600, 1067, "Perth's city skyline at night, its lights reflected in the Swan River"),
+    photo('elizabeth-quay-night', 1100, 1650, 'Elizabeth Quay and the Perth skyline lit up at night', '50% 55%'),
+    photo('elizabeth-quay-bridge-night', 1600, 1060, 'The Elizabeth Quay bridge glowing at night in Perth'),
+    photo('kings-park-night', 1600, 1066, 'Perth city lights at night, seen from Kings Park'),
     photo('perth-night-reflections', 1600, 900, "Perth's skyline at night, its lights reflected in the water"),
-    photo('perth-twilight', 1600, 900, 'Perth city skyline at twilight, reflected in the Swan River'),
-    photo('perth-sunset', 1600, 900, 'Perth skyline at sunset with palm trees and waterfront reflections'),
-    photo('perth-kings-park', 1600, 900, 'Perth skyline at sunset, seen from Kings Park'),
   ],
 };
 
