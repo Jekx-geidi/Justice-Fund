@@ -1,46 +1,32 @@
-# Plan: Revert public site to Yudi's mockup (docs/approved-content.html)
+# Plan: April & Ange's feedback (emails 29 Sep 8:04 PM and 30 Sep 10:24 AM)
 
-Source of truth for visual style: `docs/approved-content.html` (Poppins, charcoal
-`#231F20` / paper `#F5F3F1` / gold `#C9A15A`, no photos, no placeholder
-quotes/CTAs). Content source of truth: current CMS data via `getSiteContent`.
-Admin (`/admin`, auth/MFA, Supabase, draft/preview/publish) is out of scope and
-must keep working — `PageEditorClient`'s Live Preview renders these same
-public view components, so restyling them restyles preview automatically.
+Source: `Re First Draft - website.msg` / `Re First Draft - website -.msg` (not committed: client email).
+Base look = April's export `iejf-design-2026-09-29 (4).html`: white background, split homepage,
+stacked pages, Poppins/Poppins, headings 80%, tagline "We use the law to drive systemic change…".
+Keep the original menu (Home, About, Insights, Contact); ignore Ange's "About, Our work, Latest,
+Transparency" tabs. Rule stands: Site settings only shows controls that change the page you're on.
 
-No test runner exists in this repo (only `lint`, `typecheck`, `build`). Each
-task is verified with those three plus a manual dev-server check, not unit
-tests.
+Previous plan (mockup reversion) is complete; see git history `79d54b2..72fe858`.
 
-## Tasks — all done (commits `79d54b2`..`72fe858`)
+## Tasks
 
-1. **[done]** Typography + token pass — Poppins scoped to `.site-public`,
-   admin's Marcellus/Material typography untouched.
-2. **[done]** Home reversion — dropped hero photo/portrait cutout, charcoal
-   single-column hero, correctly bound `home.heading` (was hardcoded),
-   removed the About-teaser/Focus-cards sections duplicated onto Home
-   (mockup doesn't have them there).
-3. **[done]** Removed the "In the news" placeholder quote-wall from Home.
-   `home.quotes` stays in the schema/admin editor, unused publicly.
-4. **[done]** Home CTA restyled to the mockup's centered, paper-background
-   treatment. Copy/CMS binding unchanged.
-5. **[done]** About reversion — dropped the photo, plain two-column
-   intro/body text layout, focus cards unchanged.
-6. **[done]** Insights reversion — plain `.case-item` bordered list,
-   dropped the two-column "featured" photo panel; optional entry images
-   kept (explicit brief exception).
-7. **[done]** Contact reversion — dropped the dark decorative aside/circle
-   decoration; plain two-column layout, form/CMS binding unchanged.
-8. **[done]** Header/Footer — removed decorative nav arrow icons, reduced
-   the oversized footer brand lockup. Routing/mobile-dialog/CMS nav data
-   untouched.
-9. **[done]** Full verification pass — see final report delivered to the
-   user in-conversation. typecheck/lint/build all green on every commit;
-   confirmed via `git diff --stat` that no file under `src/app/admin`,
-   `src/ui/admin`, `src/app/api/admin`, or `supabase/` was touched.
-   Live-browser screenshot verification could not be completed (agent-browser/
-   Playwright did not come up in this sandbox); responsive correctness was
-   instead verified by reasoning through every media query touched plus
-   DOM/curl checks against the running dev server. Admin login→Save
-   Draft→Preview→Publish click-through was **not** run — it needs real
-   admin credentials against a live Supabase project, which this session
-   doesn't have and shouldn't guess at.
+1. **[pending]** Remove "CHARITY · PERTH, WA" from the header (desktop caption and mobile menu caption).
+   - Accept: no page renders the caption; QA asserts it.
+2. **[pending]** Make April's export the default design (`DEFAULT_DESIGN`): white, split, stacked, 80%, her tagline.
+   The live published design is data (Supabase), applied separately by an admin Publish (task 7).
+   - Accept: unit test on DEFAULT_DESIGN; "Restore original design" returns to her look.
+3. **[pending]** Colour palette: add Dark blue and Teal. Per page (Home, About, Insights, Contact) the panel
+   offers Background colour (Natural, Dark brown, Black, Dark blue, Teal) and Text colour, shown only on that page.
+   Schema + validation + designCss + panel + offline export.
+   - Accept: unit tests for designCss per page; QA "every control changes the page" still green.
+4. **[pending]** Licensed photos, one per page: Home earth from space, About people working in nature,
+   Insights aerial rainforest/river, Contact Perth city at night. Stored in `public/images/pages/`, with
+   source + licence recorded in `public/images/pages/CREDITS.md`. Editable later via the media library.
+   - Accept: photos render on each page, optimised (webp, <300 KB), alt text, embedded in the offline export.
+5. **[pending]** Home page per Ange's mock-up: split hero (heading, paragraph, Get Involved -> /contact,
+   Learn More -> /about, photo right), "What We Do" (intro + Strategic Litigation / Policy Reform cards),
+   "Why Intergenerational Justice Matters". Copy editable in Admin -> Pages -> Home.
+   - Accept: matches mock-up structure on desktop and phone; QA a11y + overflow green; one h1.
+6. **[pending]** Photos on About / Insights / Contact in the page frame; offline export includes them.
+7. **[pending]** Verify on staging (BrowserSkill + QA), apply April's design to the published site (admin
+   Publish, needs sign-off), deploy from committed code.

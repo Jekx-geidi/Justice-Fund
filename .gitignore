@@ -45,3 +45,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Client emails saved from Outlook for reference; never commit.
+*.msg
