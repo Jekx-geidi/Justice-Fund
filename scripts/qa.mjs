@@ -86,7 +86,8 @@ await offlinePage.evaluate(() => document.fonts.ready);
 assert.equal(await offlinePage.locator('.site-shell').getAttribute('data-home-layout'),'split');
 assert.equal(await offlinePage.locator('#home h1').isVisible(),true,'Home shows first');
 assert.equal(await offlinePage.evaluate(() => document.fonts.check('700 40px Poppins')),true,'Poppins is embedded');
-assert.match(await offlinePage.evaluate(() => getComputedStyle(document.body).backgroundImage),/^url\("data:image\//,'The background is embedded');
+// A photo background is embedded; plain white has none. Either way nothing loads from the web.
+assert.match(await offlinePage.evaluate(() => getComputedStyle(document.body).backgroundImage),/^(none|url\("data:image\/)/,'The background is embedded or plain');
 for (const [label,id] of [['About','about'],['Insights','insights'],['Contact','contact'],['Home','home']]) {
   await offlinePage.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:label,exact:true}).click();
   assert.equal(await offlinePage.locator('#'+id).isVisible(),true,label+' opens inside the file');

@@ -28,5 +28,6 @@ Previous plan (mockup reversion) is complete; see git history `79d54b2..72fe858`
    "Why Intergenerational Justice Matters". Copy editable in Admin -> Pages -> Home.
    - Accept: matches mock-up structure on desktop and phone; QA a11y + overflow green; one h1.
 6. **[done]** Photos on About / Insights / Contact in the page frame; offline export includes them.
-7. **[in progress]** Deploy committed code to staging and run the QA against it: done (e1b5ebe, QA 0 failures on staging);
-   apply April's design to the published site (admin Publish: needs an admin login, left for Reil).
+7. **[done]** e1b5ebe deployed and QA-green on staging. April's export set as the stored live + draft design
+   (Supabase site_content.design, 30 Sep; previous design backed up), so staging shows her layout by default.
+   Site settings stays (Reil, 30 Sep).
