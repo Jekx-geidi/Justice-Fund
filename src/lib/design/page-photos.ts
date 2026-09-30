@@ -30,11 +30,12 @@ const photo = (id: string, width: number, height: number, alt: string, position 
  */
 export const PHOTO_OPTIONS: Record<SitePage, PagePhoto[]> = {
   home: [
+    // April searched "earth from space clouds": all five are cloud views from orbit, not whole globes.
     photo('earth-clouds', 1600, 900, 'Earth seen from space, with swirling clouds over the ocean'),
-    photo('earth-americas', 1600, 900, 'Planet Earth from space, showing the Americas and the oceans'),
-    photo('earth-africa', 1600, 900, 'Planet Earth from space, showing Africa and the oceans'),
-    photo('earth-night-horizon', 1600, 900, "Earth's curved horizon at night, with city lights below"),
-    photo('earth-blue-planet', 1600, 900, 'The blue planet Earth floating in space'),
+    photo('earth-australia-clouds', 1600, 900, 'Australia from space under swirling white clouds'),
+    photo('earth-europe-clouds', 1600, 900, 'Europe from space with clouds over the land and sea'),
+    photo('earth-storm-horizon', 1600, 1091, "A storm's spiral of clouds over Earth's curved horizon, seen from orbit"),
+    photo('earth-hurricane', 1600, 1622, 'A hurricane of white clouds over the ocean, seen from space', '50% 55%'),
   ],
   about: [
     // Tall photos in a wide banner: frame on the hands planting, the action of the shot.

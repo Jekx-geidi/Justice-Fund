@@ -10,10 +10,10 @@ photo a new file name: next/image and the CDN cache resized images by URL.
 | Page | File | Photo | Photographer | Source |
 | --- | --- | --- | --- | --- |
 | Home | `earth-clouds.webp` | Stunning Aerial View of Earth from Space | Zelch Csaba | https://www.pexels.com/photo/stunning-aerial-view-of-earth-from-space-30596252/ |
-| Home | `earth-americas.webp` | Stunning View of Earth from Space | Zelch Csaba | https://www.pexels.com/photo/stunning-view-of-earth-from-space-30596225/ |
-| Home | `earth-africa.webp` | Stunning View of Earth from Space Featuring Africa | Zelch Csaba | https://www.pexels.com/photo/stunning-view-of-earth-from-space-featuring-africa-30596229/ |
-| Home | `earth-night-horizon.webp` | Stunning View of Earth from Space at Night | Zelch Csaba | https://www.pexels.com/photo/stunning-view-of-earth-from-space-at-night-30596237/ |
-| Home | `earth-blue-planet.webp` | Stunning Blue Planet Earth in Outer Space | Zelch Csaba | https://www.pexels.com/photo/stunning-blue-planet-earth-in-outer-space-30596214/ |
+| Home | `earth-australia-clouds.webp` | Satellite View of Australia from Space | Zelch Csaba | https://www.pexels.com/photo/satellite-view-of-australia-from-space-30596224/ |
+| Home | `earth-europe-clouds.webp` | Stunning Satellite View of Europe | Zelch Csaba | https://www.pexels.com/photo/stunning-satellite-view-of-europe-30596258/ |
+| Home | `earth-storm-horizon.webp` | Earth Planet (Hurricane Felix) | Pixabay | https://www.pexels.com/photo/earth-planet-76969/ |
+| Home | `earth-hurricane.webp` | Eye of the Storm Image from Outer Space | Pixabay | https://www.pexels.com/photo/eye-of-the-storm-image-from-outer-space-71116/ |
 | About | `people-planting.webp` | People Planting Together | Anna Shvets | https://www.pexels.com/photo/people-planting-together-5029929/ |
 | About | `hands-seedlings.webp` | Hands Holding Green Plants | Anna Shvets | https://www.pexels.com/photo/hands-holding-green-plants-5029853/ |
 | About | `group-planting.webp` | People Planting Plant Together | Anna Shvets | https://www.pexels.com/photo/people-planting-plant-together-5029923/ |

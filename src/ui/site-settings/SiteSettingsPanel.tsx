@@ -347,7 +347,30 @@ export function SiteSettingsPanel({
         </div>
 
         <div className="ss-body">
-                    <details open>
+                    {/* The current page's photo candidates come first: the image April changes most. */}
+          {sitePage && (
+            <details open>
+              <summary>{sitePage.label} photo</summary>
+              <div className="ss-grid ss-grid-3">
+                {PHOTO_OPTIONS[sitePage.id].map((photo) => (
+                  <button
+                    key={photo.id}
+                    type="button"
+                    className="ss-thumb"
+                    aria-pressed={draft.photos[sitePage.id] === photo.id}
+                    aria-label={photo.alt}
+                    title={photo.alt}
+                    onClick={() => setPhoto(sitePage.id, photo.id)}
+                  >
+                    <img src={photo.thumb} alt="" />
+                  </button>
+                ))}
+              </div>
+            </details>
+          )}
+
+          {/* The site background behind the pages: the desert photos or plain white. */}
+          <details>
             <summary>Background</summary>
             <div className="ss-grid ss-grid-3">
               {BACKGROUND_IMAGES.map((bg) => (
@@ -450,27 +473,6 @@ export function SiteSettingsPanel({
             <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
             <Slider label="Menu" value={draft.menuSize} min={11} max={18} unit="px" presets={[['Small', 12], ['Default', 13], ['Large', 15], ['Extra large', 17]]} onChange={(v) => set('menuSize', v)} />
           </details>
-
-          {sitePage && (
-            <details>
-              <summary>Photo</summary>
-              <div className="ss-grid ss-grid-3">
-                {PHOTO_OPTIONS[sitePage.id].map((photo) => (
-                  <button
-                    key={photo.id}
-                    type="button"
-                    className="ss-thumb"
-                    aria-pressed={draft.photos[sitePage.id] === photo.id}
-                    aria-label={photo.alt}
-                    title={photo.alt}
-                    onClick={() => setPhoto(sitePage.id, photo.id)}
-                  >
-                    <img src={photo.thumb} alt="" />
-                  </button>
-                ))}
-              </div>
-            </details>
-          )}
 
           {sitePage && (
             <details>
