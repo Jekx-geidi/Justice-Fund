@@ -106,3 +106,9 @@ test('only palette background colours can be saved', () => {
   const bad = { ...DEFAULT_DESIGN, background: { ...DEFAULT_DESIGN.background, kind: 'colour' as const, colour: 'url(x)' } };
   assert.equal(siteDesignSchema.safeParse(bad).success, false);
 });
+
+// Reil (30 Sep): the charcoal of April's Home box (black at 85% over white) is a colour choice too.
+test('charcoal is offered for backgrounds, page colours and the button', () => {
+  assert.ok(PAGE_COLOURS.some((c) => c.name === 'Charcoal' && c.value === '#444142'));
+  assert.ok(BUTTON_COLOURS.some((c) => c.name === 'Charcoal' && c.value === '#444142'));
+});

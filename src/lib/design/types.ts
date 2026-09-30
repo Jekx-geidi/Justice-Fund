@@ -98,6 +98,7 @@ export const BUTTON_COLOURS: { name: string; value: string }[] = [
   { name: 'Dark blue', value: '#1f3a5f' },
   { name: 'Dark brown', value: '#4a3222' },
   { name: 'Black', value: '#231f20' },
+  { name: 'Charcoal', value: '#444142' },
   { name: 'Maroon', value: '#7b2d26' },
 ];
 
@@ -106,6 +107,8 @@ export const PAGE_COLOURS: { name: string; value: string; light?: boolean }[] = 
   { name: 'Natural', value: '#f5f3f1', light: true },
   { name: 'Dark brown', value: '#4a3222' },
   { name: 'Black', value: '#231f20' },
+  // April's Home box in her export: black at 85% over white.
+  { name: 'Charcoal', value: '#444142' },
   { name: 'Dark blue', value: '#1f3a5f' },
   { name: 'Teal', value: '#1f6b6b' },
 ];
