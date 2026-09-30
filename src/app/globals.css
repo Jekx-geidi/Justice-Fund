@@ -213,6 +213,8 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 @keyframes enter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 @media(min-width:700px) and (max-width:1099px) { .desktop-nav { gap:22px; } }
 @media(max-width:899px) { .menu-trigger { display:flex; } .desktop-nav { display:none; } .header-inner { min-height:86px; } }
+/* A centred header on phones: the name stays centred, the burger sits on the same line at the right (not stacked under it). */
+@media(max-width:899px) { .site-shell[data-header-style="centred"] .header-inner { flex-direction:row; justify-content:center; position:relative; padding-block:0; } .site-shell[data-header-style="centred"] .brand { max-width:calc(100% - 128px); } .site-shell[data-header-style="centred"] .menu-trigger { position:absolute; right:0; top:50%; transform:translateY(-50%); } }
 @media(max-width:699px) { .wrap { width:calc(100% - 40px); } .header-inner { min-height:82px; gap:12px; } .brand { font-size:0.9rem; } .menu-trigger { width:44px; height:44px; flex-shrink:0; }
  .focus-grid { grid-template-columns:1fr; } .focus-card { padding:24px 20px; } .focus-card>p { font-size:14px; }
  [data-page-layout="side"] .page-frame { grid-template-columns:1fr; gap:0; } [data-page-layout="side"] .page-frame-head { position:static; margin-bottom:24px; }

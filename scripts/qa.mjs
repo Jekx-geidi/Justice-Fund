@@ -32,6 +32,18 @@ for (const width of [320,375,390,430,768,820,1024,1280,1440,1920]) {
   }
 }
 await page.setViewportSize({width:390,height:844});
+// Phone header (Reil, 30 Sep): in either header style the burger sits on the name's line at the right, not under it.
+for (const style of ['Name left, menu right','Everything centred']) {
+  await page.goto(base+'/?editor');
+  await page.locator('#site-settings summary',{hasText:/^Header$/}).click();
+  await page.locator('#site-settings').getByRole('button',{name:style}).click();
+  await page.getByRole('button',{name:'Close site settings'}).click();
+  const brand = await page.locator('.site-header .brand').first().boundingBox();
+  const burger = await page.getByRole('button',{name:'Open navigation'}).boundingBox();
+  assert.ok(Math.abs((burger.y + burger.height / 2) - (brand.y + brand.height / 2)) < 12, style+': burger on the name line');
+  assert.ok(burger.x + burger.width > 390 - 40, style+': burger at the right edge');
+  assert.ok(brand.x + brand.width <= burger.x, style+': name does not run under the burger');
+}
 await page.goto(base);
 await page.getByRole('button',{name:'Open navigation'}).click();
 assert.equal(await page.evaluate(() => document.body.style.overflow), 'hidden');
