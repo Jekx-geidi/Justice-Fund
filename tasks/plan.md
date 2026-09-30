@@ -19,7 +19,7 @@ Previous plan (mockup reversion) is complete; see git history `79d54b2..72fe858`
    offers Background colour (Natural, Dark brown, Black, Dark blue, Teal) and Text colour, shown only on that page.
    Schema + validation + designCss + panel + offline export.
    - Accept: unit tests for designCss per page; QA "every control changes the page" still green.
-4. **[pending]** Licensed photos, one per page: Home earth from space, About people working in nature,
+4. **[done]** Licensed photos, one per page: Home earth from space, About people working in nature,
    Insights aerial rainforest/river, Contact Perth city at night. Stored in `public/images/pages/`, with
    source + licence recorded in `public/images/pages/CREDITS.md`. Editable later via the media library.
    - Accept: photos render on each page, optimised (webp, <300 KB), alt text, embedded in the offline export.
