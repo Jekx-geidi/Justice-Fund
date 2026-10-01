@@ -43,6 +43,7 @@ function applyToPage(design: SiteDesign) {
 }
 
 const FOCUS_KEY = 'ss-focus-mode';
+const PHOTO_TIP = 'Tip: drag the photo on the page to move it. Zoom and Opacity are just below.';
 
 /** The label a control shows in the panel: its field label, slider label, the label above its swatches, or its section. */
 function controlLabel(target: Element): string | null {
@@ -173,6 +174,17 @@ export function SiteSettingsPanel({
   // Focus mode: highlight the part of the page a control changes. On unless she switches it off (remembered per browser).
   const [focusMode, setFocusMode] = useState(true);
   const focusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // A short tip at the bottom of the page (Reil, 30 Sep): the page photo can be dragged, zoomed and faded.
+  const [toast, setToast] = useState('');
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+  }, []);
+  function showToast(text: string) {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(text);
+    toastTimer.current = setTimeout(() => setToast(''), 5000);
+  }
 
   useEffect(() => {
     try {
@@ -273,12 +285,14 @@ export function SiteSettingsPanel({
   const setText = (key: TextKey, value: string) => update({ ...draft, text: { ...draft.text, [key]: value } });
   const setSeo = (key: keyof SiteDesign['seo'], value: string) => update({ ...draft, seo: { ...draft.seo, [key]: value } });
   // A new photo starts from its own best framing.
-  const setPhoto = (page: SitePage, id: string) =>
+  const setPhoto = (page: SitePage, id: string) => {
+    showToast(PHOTO_TIP);
     update({
       ...draft,
       photos: { ...draft.photos, [page]: id },
       photoFrames: { ...draft.photoFrames, [page]: defaultFrame(pagePhoto(page, id)) },
     });
+  };
   const setFrame = (page: SitePage, frame: Partial<PhotoFrame>) =>
     update({ ...latest.current, photoFrames: { ...latest.current.photoFrames, [page]: { ...latest.current.photoFrames[page], ...frame } } });
 
@@ -289,6 +303,13 @@ export function SiteSettingsPanel({
   // While the panel is open, page photos can be dragged to choose which part of the photo shows.
   useEffect(() => {
     if (!open) return;
+    // Once a session, on a page with a photo, remind her the photo can be dragged.
+    try {
+      if (sitePage && !sessionStorage.getItem('ss-photo-tip')) {
+        sessionStorage.setItem('ss-photo-tip', '1');
+        showToast(PHOTO_TIP);
+      }
+    } catch {}
     document.documentElement.dataset.photoEdit = '';
     let drag: { page: SitePage; x: number; y: number; zoom: number; startX: number; startY: number; w: number; h: number } | null = null;
     const onDown = (e: PointerEvent) => {
@@ -321,7 +342,7 @@ export function SiteSettingsPanel({
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
     };
-  }, [open]);
+  }, [open, sitePage]);
   const setPageColour = (page: SitePage, key: 'background' | 'text' | 'title' | 'box', value: string) =>
     update({ ...draft, pageColours: { ...draft.pageColours, [page]: { ...draft.pageColours[page], [key]: value } } });
 
@@ -414,6 +435,9 @@ export function SiteSettingsPanel({
 
   return (
     <>
+      <p className="ss-toast" role="status" aria-live="polite" hidden={!toast}>
+        {toast}
+      </p>
       <button
         type="button"
         className="ss-launcher"

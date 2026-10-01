@@ -133,6 +133,9 @@ await page.mouse.up();
 assert.notEqual((await photoStyle()).position, before.position, 'Dragging the photo moves it');
 await photoPanel.getByRole('button',{name:'Reset photo'}).click();
 assert.deepEqual(await photoStyle(), before, 'Reset photo puts it back');
+// Picking a photo reminds her it can be dragged (Reil, 30 Sep).
+await photoPanel.locator('.ss-thumb[aria-pressed="false"]').first().click();
+assert.match(await page.locator('.ss-toast').innerText(),/drag the photo/i,'Picking a photo shows the drag tip');
 // Focus mode (Reil, 30 Sep): touching a control highlights what it changes; switched off, nothing is highlighted.
 await page.setViewportSize({width:1280,height:900});
 await page.goto(base+'/about?editor');
@@ -153,7 +156,7 @@ const pageShot = async () => {
   await page.waitForLoadState('networkidle');
   // Always hover the same menu link, so the hover colour shows up and every shot is taken the same way.
   await page.locator('.desktop-nav a').last().hover();
-  await page.addStyleTag({content:'#site-settings,.ss-launcher{visibility:hidden!important} .ss-focus{outline:none!important;box-shadow:none!important}'}).then(tag => tag.evaluate(el => el.setAttribute('data-qa-hide','')));
+  await page.addStyleTag({content:'#site-settings,.ss-launcher,.ss-toast{visibility:hidden!important} .ss-focus{outline:none!important;box-shadow:none!important}'}).then(tag => tag.evaluate(el => el.setAttribute('data-qa-hide','')));
   const shot = await page.screenshot({fullPage:true,animations:'disabled'});
   await page.evaluate(() => document.querySelectorAll('[data-qa-hide]').forEach(el => el.remove()));
   return shot;
@@ -173,7 +176,8 @@ for (const route of ROUTES) {
     await option.click();
     if (!(await changed())) failures.push(`${route}: Site settings option "${name}" changes nothing on this page`);
   }
-  const fields = panel.locator('.ss-body :is(input:not([type=range]),textarea)');
+  // Text inputs only: switches (like Sticky header) have no text, and stickiness only shows while scrolling.
+  const fields = panel.locator('.ss-body :is(input:not([type=range]):not([type=checkbox]),textarea)');
   for (let i = 0; i < await fields.count(); i++) {
     const field = fields.nth(i);
     const name = (await field.evaluate(el => el.closest('label')?.firstChild?.textContent ?? '')).trim();
