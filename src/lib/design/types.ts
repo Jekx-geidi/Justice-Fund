@@ -1,8 +1,7 @@
 /** Site-wide look and copy that April edits from the on-page "Site settings" panel. Shared by server and browser. */
 
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
-import { HOME_HERO } from '../content/home-sections.ts';
-import { PHOTO_OPTIONS, defaultFrame, type PhotoFrame } from './page-photos.ts';
+import type { PhotoFrame } from './page-photos.ts';
 
 /** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
 export type BackgroundKind = 'image' | 'white' | 'colour';
@@ -148,47 +147,42 @@ export type SitePage = (typeof SITE_PAGES)[number]['id'];
 /** `title` is the page title box, `box` the dark content boxes (focus cards, Insights entries, Contact card): DARK_COLOURS. */
 export type PageColours = Record<SitePage, { background: string; text: string; title: string; box: string }>;
 
-/** April's export of 29 Sep: the look they approved to build on. */
+/** April's export of 1 Oct (iejf-design-2026-10-01.html): the base template to work from. */
 export const DEFAULT_DESIGN: SiteDesign = {
-  background: { kind: 'white', imageId: 'desert', customUrl: '', colour: '' },
+  background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#1f2428' },
   homeLayout: 'split',
   pageLayout: 'stacked',
   headingFont: 'Poppins',
-  bodyFont: 'Poppins',
-  headingSize: 80,
-  bodySize: 16,
-  menuSize: 13,
-  headingColour: '#6b4a2e',
-  buttonColour: '#1f6b6b',
-  headerColour: '#ffffff',
-  footerColour: '#231f20',
+  bodyFont: 'DM Sans',
+  headingSize: 115,
+  bodySize: 19,
+  menuSize: 15,
+  headingColour: '#1f6b6b',
+  buttonColour: '#1f2428',
+  headerColour: '#231f20',
+  footerColour: '#1f2428',
   accentColour: '#c9a15a',
-  hoverColour: '#7b2d26',
+  hoverColour: '#1f2428',
   headerStyle: 'split',
   stickyHeader: true,
   logo: '',
   pageColours: {
-    home: { background: '#231f20', text: '#ffffff', title: '#231f20', box: '#231f20' },
-    about: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
-    insights: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
-    contact: { background: '#f5f3f1', text: '#231f20', title: '#231f20', box: '#231f20' },
+    home: { background: '#1f6b6b', text: '#ffffff', title: '#231f20', box: '#231f20' },
+    about: { background: '#f5f3f1', text: '#231f20', title: '#1f6b6b', box: '#1f6b6b' },
+    insights: { background: '#f5f3f1', text: '#231f20', title: '#1f3a5f', box: '#1f3a5f' },
+    contact: { background: '#1f2428', text: '#231f20', title: '#7b2d26', box: '#7b2d26' },
   },
-  photos: {
-    home: PHOTO_OPTIONS.home[0].id,
-    about: PHOTO_OPTIONS.about[0].id,
-    insights: PHOTO_OPTIONS.insights[0].id,
-    contact: PHOTO_OPTIONS.contact[0].id,
-  },
+  photos: { home: 'earth-hurricane', about: 'sierra-leone-planting', insights: 'rainforest-river', contact: 'perth-skyline-night' },
   photoFrames: {
-    home: defaultFrame(PHOTO_OPTIONS.home[0]),
-    about: defaultFrame(PHOTO_OPTIONS.about[0]),
-    insights: defaultFrame(PHOTO_OPTIONS.insights[0]),
-    contact: defaultFrame(PHOTO_OPTIONS.contact[0]),
+    home: { x: 50, y: 55, zoom: 100, opacity: 100 },
+    about: { x: 50, y: 70, zoom: 100, opacity: 100 },
+    insights: { x: 50, y: 60, zoom: 100, opacity: 100 },
+    contact: { x: 50, y: 50, zoom: 100, opacity: 100 },
   },
   text: {
-    // Ange's hero copy (April's email, 30 Sep) on April's layout.
-    homeHeading: HOME_HERO.heading,
-    homeTagline: HOME_HERO.paragraph,
+    homeHeading: 'Intergenerational Justice Fund',
+    homeTagline:
+      'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
     contactEmail: 'hello@justicefund.org.au',
     abn: '51 656 623 719',
   },

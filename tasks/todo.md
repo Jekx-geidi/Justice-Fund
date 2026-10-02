@@ -4,19 +4,19 @@ Plan: `tasks/plan.md`. Checks: `npm test`, `npm run typecheck`, `npm run lint`, 
 
 ## Phase 1: April's base template
 
-### Task 1: Make April's Oct 1 export the default design
+### Task 1 (done): Make April's Oct 1 export the default design
 Replace `DEFAULT_DESIGN` with the values in April's `iejf-design-2026-10-01.html` (table in plan.md).
 `customUrl` becomes `''`. Update the doc comment ("April's export of 1 Oct").
 
 **Acceptance criteria:**
-- [ ] `DEFAULT_DESIGN` equals April's exported `design` field for field (except `customUrl: ''`)
-- [ ] `siteDesignSchema.parse(DEFAULT_DESIGN)` passes
-- [ ] "Restore original design" returns to the Oct 1 look
+- [x] `DEFAULT_DESIGN` equals April's exported `design` field for field (except `customUrl: ''`)
+- [x] `siteDesignSchema.parse(DEFAULT_DESIGN)` passes
+- [x] "Restore original design" returns to the Oct 1 look
 
 **Verification:**
-- [ ] `npm test` (update `types.test.ts` expectations; add a test pinning the Oct 1 values)
-- [ ] `npm run typecheck`, `npm run build`
-- [ ] `npm run test:ui`: a11y, phone overflow and "every control changes the page" green on all four pages
+- [x] `npm test` (update `types.test.ts` expectations; add a test pinning the Oct 1 values)
+- [x] `npm run typecheck`, `npm run build`
+- [x] `npm run test:ui`: a11y, phone overflow and "every control changes the page" green on all four pages
 
 **Dependencies:** None
 **Files:** `src/lib/design/types.ts`, `src/lib/design/types.test.ts`, maybe `scripts/qa.mjs` (background is now a colour, not white)

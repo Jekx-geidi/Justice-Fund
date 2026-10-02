@@ -2,23 +2,52 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_DESIGN } from './types.ts';
 
-// April's export of 29 Sep (iejf-design-2026-09-29 (4).html) is the look they approved to build on.
-test('the default design is the one April exported: plain white, split homepage, stacked pages', () => {
-  assert.equal(DEFAULT_DESIGN.background.kind, 'white');
-  assert.equal(DEFAULT_DESIGN.homeLayout, 'split');
-  assert.equal(DEFAULT_DESIGN.pageLayout, 'stacked');
-});
-
-test('the default type is Poppins throughout with headings at 80%', () => {
-  assert.equal(DEFAULT_DESIGN.headingFont, 'Poppins');
-  assert.equal(DEFAULT_DESIGN.bodyFont, 'Poppins');
-  assert.equal(DEFAULT_DESIGN.headingSize, 80);
-});
-
-// April's 30 Sep email: Ange's Home suggestion on top of her export, so the hero copy is Ange's.
-test('the default homepage heading and tagline are Ange’s hero copy', () => {
-  assert.equal(DEFAULT_DESIGN.text.homeHeading, 'We’re using law to drive systemic change for future generations');
-  assert.match(DEFAULT_DESIGN.text.homeTagline, /^We target legal issues/);
+// April's export of 1 Oct (iejf-design-2026-10-01.html, email 1 Oct 9:16 AM): "save this as the base template".
+test('the default design is April’s 1 Oct export, field for field', () => {
+  assert.deepEqual(DEFAULT_DESIGN, {
+    background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#1f2428' },
+    homeLayout: 'split',
+    pageLayout: 'stacked',
+    headingFont: 'Poppins',
+    bodyFont: 'DM Sans',
+    headingSize: 115,
+    bodySize: 19,
+    menuSize: 15,
+    headingColour: '#1f6b6b',
+    buttonColour: '#1f2428',
+    headerColour: '#231f20',
+    footerColour: '#1f2428',
+    accentColour: '#c9a15a',
+    hoverColour: '#1f2428',
+    headerStyle: 'split',
+    stickyHeader: true,
+    logo: '',
+    pageColours: {
+      home: { background: '#1f6b6b', text: '#ffffff', title: '#231f20', box: '#231f20' },
+      about: { background: '#f5f3f1', text: '#231f20', title: '#1f6b6b', box: '#1f6b6b' },
+      insights: { background: '#f5f3f1', text: '#231f20', title: '#1f3a5f', box: '#1f3a5f' },
+      contact: { background: '#1f2428', text: '#231f20', title: '#7b2d26', box: '#7b2d26' },
+    },
+    photos: { home: 'earth-hurricane', about: 'sierra-leone-planting', insights: 'rainforest-river', contact: 'perth-skyline-night' },
+    photoFrames: {
+      home: { x: 50, y: 55, zoom: 100, opacity: 100 },
+      about: { x: 50, y: 70, zoom: 100, opacity: 100 },
+      insights: { x: 50, y: 60, zoom: 100, opacity: 100 },
+      contact: { x: 50, y: 50, zoom: 100, opacity: 100 },
+    },
+    text: {
+      homeHeading: 'Intergenerational Justice Fund',
+      homeTagline: 'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
+      contactEmail: 'hello@justicefund.org.au',
+      abn: '51 656 623 719',
+    },
+    seo: {
+      title: 'Intergenerational Justice Fund',
+      description:
+        'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed.',
+      keywords: 'intergenerational justice, strategic litigation, environmental law, public interest law, charity Perth',
+    },
+  });
 });
 
 // April (29 Sep): toggle the background and font colours on each page; add dark blue and teal to the palette.
@@ -54,11 +83,6 @@ test('dark blue and teal are also heading colours', () => {
 test('every page (Home, About, Insights, Contact) has its own background and text colour', () => {
   assert.deepEqual(SITE_PAGES.map((p) => p.id), ['home', 'about', 'insights', 'contact']);
   for (const p of SITE_PAGES) assert.ok(DEFAULT_DESIGN.pageColours[p.id].background && DEFAULT_DESIGN.pageColours[p.id].text, p.id);
-});
-
-test('the defaults keep today\u2019s look: black Home box with white text, natural pages with black text', () => {
-  assert.deepEqual(DEFAULT_DESIGN.pageColours.home, { background: hex('Black'), text: hex('White'), title: hex('Black'), box: hex('Black') });
-  assert.deepEqual(DEFAULT_DESIGN.pageColours.about, { background: hex('Natural'), text: hex('Black'), title: hex('Black'), box: hex('Black') });
 });
 
 test('the stylesheet sets each page\u2019s colours on that page only', () => {
@@ -97,9 +121,8 @@ test('every button colour keeps white text readable (at least 4.5:1)', () => {
   for (const c of DARK_COLOURS) assert.ok(1.05 / (luminance(c.value) + 0.05) >= 4.5, c.name);
 });
 
-test('the button offers April\u2019s dark blue and teal, and starts on teal', () => {
+test('the button offers April\u2019s dark blue and teal', () => {
   for (const name of ['Dark blue', 'Teal']) assert.ok(DARK_COLOURS.some((c) => c.name === name), name);
-  assert.equal(DEFAULT_DESIGN.buttonColour, DARK_COLOURS.find((c) => c.name === 'Teal')!.value);
 });
 
 test('the stylesheet colours the button', () => {
@@ -138,10 +161,9 @@ const contrast = (a: string, b: string) => {
   return (hi + 0.05) / (lo + 0.05);
 };
 
-test('About, Insights and Contact each have a title box and content box colour, black by default', () => {
+test('About, Insights and Contact each have a title box and content box colour', () => {
   for (const id of ['about', 'insights', 'contact'] as const) {
-    assert.equal(DEFAULT_DESIGN.pageColours[id].title, '#231f20', id);
-    assert.equal(DEFAULT_DESIGN.pageColours[id].box, '#231f20', id);
+    assert.ok(DEFAULT_DESIGN.pageColours[id].title && DEFAULT_DESIGN.pageColours[id].box, id);
   }
 });
 
@@ -175,12 +197,6 @@ test('slate is offered for boxes, the button and backgrounds', () => {
 // Reil (30 Sep): customise everything, so the header, footer and accent lines have colours too.
 import { ACCENT_COLOURS } from './types.ts';
 
-test('the header, footer and accent start as in April\u2019s export: white header, black footer, gold lines', () => {
-  assert.equal(DEFAULT_DESIGN.headerColour, '#ffffff');
-  assert.equal(DEFAULT_DESIGN.footerColour, '#231f20');
-  assert.equal(DEFAULT_DESIGN.accentColour, '#c9a15a');
-});
-
 test('the header text turns white on a dark header and stays dark on a light one', () => {
   assert.ok(designCss({ ...DEFAULT_DESIGN, headerColour: '#1f3a5f' }).includes('--header-bg:#1f3a5f;--header-text:#ffffff'));
   assert.ok(designCss({ ...DEFAULT_DESIGN, headerColour: '#f5f3f1' }).includes('--header-bg:#f5f3f1;--header-text:#231f20'));
@@ -203,9 +219,8 @@ test('only palette colours can be saved for the header, footer and accent', () =
 });
 
 // Reil (30 Sep): the colour menu links turn on hover is customisable.
-test('menu links hover maroon by default, as before', () => {
-  assert.equal(DEFAULT_DESIGN.hoverColour, '#7b2d26');
-  assert.ok(designCss(DEFAULT_DESIGN).includes('--hover:#7b2d26'));
+test('menu links hover in the chosen colour on a light header', () => {
+  assert.ok(designCss({ ...DEFAULT_DESIGN, headerColour: '#ffffff', hoverColour: '#7b2d26' }).includes('--hover:#7b2d26'));
 });
 
 test('every hover colour reads on a white header (at least 4.5:1)', () => {

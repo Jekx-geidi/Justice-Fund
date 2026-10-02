@@ -39,8 +39,8 @@ test('CREDITS.md credits every photo with its Pexels or Unsplash source', () => 
   }
 });
 
-test('each page starts on its first photo', () => {
-  for (const page of SITE_PAGES) assert.equal(DEFAULT_DESIGN.photos[page.id], PHOTO_OPTIONS[page.id][0].id, page.id);
+test('each page starts on one of its own photos', () => {
+  for (const page of SITE_PAGES) assert.ok(PHOTO_OPTIONS[page.id].some((o) => o.id === DEFAULT_DESIGN.photos[page.id]), page.id);
 });
 
 test('the chosen photo is shown, and an unknown one falls back to the page default', () => {
@@ -68,8 +68,8 @@ test('a photo starts framed where it was chosen to sit, at normal size', () => {
   assert.deepEqual(defaultFrame(PHOTO_OPTIONS.home[0]), { x: 50, y: 50, zoom: 100, opacity: 100 });
 });
 
-test('each page starts with its default photo\u2019s framing', () => {
-  for (const page of SITE_PAGES) assert.deepEqual(DEFAULT_DESIGN.photoFrames[page.id], defaultFrame(PHOTO_OPTIONS[page.id][0]), page.id);
+test('each page starts at normal size and full opacity', () => {
+  for (const page of SITE_PAGES) assert.deepEqual([DEFAULT_DESIGN.photoFrames[page.id].zoom, DEFAULT_DESIGN.photoFrames[page.id].opacity], [100, 100], page.id);
 });
 
 test('the stylesheet positions and zooms each page\u2019s photo', () => {

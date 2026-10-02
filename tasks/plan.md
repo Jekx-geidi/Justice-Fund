@@ -64,7 +64,7 @@ Unchanged: split/stacked layouts, Poppins headings, accent gold, split header, s
 See `tasks/todo.md` for the checklist with acceptance criteria.
 
 ### Phase 1: April's base template
-- [ ] Task 1: Make April's Oct 1 export the default design
+- [x] Task 1: Make April's Oct 1 export the default design
 - [ ] Task 2: Set April's Oct 1 design as the stored live and draft design (staging)
 
 ### Checkpoint A
