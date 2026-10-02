@@ -14,6 +14,7 @@ import {
   PAGE_COLOURS,
   type SitePage,
   designCss,
+  sameDesign,
   fontByName,
   OPEN_EDITOR_PARAM,
   type SiteDesign,
@@ -58,7 +59,6 @@ function controlLabel(target: Element): string | null {
   return group.closest('details')?.querySelector('summary')?.textContent ?? null;
 }
 
-const same = (a: SiteDesign, b: SiteDesign) => JSON.stringify(a) === JSON.stringify(b);
 
 function Choice<T extends string>({
   value,
@@ -422,7 +422,7 @@ export function SiteSettingsPanel({
     setBusy(false);
   }
 
-  const unpublished = !same(draft, live);
+  const unpublished = !sameDesign(draft, live);
   const status = !canSave
     ? 'Preview only. Changes show on your screen and are not saved.'
     : saveState === 'saving'

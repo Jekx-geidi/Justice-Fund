@@ -246,6 +246,13 @@ function isLight(hex: string): boolean {
   return (l + 0.05) / 0.05 > 1.05 / (l + 0.05);
 }
 
+/** Black or white, whichever reads better on this background. */
+export function readableText(hex: string): string {
+  return isLight(hex) ? '#231f20' : '#ffffff';
+}
+
+export const sameDesign = (a: SiteDesign, b: SiteDesign) => JSON.stringify(a) === JSON.stringify(b);
+
 function cssUrl(url: string): string {
   return `url("${url.replace(/["\\\n\r<>]/g, '')}")`;
 }
@@ -265,7 +272,7 @@ export function designCss(design: SiteDesign): string {
   }
   lines.push(
     `.site-shell .site-header{position:${design.stickyHeader === false ? 'static' : 'sticky'};}`,
-    `:root{--font-heading:${heading.stack};--font-body:${body.stack};--heading-scale:${design.headingSize / 100};--body-size:${design.bodySize}px;--menu-size:${design.menuSize}px;--heading-colour:${design.headingColour};--button-bg:${design.buttonColour};--header-bg:${design.headerColour};--header-text:${isLight(design.headerColour) ? '#231f20' : '#ffffff'};--footer-bg:${design.footerColour};--gold:${design.accentColour};--hover:${isLight(design.headerColour) ? design.hoverColour : `color-mix(in srgb,${design.hoverColour} 35%,#fff)`};--hover-raw:${design.hoverColour};}`,
+    `:root{--font-heading:${heading.stack};--font-body:${body.stack};--heading-scale:${design.headingSize / 100};--body-size:${design.bodySize}px;--menu-size:${design.menuSize}px;--heading-colour:${design.headingColour};--button-bg:${design.buttonColour};--header-bg:${design.headerColour};--header-text:${readableText(design.headerColour)};--footer-bg:${design.footerColour};--gold:${design.accentColour};--hover:${isLight(design.headerColour) ? design.hoverColour : `color-mix(in srgb,${design.hoverColour} 35%,#fff)`};--hover-raw:${design.hoverColour};}`,
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`
       : `html body{background:${design.background.kind === 'colour' && design.background.colour ? design.background.colour : '#fff'};}`,
