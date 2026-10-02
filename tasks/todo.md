@@ -71,13 +71,13 @@ A group at the top of the panel's colour controls: one button per theme showing 
 `aria-pressed` on the active one, "Custom" shown when none matches. Clicking previews instantly like any other control.
 
 **Acceptance criteria:**
-- [ ] Clicking a theme recolours header, footer, button, accent lines, menu hover, headings and boxes on the current page immediately
-- [ ] "Undo preview" and "Restore original design" still work after picking a theme; publishing a theme saves and reloads correctly
-- [ ] Every existing colour control is still there and still overrides the theme; the panel width does not jump when switching
+- [x] Clicking a theme recolours header, footer, button, accent lines, menu hover, headings and boxes on the current page immediately
+- [ ] "Undo preview" and "Restore original design" still work after picking a theme; publishing a theme saves and reloads correctly (not checked by hand yet; the row's state is derived from the design, so it follows both)
+- [x] Every existing colour control is still there and still overrides the theme; the panel width does not jump when switching
 
 **Verification:**
-- [ ] `npm run test:ui`: extend `scripts/qa.mjs` to click each theme and assert the CSS variables change; a11y green
-- [ ] `npm run lint`, `npm run build`
+- [x] `npm run test:ui`: extend `scripts/qa.mjs` to click each theme and assert the CSS variables change; a11y green
+- [x] `npm run lint`, `npm run build`
 - [ ] Manual: pick each theme on all four pages, then Export design and open the .html offline
 
 **Dependencies:** Task 3

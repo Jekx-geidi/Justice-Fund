@@ -21,6 +21,7 @@ import {
   type TextKey,
 } from '@/lib/design/types';
 import { buildOfflineSite } from './export-files';
+import { COLOUR_THEMES, activeTheme, applyTheme } from '@/lib/design/themes';
 import { applyDesignContent } from './apply-design';
 import { focusSelector } from './focus-targets';
 import { PHOTO_OPTIONS, defaultFrame, pagePhoto, type PhotoFrame } from '@/lib/design/page-photos';
@@ -423,6 +424,7 @@ export function SiteSettingsPanel({
   }
 
   const unpublished = !sameDesign(draft, live);
+  const currentTheme = activeTheme(draft);
   const status = !canSave
     ? 'Preview only. Changes show on your screen and are not saved.'
     : saveState === 'saving'
@@ -622,6 +624,30 @@ export function SiteSettingsPanel({
           {sitePage && (
             <details>
               <summary>Colour</summary>
+              <p className="ss-label">Colour theme (all pages)</p>
+              <div className="ss-grid ss-grid-3">
+                {COLOUR_THEMES.map((theme) => (
+                  <button
+                    key={theme.id}
+                    type="button"
+                    className="ss-choice ss-theme"
+                    aria-pressed={currentTheme?.id === theme.id}
+                    onClick={() => update(applyTheme(draft, theme))}
+                  >
+                    {/* Header, Home box, this page's boxes, button, footer. */}
+                    <span className="ss-theme-strip" aria-hidden="true">
+                      {[theme.colours.headerColour, theme.home, theme.boxes[sitePage.id].box, theme.colours.buttonColour, theme.colours.footerColour].map((hex, i) => (
+                        <span key={i} style={{ background: hex }} />
+                      ))}
+                    </span>
+                    {theme.name}
+                  </button>
+                ))}
+              </div>
+              {/* Always one line, so the colours below don't move when a theme is picked or a colour is changed. */}
+              <p className="ss-hint" aria-live="polite">
+                {currentTheme ? 'Change any colour below to fine-tune it.' : 'Custom colours. Pick a theme to start again.'}
+              </p>
               <p className="ss-label">{sitePage.label} page background</p>
               <Swatches
                 colours={PAGE_COLOURS}

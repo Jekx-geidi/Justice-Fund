@@ -73,7 +73,7 @@ See `tasks/todo.md` for the checklist with acceptance criteria.
 
 ### Phase 2: Colour themes
 - [x] Task 3: Theme presets (data + apply + active-theme detection)
-- [ ] Task 4: "Colour theme" row in Site settings
+- [x] Task 4: "Colour theme" row in Site settings
 
 ### Checkpoint B
 - [ ] All checks green; QA covers clicking every theme

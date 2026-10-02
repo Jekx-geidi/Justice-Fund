@@ -185,6 +185,24 @@ for (const route of ROUTES) {
     if (!(await changed())) failures.push(`${route}: Site settings field "${name}" changes nothing on this page`);
   }
 }
+// April (1 Oct): each colour theme recolours the site in one click; changing a colour by hand makes it custom.
+{
+  await page.goto(base+'/about?editor');
+  const panel = page.locator('#site-settings');
+  await panel.locator('details').evaluateAll(sections => sections.forEach(d => { d.open = true; }));
+  const themes = panel.locator('.ss-theme');
+  assert.equal(await themes.count(), 6, 'Six colour themes');
+  const looks = new Set();
+  for (let i = 0; i < 6; i++) {
+    await themes.nth(i).click();
+    assert.equal(await themes.nth(i).getAttribute('aria-pressed'), 'true', `${await themes.nth(i).innerText()} shows as picked`);
+    looks.add(await page.evaluate(() => ['--header-bg','--footer-bg','--button-bg','--page-box'].map(v => getComputedStyle(document.querySelector('[data-page="about"]')).getPropertyValue(v)).join()));
+  }
+  assert.equal(looks.size, 6, 'Every theme gives the page a different look');
+  await panel.locator('.ss-label', { hasText: 'Footer (all pages)' }).locator('+ .ss-swatches button[aria-pressed="false"]').first().click();
+  assert.equal(await panel.locator('.ss-theme[aria-pressed="true"]').count(), 0, 'A hand-picked colour leaves no theme picked');
+  await panel.getByText('Custom colours. Pick a theme to start again.').waitFor();
+}
 await page.emulateMedia({reducedMotion:'reduce'});
 await page.goto(base);
 assert.equal(await page.locator('.home-box').evaluate(el=>getComputedStyle(el).animationName),'none');
@@ -199,4 +217,4 @@ assert.equal(await page.locator('.home-card').count(),2,'Strategic Litigation an
 await writeFile('qa-output/results.json',JSON.stringify({results,failures,checks:['menu focus trap','Escape and focus restoration','scroll lock','menu navigation','contact is email-only','removed routes 404','reduced motion','home hero, buttons, photo and sections']},null,2));
 await browser.close();
 assert.deepEqual(failures,[]);
-console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, Home hero and sections, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on, Focus mode, photo drag/zoom/opacity.`);
+console.log(`PASS: ${results.length} route/viewport checks, 12 accessibility audits, menu, email-only contact, reduced motion, Home hero and sections, legacy routes, visitor preview-only Site settings, every Site settings control changes the page it shows on, Focus mode, photo drag/zoom/opacity, colour themes.`);

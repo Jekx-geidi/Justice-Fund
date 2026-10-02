@@ -38,3 +38,9 @@ test('search settings have nothing on the page to highlight', () => {
   assert.equal(focusSelector('Page title'), null);
   assert.equal(focusSelector('Keywords (separate with commas)'), null);
 });
+
+// April (1 Oct): colour themes recolour the header, footer and every box at once.
+test('the colour theme points at everything a theme recolours', () => {
+  const selector = focusSelector('Colour theme (all pages)')!;
+  for (const part of ['.site-header', '.site-footer', '.home-box', '.page-frame-head', '.focus-card']) assert.ok(selector.includes(part), part);
+});

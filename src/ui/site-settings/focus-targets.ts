@@ -5,6 +5,7 @@
  */
 const RULES: [RegExp, string][] = [
   [/ photo$/, '.home-photo, .page-photo'],
+  [/^colour theme/, '.site-header, .site-footer, .home-box, .page-frame-head, .focus-card, .case-item-dark, .contact-card, .home-cta'],
   [/^(background|or a colour)$/, 'main'],
   [/^(homepage|about, insights and contact)$/, '.home-stage, .page-frame'],
   [/ page background$/, '.home-box, .page-frame'],
