@@ -65,14 +65,14 @@ See `tasks/todo.md` for the checklist with acceptance criteria.
 
 ### Phase 1: April's base template
 - [x] Task 1: Make April's Oct 1 export the default design
-- [ ] Task 2: Set April's Oct 1 design as the stored live and draft design (staging)
+- [x] Task 2: Set April's Oct 1 design as the stored live and draft design (staging)
 
 ### Checkpoint A
 - [ ] Unit tests, typecheck, lint, build green; `npm run test:ui` green
 - [ ] Staging shows the Oct 1 look on all four pages; every Site settings control still changes the page
 
 ### Phase 2: Colour themes
-- [ ] Task 3: Theme presets (data + apply + active-theme detection)
+- [x] Task 3: Theme presets (data + apply + active-theme detection)
 - [ ] Task 4: "Colour theme" row in Site settings
 
 ### Checkpoint B

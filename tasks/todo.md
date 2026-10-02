@@ -48,18 +48,19 @@ was older than her export (rows saved 30 Sep 08:37 / 09:06 UTC, export 13:04 UTC
 
 ## Phase 2: Colour themes
 
-### Task 3: Theme presets
+### Task 3 (done): Theme presets
 New `src/lib/design/themes.ts`: `COLOUR_THEMES` (the six in plan.md), `applyTheme(design, theme)` returning a
 new design with only the theme's fields changed, and `activeTheme(design)` returning the matching theme id or null.
+Also sets the Home text to white, since every theme's Home box is dark.
 
 **Acceptance criteria:**
-- [ ] Every theme applied to `DEFAULT_DESIGN` passes `siteDesignSchema`
-- [ ] `applyTheme` changes only colour fields listed in the plan (fonts, sizes, layout, photos, text, other page backgrounds untouched)
-- [ ] `activeTheme(DEFAULT_DESIGN)` is "April's pick"; after any single colour edit it is null
+- [x] Every theme applied to `DEFAULT_DESIGN` passes `siteDesignSchema`
+- [x] `applyTheme` changes only colour fields listed in the plan (fonts, sizes, layout, photos, text, other page backgrounds untouched)
+- [x] `activeTheme(DEFAULT_DESIGN)` is "April's pick"; after any single colour edit it is null
 
 **Verification:**
-- [ ] `npm test` (new `themes.test.ts`)
-- [ ] `npm run typecheck`
+- [x] `npm test` (new `themes.test.ts`, 9 tests)
+- [x] `npm run typecheck`
 
 **Dependencies:** Task 1
 **Files:** `src/lib/design/themes.ts`, `src/lib/design/themes.test.ts`
