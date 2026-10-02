@@ -23,13 +23,18 @@ Replace `DEFAULT_DESIGN` with the values in April's `iejf-design-2026-10-01.html
 **Scope:** S
 
 ### Task 2: Set April's Oct 1 design as the stored live and draft design (staging)
+Written 2 Oct by Reil (script: replaces only `content.design` on both rows). Backups in
+`.report/design-backups/site_content-{live,draft}-2026-10-02T03-06-32-887Z.json` (not committed). The replaced design
+was older than her export (rows saved 30 Sep 08:37 / 09:06 UTC, export 13:04 UTC): Cormorant, centred Home and header.
+
 **Acceptance criteria:**
-- [ ] Current `site_content.design` (live + draft) backed up before writing; any field differing from her 30 Sep export is reported to Reil first
-- [ ] Live and draft both equal April's Oct 1 design
+- [x] Current `site_content.design` (live + draft) backed up before writing; any field differing from her 30 Sep export is reported to Reil first
+- [x] Live and draft both equal April's Oct 1 design
 - [ ] Staging shows it on Home, About, Insights and Contact without opening Site settings
 
 **Verification:**
-- [ ] Read the row back and diff against her export JSON
+- [x] Read the row back and diff against her export JSON (0 design differences, 0 other content changes)
+- [x] Local (localhost:3000, same Supabase): all four pages render her colours, fonts, sizes and heading
 - [ ] Manual: open staging, check all four pages and the phone menu
 
 **Dependencies:** Task 1 (so validation and defaults agree). **Needs Reil's OK before writing to Supabase.**
