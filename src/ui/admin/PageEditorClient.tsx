@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import type { AboutFields, SitePage } from '@/lib/content/types';
-import { AboutFieldsEditor, ContactFieldsEditor, HomeSectionsEditor, InsightsFieldsEditor, SiteSettingsNotice } from './CoreContentEditors';
+import { AboutFieldsEditor, ContactFieldsEditor, InsightsFieldsEditor, SiteSettingsNotice } from './CoreContentEditors';
 import { BlockEditor } from './BlockEditor';
 import { PublishBar } from './PublishBar';
 import { UnsavedChangesGuard } from './UnsavedChangesGuard';
@@ -201,9 +201,9 @@ export function PageEditorClient({
       {page.coreKey === 'home' && (
         <>
           <SiteSettingsNotice title="Homepage heading and look">
-            The homepage heading, paragraph, colours and layout are managed directly from the public Site Settings panel.
+            The homepage heading, colours and layout are managed directly from the public Site Settings panel. The text
+            and focus areas below the heading are edited on the About page.
           </SiteSettingsNotice>
-          {page.home && <HomeSectionsEditor value={page.home} onChange={(home) => update({ home })} />}
         </>
       )}
       {page.coreKey === 'about' && page.about && (

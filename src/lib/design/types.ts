@@ -275,7 +275,9 @@ export function designCss(design: SiteDesign): string {
     bg
       ? `html body{background:#e9e2d6 ${cssUrl(bg)} center/cover no-repeat fixed;}`
       : `html body{background:${design.background.kind === 'colour' && design.background.colour ? design.background.colour : '#fff'};}`,
-    ...SITE_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};--page-title:${design.pageColours[id].title};--page-box:${design.pageColours[id].box};--photo-x:${design.photoFrames[id].x}%;--photo-y:${design.photoFrames[id].y}%;--photo-zoom:${design.photoFrames[id].zoom / 100};--photo-opacity:${design.photoFrames[id].opacity / 100};}`)
+    ...SITE_PAGES.map(({ id }) => `[data-page="${id}"]{--page-bg:${design.pageColours[id].background};--page-text:${design.pageColours[id].text};--page-title:${design.pageColours[id].title};--page-box:${design.pageColours[id].box};--photo-x:${design.photoFrames[id].x}%;--photo-y:${design.photoFrames[id].y}%;--photo-zoom:${design.photoFrames[id].zoom / 100};--photo-opacity:${design.photoFrames[id].opacity / 100};}`),
+    // The focus cards below the Home heading (April, 6 Oct) sit outside its [data-page] box.
+    `.home-sections{--page-box:${design.pageColours.home.box};}`
   );
   return lines.join('\n');
 }

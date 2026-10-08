@@ -245,3 +245,9 @@ test('the Home heading can hold her whole sentence', () => {
   const long = { ...DEFAULT_DESIGN, text: { ...DEFAULT_DESIGN.text, homeHeading: 'x'.repeat(161) } };
   assert.equal(siteDesignSchema.safeParse(long).success, false);
 });
+
+// April (6 Oct): the About focus cards moved to Home; they take the Home box colour (Site settings "Homepage boxes").
+test('the focus cards on Home use the Home box colour', () => {
+  const design = { ...DEFAULT_DESIGN, pageColours: { ...DEFAULT_DESIGN.pageColours, home: { ...DEFAULT_DESIGN.pageColours.home, box: '#7b2d26' } } };
+  assert.ok(designCss(design).includes('.home-sections{--page-box:#7b2d26;}'));
+});

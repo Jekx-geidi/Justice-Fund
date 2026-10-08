@@ -34,7 +34,7 @@ Previous plan (1 Oct base template + colour themes) is complete; see git history
 ## Tasks
 
 - [x] Task 1: April's 6 Oct export is the default design; heading limit 160
-- [ ] Task 2: Home: no photo, no buttons, About content and focus cards
+- [x] Task 2: Home: no photo, no buttons, About content and focus cards
 - [ ] Task 3: Hide About and Insights (menu, redirect, export, Site settings)
 - [ ] Task 4: Contact: no title box
 - [ ] Task 5: Site settings shows only the controls that still change the page
