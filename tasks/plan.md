@@ -38,5 +38,5 @@ Previous plan (1 Oct base template + colour themes) is complete; see git history
 - [x] Task 3: Hide About and Insights (menu, redirect, export, Site settings)
 - [x] Task 4: Contact: no title box
 - [x] Task 5: Site settings shows only the controls that still change the page
-- [ ] Task 6: QA script follows the two-page site; all checks green
+- [x] Task 6: QA script follows the two-page site; all checks green
 - [ ] Task 7: Stored live/draft design = the new default (needs OK), deploy, reply to Junrey

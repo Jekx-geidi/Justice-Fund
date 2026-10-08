@@ -161,6 +161,8 @@ export function SiteSettingsPanel({
   const isHome = sitePage?.id === 'home';
   // Pages other than Home are built on the shared PageFrame, the only pages the page layout changes.
   const isFramed = Boolean(sitePage) && !isHome;
+  // Contact lost its only visible heading with its title box (April, 6 Oct), so heading font and size don't show there.
+  const showsHeadings = !sitePage || isHome || sitePage.titleBox || sitePage.colouredHeading;
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(initialDraft);
   const [live, setLive] = useState(initialLive);
@@ -596,14 +598,20 @@ export function SiteSettingsPanel({
 
           <details>
             <summary>Fonts</summary>
-            <p className="ss-label">Headings</p>
-            <div className="ss-grid ss-grid-2">
-              {FONTS.map((f) => (
-                <Choice key={f.name} value={f.name} current={draft.headingFont} onPick={(v) => set('headingFont', v)}>
-                  <span style={{ fontFamily: fontByName(f.name).stack, fontWeight: 600 }}>{f.name}</span>
-                </Choice>
-              ))}
-            </div>
+            {showsHeadings ? (
+              <>
+                <p className="ss-label">Headings</p>
+                <div className="ss-grid ss-grid-2">
+                  {FONTS.map((f) => (
+                    <Choice key={f.name} value={f.name} current={draft.headingFont} onPick={(v) => set('headingFont', v)}>
+                      <span style={{ fontFamily: fontByName(f.name).stack, fontWeight: 600 }}>{f.name}</span>
+                    </Choice>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="ss-hint">The heading font and size are on Home, where the headings are.</p>
+            )}
             <p className="ss-label">Body text</p>
             <div className="ss-grid ss-grid-2">
               {FONTS.map((f) => (
@@ -616,7 +624,9 @@ export function SiteSettingsPanel({
 
           <details>
             <summary>Sizes</summary>
-            <Slider label="Headings" value={draft.headingSize} min={80} max={140} unit="%" presets={[['Small', 80], ['Medium', 100], ['Large', 115], ['Extra large', 130]]} onChange={(v) => set('headingSize', v)} />
+            {showsHeadings && (
+              <Slider label="Headings" value={draft.headingSize} min={80} max={140} unit="%" presets={[['Small', 80], ['Medium', 100], ['Large', 115], ['Extra large', 130]]} onChange={(v) => set('headingSize', v)} />
+            )}
             <Slider label="Body text" value={draft.bodySize} min={14} max={20} unit="px" presets={[['Small', 15], ['Default', 16], ['Large', 17], ['Extra large', 19]]} onChange={(v) => set('bodySize', v)} />
             <Slider label="Menu" value={draft.menuSize} min={11} max={18} unit="px" presets={[['Small', 12], ['Default', 13], ['Large', 15], ['Extra large', 17]]} onChange={(v) => set('menuSize', v)} />
           </details>
