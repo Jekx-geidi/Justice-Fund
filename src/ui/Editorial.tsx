@@ -1,5 +1,5 @@
 import type { AboutFocusArea } from '@/lib/content/types';
-import { DEFAULT_DESIGN, LEGAL_NAME, type SitePage } from '@/lib/design/types';
+import { DEFAULT_DESIGN, LEGAL_NAME, SITE_PAGES, type SitePage } from '@/lib/design/types';
 import Image from 'next/image';
 import { pagePhoto } from '@/lib/design/page-photos';
 /**
@@ -10,14 +10,20 @@ import { pagePhoto } from '@/lib/design/page-photos';
 /**
  * `page` picks up that page's own background and text colours from Site settings (see designCss); `photo` is its
  * chosen photo id (April, 29 Sep), defaulting to the page's first. `data-page-photo` lets Site settings swap it live.
+ * A page without a title box (Contact, April 6 Oct) keeps its <h1> for screen readers and search only.
  */
 export function PageFrame({ title, page, photo: photoId, children }: { title: string; page: SitePage; photo?: string; children: React.ReactNode }) {
   const photo = pagePhoto(page, photoId);
+  const titleBox = SITE_PAGES.find((p) => p.id === page)?.titleBox ?? true;
   return (
     <div className="wrap page-frame" data-page={page}>
-      <header className="page-frame-head">
-        <h1 className="page-title">{title}</h1>
-      </header>
+      {titleBox ? (
+        <header className="page-frame-head">
+          <h1 className="page-title">{title}</h1>
+        </header>
+      ) : (
+        <h1 className="sr-only">{title}</h1>
+      )}
       <div className="page-frame-body">
         {/* Near the top of the page, so it loads first; never wider than the 1100px frame. */}
         <div className="page-photo-frame">
