@@ -4,10 +4,10 @@
  * has nothing on the page to point at (search settings).
  */
 const RULES: [RegExp, string][] = [
-  [/ photo$/, '.home-photo, .page-photo'],
-  [/^colour theme/, '.site-header, .site-footer, .home-box, .page-frame-head, .focus-card, .case-item-dark, .contact-card, .home-cta'],
+  [/ photo$/, '.page-photo'],
+  [/^colour theme/, '.site-header, .site-footer, .home-box, .page-frame-head, .focus-card, .case-item-dark, .contact-card'],
   [/^(background|or a colour)$/, 'main'],
-  [/^(homepage|about, insights and contact)$/, '.home-stage, .page-frame'],
+  [/^(homepage|page layout)$/, '.home-stage, .page-frame'],
   [/ page background$/, '.home-box, .page-frame'],
   [/ page text$/, '.home-box, .page-frame-body'],
   [/^heading colour$/, '.section-heading'],
@@ -16,7 +16,6 @@ const RULES: [RegExp, string][] = [
   [/^header \(all pages\)$|^header$|^logo$/, '.site-header'],
   [/^footer \(all pages\)$/, '.site-footer'],
   [/^accent lines/, '.focus-card, .case-item-dark, .contact-card, .home-card, .desktop-nav a[aria-current]'],
-  [/^get involved button$/, '.home-cta'],
   [/^homepage heading/, '[data-design-text="homeHeading"]'],
   [/^homepage tagline/, '[data-design-text="homeTagline"]'],
   [/^contact email/, '[data-design-text="contactEmail"]'],

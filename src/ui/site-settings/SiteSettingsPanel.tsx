@@ -10,7 +10,7 @@ import {
   FONTS,
   DARK_COLOURS,
   HEADING_COLOURS,
-  SITE_PAGES,
+  LIVE_PAGES,
   PAGE_COLOURS,
   type SitePage,
   designCss,
@@ -157,9 +157,9 @@ export function SiteSettingsPanel({
 }) {
   const pathname = usePathname() ?? '';
   // Only offer controls that change the page on screen (see the SITE_PAGES flags), so a pick never looks like it did nothing.
-  const sitePage = SITE_PAGES.find((p) => p.path === pathname);
+  const sitePage = LIVE_PAGES.find((p) => p.path === pathname);
   const isHome = sitePage?.id === 'home';
-  // About, Insights and Contact are built on the shared PageFrame, the only pages the page layout changes.
+  // Pages other than Home are built on the shared PageFrame, the only pages the page layout changes.
   const isFramed = Boolean(sitePage) && !isHome;
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(initialDraft);
@@ -306,7 +306,7 @@ export function SiteSettingsPanel({
     if (!open) return;
     // Once a session, on a page with a photo, remind her the photo can be dragged.
     try {
-      if (sitePage && !sessionStorage.getItem('ss-photo-tip')) {
+      if (sitePage?.photo && !sessionStorage.getItem('ss-photo-tip')) {
         sessionStorage.setItem('ss-photo-tip', '1');
         showToast(PHOTO_TIP);
       }
@@ -481,7 +481,7 @@ export function SiteSettingsPanel({
 
         <div className="ss-body" onPointerDownCapture={(e) => showFocus(e.target)} onFocusCapture={(e) => showFocus(e.target)}>
                     {/* The current page's photo candidates come first: the image April changes most. */}
-          {sitePage && (
+          {sitePage?.photo && (
             <details open>
               <summary>{sitePage.label} photo</summary>
               <div className="ss-grid ss-grid-3">
@@ -569,7 +569,7 @@ export function SiteSettingsPanel({
             )}
             {isFramed && (
               <>
-                <p className="ss-label">About, Insights and Contact</p>
+                <p className="ss-label">Page layout</p>
                 <div className="ss-grid ss-grid-3">
                   {(
                     [
@@ -590,7 +590,7 @@ export function SiteSettingsPanel({
               </>
             )}
             {!isHome && !isFramed && (
-              <p className="ss-hint">Layout options show on Home, About, Insights and Contact.</p>
+              <p className="ss-hint">Layout options show on Home and Contact.</p>
             )}
           </details>
 
@@ -670,14 +670,15 @@ export function SiteSettingsPanel({
                   <Swatches colours={HEADING_COLOURS} current={draft.headingColour} onPick={(v) => set('headingColour', v)} />
                 </>
               )}
-              {!isHome && (
+              {sitePage.titleBox && (
                 <>
                   <p className="ss-label">{sitePage.label} title box</p>
                   <Swatches colours={DARK_COLOURS} current={draft.pageColours[sitePage.id].title} onPick={(v) => setPageColour(sitePage.id, 'title', v)} />
-                  <p className="ss-label">{sitePage.label} boxes</p>
-                  <Swatches colours={DARK_COLOURS} current={draft.pageColours[sitePage.id].box} onPick={(v) => setPageColour(sitePage.id, 'box', v)} />
                 </>
               )}
+              {/* Home: the focus cards under the heading (April, 6 Oct). Contact: its card. */}
+              <p className="ss-label">{isHome ? 'Homepage' : sitePage.label} boxes</p>
+              <Swatches colours={DARK_COLOURS} current={draft.pageColours[sitePage.id].box} onPick={(v) => setPageColour(sitePage.id, 'box', v)} />
               <p className="ss-label">Header (all pages)</p>
               <Swatches colours={PAGE_COLOURS} current={draft.headerColour} onPick={(v) => set('headerColour', v)} />
               <p className="ss-label">Footer (all pages)</p>
@@ -686,13 +687,6 @@ export function SiteSettingsPanel({
               <Swatches colours={DARK_COLOURS} current={draft.hoverColour} onPick={(v) => set('hoverColour', v)} />
               <p className="ss-label">Accent lines (all pages)</p>
               <Swatches colours={ACCENT_COLOURS} current={draft.accentColour} onPick={(v) => set('accentColour', v)} />
-              {isHome && (
-                <>
-                  {/* Only the Get Involved button; its text stays white, so every option is dark enough for it. */}
-                  <p className="ss-label">Get Involved button</p>
-                  <Swatches colours={DARK_COLOURS} current={draft.buttonColour} onPick={(v) => set('buttonColour', v)} />
-                </>
-              )}
             </details>
           )}
 

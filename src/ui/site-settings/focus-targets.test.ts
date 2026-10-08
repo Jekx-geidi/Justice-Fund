@@ -4,18 +4,18 @@ import { focusSelector } from './focus-targets.ts';
 
 // Reil (30 Sep): Focus mode highlights the part of the page a Site settings control changes.
 test('each page’s photo, colours and boxes point at their part of the page', () => {
-  assert.equal(focusSelector('Home photo'), '.home-photo, .page-photo');
-  assert.equal(focusSelector('Contact photo'), '.home-photo, .page-photo');
+  assert.equal(focusSelector('Contact photo'), '.page-photo');
   assert.equal(focusSelector('About title box'), '.page-frame-head');
   assert.equal(focusSelector('Insights boxes'), '.focus-card, .case-item-dark, .contact-card');
+  // April (6 Oct): the focus cards are on Home now.
+  assert.equal(focusSelector('Homepage boxes'), '.focus-card, .case-item-dark, .contact-card');
   assert.equal(focusSelector('About page background'), '.home-box, .page-frame');
   assert.equal(focusSelector('Home page text'), '.home-box, .page-frame-body');
 });
 
-test('site-wide controls point at the header, footer, button and accent lines', () => {
+test('site-wide controls point at the header, footer and accent lines', () => {
   assert.equal(focusSelector('Header (all pages)'), '.site-header');
   assert.equal(focusSelector('Footer (all pages)'), '.site-footer');
-  assert.equal(focusSelector('Get Involved button'), '.home-cta');
   assert.match(focusSelector('Accent lines (all pages)')!, /\.focus-card/);
   assert.equal(focusSelector('Logo'), '.site-header');
 });
@@ -43,4 +43,10 @@ test('search settings have nothing on the page to highlight', () => {
 test('the colour theme points at everything a theme recolours', () => {
   const selector = focusSelector('Colour theme (all pages)')!;
   for (const part of ['.site-header', '.site-footer', '.home-box', '.page-frame-head', '.focus-card']) assert.ok(selector.includes(part), part);
+});
+
+// April (6 Oct): Contact is the only page with the shared page layout now.
+test('the layout choices point at the Home stage or the page frame', () => {
+  assert.equal(focusSelector('Homepage'), '.home-stage, .page-frame');
+  assert.equal(focusSelector('Page layout'), '.home-stage, .page-frame');
 });
