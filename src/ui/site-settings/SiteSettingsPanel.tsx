@@ -554,6 +554,7 @@ export function SiteSettingsPanel({
                 <div className="ss-grid ss-grid-3">
                   {(
                     [
+                      ['left', 'Full width, left'],
                       ['centred', 'Centred box'],
                       ['split', 'Split'],
                       ['band', 'Bottom band'],

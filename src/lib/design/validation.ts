@@ -21,7 +21,7 @@ export const siteDesignSchema = z.object({
       .refine((u) => u === '' || /^(https:\/\/|\/(?!\/))[^\s"'()<>\\]+$/.test(u), 'Invalid image address'),
     colour: z.string().refine((c) => c === '' || PAGE_COLOURS.some((p) => p.value === c), 'Unknown colour'),
   }),
-  homeLayout: z.enum(['centred', 'split', 'band']),
+  homeLayout: z.enum(['left', 'centred', 'split', 'band']),
   pageLayout: z.enum(['stacked', 'side', 'centred']),
   headingFont: fontName,
   bodyFont: fontName,

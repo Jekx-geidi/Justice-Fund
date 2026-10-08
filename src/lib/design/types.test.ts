@@ -4,12 +4,12 @@ import { DEFAULT_DESIGN } from './types.ts';
 
 // April's export of 6 Oct (iejf-design-2026-10-06.html, email 6 Oct 9:30 AM), after her live edit with Ange, with the
 // heading she couldn't finish ("...unaddressed") and the Home box Teal for the focus cards now on Home.
-// Junrey (8 Oct): with no photo beside it, the Home heading is centred by default.
+// April (Teams, 8 Oct): "the whole page to be filled with the above text aligned left", balanced lines.
 test('the default design is April’s 6 Oct export, field for field', () => {
   assert.deepEqual(DEFAULT_DESIGN, {
-    base: '2026-10-06',
+    base: '2026-10-08',
     background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#231f20' },
-    homeLayout: 'centred',
+    homeLayout: 'left',
     pageLayout: 'stacked',
     headingFont: 'Poppins',
     bodyFont: 'Poppins',
@@ -273,15 +273,18 @@ test('Home has no photo and no title box; Contact keeps its photo but not its ti
   assert.deepEqual([page('contact').photo, page('contact').titleBox], [true, false]);
 });
 
-// Reil (8 Oct): April's 6 Oct design must show without anyone pressing Restore and Publish. A design saved before it
-// (no base, or an older one) is replaced by the default; anything saved on top of the 6 Oct base is kept.
-test('a design saved before the 6 Oct base gives way to the default', () => {
+// Reil (8 Oct): April's design must show without anyone pressing Restore and Publish. A design saved before the
+// current base (no base, or an older one) is replaced by the default; anything saved on top of it is kept.
+test('a design saved before the current base gives way to the default', () => {
   const { base: _none, ...oct2 } = { ...DEFAULT_DESIGN, homeLayout: 'split' as const, text: { ...DEFAULT_DESIGN.text, homeHeading: 'Intergenerational Justice Fund' } };
   assert.deepEqual(withDefaults(oct2 as never), DEFAULT_DESIGN);
   assert.deepEqual(withDefaults({ ...DEFAULT_DESIGN, base: '2026-10-01', homeLayout: 'split' }), DEFAULT_DESIGN);
+  // The centred look published on 8 Oct, before April asked for left-aligned.
+  assert.deepEqual(withDefaults({ ...DEFAULT_DESIGN, base: '2026-10-06', homeLayout: 'centred' }), DEFAULT_DESIGN);
 });
 
-test('changes saved on the 6 Oct base are kept', () => {
+test('changes saved on the current base are kept', () => {
   assert.equal(withDefaults({ ...DEFAULT_DESIGN, homeLayout: 'split' }).homeLayout, 'split');
-  assert.equal(siteDesignSchema.parse(DEFAULT_DESIGN).base, '2026-10-06');
+  assert.equal(siteDesignSchema.parse(DEFAULT_DESIGN).base, '2026-10-08');
+  assert.equal(siteDesignSchema.parse({ ...DEFAULT_DESIGN, homeLayout: 'left' }).homeLayout, 'left');
 });

@@ -5,7 +5,7 @@ import type { PhotoFrame } from './page-photos.ts';
 
 /** Uploaded backgrounds were retired: only the approved photos or plain white. An old uploaded URL stays stored in customUrl, unused. */
 export type BackgroundKind = 'image' | 'white' | 'colour';
-export type HomeLayout = 'centred' | 'split' | 'band';
+export type HomeLayout = 'left' | 'centred' | 'split' | 'band';
 export type PageLayout = 'stacked' | 'side' | 'centred';
 export type HeaderStyle = 'split' | 'centred';
 
@@ -161,16 +161,17 @@ export type PageColours = Record<SitePage, { background: string; text: string; t
 
 /** April's export of 6 Oct (iejf-design-2026-10-06.html), after her live edit with Ange: the design to sign off. */
 /**
- * April's 6 Oct export is the design to sign off (Reil, 8 Oct: it must show without anyone pressing Restore and
- * Publish). Saved designs from before it are replaced by DEFAULT_DESIGN when read; bump this to roll out a new base.
+ * April's 6 Oct export, Home left-aligned (her Teams message, 8 Oct), is the design to sign off; it must show without
+ * anyone pressing Restore and Publish. Saved designs from before it are replaced by DEFAULT_DESIGN when read; bump this
+ * to roll out a new base.
  */
-export const DESIGN_BASE = '2026-10-06';
+export const DESIGN_BASE = '2026-10-08';
 
 export const DEFAULT_DESIGN: SiteDesign = {
   base: DESIGN_BASE,
   background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#231f20' },
-  // Junrey (8 Oct): centred by default, since there's no photo beside the heading any more.
-  homeLayout: 'centred',
+  // April (Teams, 8 Oct): the heading fills the Home green, aligned left.
+  homeLayout: 'left',
   pageLayout: 'stacked',
   headingFont: 'Poppins',
   bodyFont: 'Poppins',

@@ -52,6 +52,10 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .home-title { color:inherit; font-size:min(calc(clamp(1.9rem,4vw,3.6rem) * var(--heading-scale,1)),9vw); line-height:1.15; max-width:16em; text-wrap:balance; overflow-wrap:break-word; hyphens:manual; }
 .home-tagline { color:color-mix(in srgb,currentColor 85%,transparent); font-size:1.05em; line-height:1.7; max-width:52ch; }
 .home-tagline[hidden] { display:none; }
+/* April (8 Oct): the heading fills the Home green, left-aligned in the page's 1100px column, lines balanced
+   (Chrome balances up to 6 lines, so the vw cap keeps phones within 6). */
+[data-home-layout="left"] .home-box { align-items:flex-start; text-align:left; padding-inline:max(clamp(20px,4vw,72px),calc((100% - 1100px) / 2)); }
+[data-home-layout="left"] .home-title { font-size:min(calc(clamp(1.6rem,5.6vw,5.2rem) * var(--heading-scale,1)),7.4vw); max-width:none; line-height:1.1; }
 [data-home-layout="split"] .home-stage { padding:0; }
 [data-home-layout="split"] .home-box { flex:0 0 50%; align-items:flex-start; text-align:left; }
 [data-home-layout="band"] .home-stage { padding:0; align-items:flex-end; }
@@ -395,6 +399,7 @@ html[data-photo-edit] img[data-page-photo]:active { cursor:grabbing; }
 .ss-mini { position:relative; display:block; width:52px; height:34px; border-radius:3px; background:#e9dcc8; overflow:hidden; }
 .ss-mini i, .ss-mini b { position:absolute; background:#231f20; }
 .ss-mini b { background:#8a7f76; }
+.ss-mini-home-left i { inset:0 0 0 0; border-left:6px solid transparent; }
 .ss-mini-home-centred i { inset:6px; }
 .ss-mini-home-split i { inset:0 50% 0 0; }
 .ss-mini-home-band i { inset:60% 0 0 0; }
