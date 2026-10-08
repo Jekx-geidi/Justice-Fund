@@ -53,10 +53,10 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 .home-tagline { color:color-mix(in srgb,currentColor 85%,transparent); font-size:1.05em; line-height:1.7; max-width:52ch; }
 .home-tagline[hidden] { display:none; }
 /* April (8 Oct): heading fills the Home green, left-aligned at the page edge, lines balanced.
-   min(vw-based, 12dvh) keeps it proportional on any screen — phones use vw (narrow), large
-   monitors use dvh (tall), so it never overflows the hero regardless of which screen you're on. */
+   Phones are sized by width; elsewhere by the screen height left under the header and padding (280px) over six
+   lines, so the last line never runs to the bottom of the first screen. */
 [data-home-layout="left"] .home-box { align-items:flex-start; text-align:left; padding-inline:clamp(20px,4vw,72px); }
-[data-home-layout="left"] .home-title { font-size:min(calc(max(1.4rem,6.5vw) * var(--heading-scale,1)),12dvh); max-width:14em; line-height:1.05; }
+[data-home-layout="left"] .home-title { font-size:min(calc(max(1.4rem,6.5vw) * var(--heading-scale,1)),calc((100dvh - 280px) / 6.4)); max-width:14em; line-height:1.05; }
 [data-home-layout="split"] .home-stage { padding:0; }
 [data-home-layout="split"] .home-box { flex:0 0 50%; align-items:flex-start; text-align:left; }
 [data-home-layout="band"] .home-stage { padding:0; align-items:flex-end; }
