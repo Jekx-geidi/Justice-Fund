@@ -4,6 +4,7 @@ import { designJson, exportFilename } from './export.ts';
 import type { SiteDesign } from './types.ts';
 
 const design: SiteDesign = {
+  base: '2026-10-06',
   background: { kind: 'image', imageId: 'desert', customUrl: '', colour: '' },
   homeLayout: 'split',
   pageLayout: 'side',

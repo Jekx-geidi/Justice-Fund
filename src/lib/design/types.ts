@@ -10,6 +10,8 @@ export type PageLayout = 'stacked' | 'side' | 'centred';
 export type HeaderStyle = 'split' | 'centred';
 
 export interface SiteDesign {
+  /** The base template this design was made from (DESIGN_BASE); an older or missing one is replaced by the default. */
+  base: string;
   /** `colour` is a PAGE_COLOURS hex, used when kind is 'colour'. */
   background: { kind: BackgroundKind; imageId: string; customUrl: string; colour: string };
   homeLayout: HomeLayout;
@@ -158,7 +160,14 @@ export function isLivePage(coreKey: string | undefined): boolean {
 export type PageColours = Record<SitePage, { background: string; text: string; title: string; box: string }>;
 
 /** April's export of 6 Oct (iejf-design-2026-10-06.html), after her live edit with Ange: the design to sign off. */
+/**
+ * April's 6 Oct export is the design to sign off (Reil, 8 Oct: it must show without anyone pressing Restore and
+ * Publish). Saved designs from before it are replaced by DEFAULT_DESIGN when read; bump this to roll out a new base.
+ */
+export const DESIGN_BASE = '2026-10-06';
+
 export const DEFAULT_DESIGN: SiteDesign = {
+  base: DESIGN_BASE,
   background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#231f20' },
   // Junrey (8 Oct): centred by default, since there's no photo beside the heading any more.
   homeLayout: 'centred',
@@ -214,7 +223,7 @@ export const SITE_EDITOR_HREF = `/?${OPEN_EDITOR_PARAM}`;
 /** Fills any fields missing from older saved settings with defaults. */
 export function withDefaults(saved: Partial<SiteDesign> | null | undefined): SiteDesign {
   const d = DEFAULT_DESIGN;
-  if (!saved) return d;
+  if (!saved || saved.base !== DESIGN_BASE) return d;
   const background = { ...d.background, ...saved.background };
   // A photo that has since been retired from the list falls back to the default, so saves still validate.
   if (!BACKGROUND_IMAGES.some((b) => b.id === background.imageId)) background.imageId = d.background.imageId;

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ACCENT_COLOURS, BACKGROUND_IMAGES, DARK_COLOURS, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
+import { ACCENT_COLOURS, BACKGROUND_IMAGES, DESIGN_BASE, DARK_COLOURS, FONTS, HEADING_COLOURS, PAGE_COLOURS, SITE_PAGES, type SitePage } from './types.ts';
 import { PHOTO_OPTIONS } from './page-photos.ts';
 import { SITE_LOGO_IDS } from '../brand/logo-concepts.ts';
 
@@ -11,6 +11,7 @@ const plainText = (max: number) => z.string().max(max).refine((s) => !/[<>]/.tes
 
 /** Everything here ends up inside a <style> tag or page markup, so it is strictly whitelisted. */
 export const siteDesignSchema = z.object({
+  base: z.literal(DESIGN_BASE).default(DESIGN_BASE),
   background: z.object({
     kind: z.enum(['image', 'white', 'colour']),
     imageId: z.string().refine((id) => BACKGROUND_IMAGES.some((b) => b.id === id), 'Unknown background'),

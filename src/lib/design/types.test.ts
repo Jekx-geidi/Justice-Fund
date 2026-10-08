@@ -7,6 +7,7 @@ import { DEFAULT_DESIGN } from './types.ts';
 // Junrey (8 Oct): with no photo beside it, the Home heading is centred by default.
 test('the default design is April’s 6 Oct export, field for field', () => {
   assert.deepEqual(DEFAULT_DESIGN, {
+    base: '2026-10-06',
     background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#231f20' },
     homeLayout: 'centred',
     pageLayout: 'stacked',
@@ -270,4 +271,17 @@ test('Home has no photo and no title box; Contact keeps its photo but not its ti
   const page = (id: string) => SITE_PAGES.find((p) => p.id === id)!;
   assert.deepEqual([page('home').photo, page('home').titleBox], [false, false]);
   assert.deepEqual([page('contact').photo, page('contact').titleBox], [true, false]);
+});
+
+// Reil (8 Oct): April's 6 Oct design must show without anyone pressing Restore and Publish. A design saved before it
+// (no base, or an older one) is replaced by the default; anything saved on top of the 6 Oct base is kept.
+test('a design saved before the 6 Oct base gives way to the default', () => {
+  const { base: _none, ...oct2 } = { ...DEFAULT_DESIGN, homeLayout: 'split' as const, text: { ...DEFAULT_DESIGN.text, homeHeading: 'Intergenerational Justice Fund' } };
+  assert.deepEqual(withDefaults(oct2 as never), DEFAULT_DESIGN);
+  assert.deepEqual(withDefaults({ ...DEFAULT_DESIGN, base: '2026-10-01', homeLayout: 'split' }), DEFAULT_DESIGN);
+});
+
+test('changes saved on the 6 Oct base are kept', () => {
+  assert.equal(withDefaults({ ...DEFAULT_DESIGN, homeLayout: 'split' }).homeLayout, 'split');
+  assert.equal(siteDesignSchema.parse(DEFAULT_DESIGN).base, '2026-10-06');
 });
