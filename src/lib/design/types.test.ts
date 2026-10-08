@@ -4,10 +4,11 @@ import { DEFAULT_DESIGN } from './types.ts';
 
 // April's export of 6 Oct (iejf-design-2026-10-06.html, email 6 Oct 9:30 AM), after her live edit with Ange, with the
 // heading she couldn't finish ("...unaddressed") and the Home box Teal for the focus cards now on Home.
+// Junrey (8 Oct): with no photo beside it, the Home heading is centred by default.
 test('the default design is April’s 6 Oct export, field for field', () => {
   assert.deepEqual(DEFAULT_DESIGN, {
     background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#231f20' },
-    homeLayout: 'split',
+    homeLayout: 'centred',
     pageLayout: 'stacked',
     headingFont: 'Poppins',
     bodyFont: 'Poppins',

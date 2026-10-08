@@ -160,7 +160,8 @@ export type PageColours = Record<SitePage, { background: string; text: string; t
 /** April's export of 6 Oct (iejf-design-2026-10-06.html), after her live edit with Ange: the design to sign off. */
 export const DEFAULT_DESIGN: SiteDesign = {
   background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#231f20' },
-  homeLayout: 'split',
+  // Junrey (8 Oct): centred by default, since there's no photo beside the heading any more.
+  homeLayout: 'centred',
   pageLayout: 'stacked',
   headingFont: 'Poppins',
   bodyFont: 'Poppins',
