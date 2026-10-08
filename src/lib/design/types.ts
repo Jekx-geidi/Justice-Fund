@@ -147,15 +147,15 @@ export type SitePage = (typeof SITE_PAGES)[number]['id'];
 /** `title` is the page title box, `box` the dark content boxes (focus cards, Insights entries, Contact card): DARK_COLOURS. */
 export type PageColours = Record<SitePage, { background: string; text: string; title: string; box: string }>;
 
-/** April's export of 1 Oct (iejf-design-2026-10-01.html): the base template to work from. */
+/** April's export of 6 Oct (iejf-design-2026-10-06.html), after her live edit with Ange: the design to sign off. */
 export const DEFAULT_DESIGN: SiteDesign = {
-  background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#1f2428' },
+  background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#231f20' },
   homeLayout: 'split',
   pageLayout: 'stacked',
   headingFont: 'Poppins',
-  bodyFont: 'DM Sans',
-  headingSize: 115,
-  bodySize: 19,
+  bodyFont: 'Poppins',
+  headingSize: 96,
+  bodySize: 18,
   menuSize: 15,
   headingColour: '#1f6b6b',
   buttonColour: '#1f2428',
@@ -167,10 +167,10 @@ export const DEFAULT_DESIGN: SiteDesign = {
   stickyHeader: true,
   logo: '',
   pageColours: {
-    home: { background: '#1f6b6b', text: '#ffffff', title: '#231f20', box: '#231f20' },
+    home: { background: '#1f6b6b', text: '#ffffff', title: '#231f20', box: '#1f6b6b' },
     about: { background: '#f5f3f1', text: '#231f20', title: '#1f6b6b', box: '#1f6b6b' },
     insights: { background: '#f5f3f1', text: '#231f20', title: '#1f3a5f', box: '#1f3a5f' },
-    contact: { background: '#1f2428', text: '#231f20', title: '#7b2d26', box: '#7b2d26' },
+    contact: { background: '#1f2428', text: '#231f20', title: '#1f6b6b', box: '#1f6b6b' },
   },
   photos: { home: 'earth-hurricane', about: 'sierra-leone-planting', insights: 'rainforest-river', contact: 'perth-skyline-night' },
   photoFrames: {
@@ -180,9 +180,8 @@ export const DEFAULT_DESIGN: SiteDesign = {
     contact: { x: 50, y: 50, zoom: 100, opacity: 100 },
   },
   text: {
-    homeHeading: 'Intergenerational Justice Fund',
-    homeTagline:
-      'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
+    homeHeading: 'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
+    homeTagline: '',
     contactEmail: 'hello@justicefund.org.au',
     abn: '51 656 623 719',
   },

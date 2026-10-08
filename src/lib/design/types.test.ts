@@ -2,16 +2,17 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_DESIGN } from './types.ts';
 
-// April's export of 1 Oct (iejf-design-2026-10-01.html, email 1 Oct 9:16 AM): "save this as the base template".
-test('the default design is April’s 1 Oct export, field for field', () => {
+// April's export of 6 Oct (iejf-design-2026-10-06.html, email 6 Oct 9:30 AM), after her live edit with Ange, with the
+// heading she couldn't finish ("...unaddressed") and the Home box Teal for the focus cards now on Home.
+test('the default design is April’s 6 Oct export, field for field', () => {
   assert.deepEqual(DEFAULT_DESIGN, {
-    background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#1f2428' },
+    background: { kind: 'colour', imageId: 'desert-field', customUrl: '', colour: '#231f20' },
     homeLayout: 'split',
     pageLayout: 'stacked',
     headingFont: 'Poppins',
-    bodyFont: 'DM Sans',
-    headingSize: 115,
-    bodySize: 19,
+    bodyFont: 'Poppins',
+    headingSize: 96,
+    bodySize: 18,
     menuSize: 15,
     headingColour: '#1f6b6b',
     buttonColour: '#1f2428',
@@ -23,10 +24,10 @@ test('the default design is April’s 1 Oct export, field for field', () => {
     stickyHeader: true,
     logo: '',
     pageColours: {
-      home: { background: '#1f6b6b', text: '#ffffff', title: '#231f20', box: '#231f20' },
+      home: { background: '#1f6b6b', text: '#ffffff', title: '#231f20', box: '#1f6b6b' },
       about: { background: '#f5f3f1', text: '#231f20', title: '#1f6b6b', box: '#1f6b6b' },
       insights: { background: '#f5f3f1', text: '#231f20', title: '#1f3a5f', box: '#1f3a5f' },
-      contact: { background: '#1f2428', text: '#231f20', title: '#7b2d26', box: '#7b2d26' },
+      contact: { background: '#1f2428', text: '#231f20', title: '#1f6b6b', box: '#1f6b6b' },
     },
     photos: { home: 'earth-hurricane', about: 'sierra-leone-planting', insights: 'rainforest-river', contact: 'perth-skyline-night' },
     photoFrames: {
@@ -36,8 +37,8 @@ test('the default design is April’s 1 Oct export, field for field', () => {
       contact: { x: 50, y: 50, zoom: 100, opacity: 100 },
     },
     text: {
-      homeHeading: 'Intergenerational Justice Fund',
-      homeTagline: 'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
+      homeHeading: 'We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed',
+      homeTagline: '',
       contactEmail: 'hello@justicefund.org.au',
       abn: '51 656 623 719',
     },
@@ -235,4 +236,12 @@ test('on a dark header the hover colour is lightened so it still shows', () => {
 
 test('only palette hover colours can be saved', () => {
   assert.equal(siteDesignSchema.safeParse({ ...DEFAULT_DESIGN, hoverColour: 'red;}' }).success, false);
+});
+
+// April (6 Oct): "I couldn't fit 'unaddressed'". The whole sentence (132 characters) must fit.
+test('the Home heading can hold her whole sentence', () => {
+  assert.ok(siteDesignSchema.safeParse(DEFAULT_DESIGN).success);
+  assert.ok(DEFAULT_DESIGN.text.homeHeading.endsWith('if left unaddressed'));
+  const long = { ...DEFAULT_DESIGN, text: { ...DEFAULT_DESIGN.text, homeHeading: 'x'.repeat(161) } };
+  assert.equal(siteDesignSchema.safeParse(long).success, false);
 });

@@ -37,7 +37,7 @@ export const siteDesignSchema = z.object({
   stickyHeader: z.boolean().default(true),
   logo: z.string().refine((id) => id === '' || SITE_LOGO_IDS.includes(id), 'Unknown logo'),
   text: z.object({
-    homeHeading: plainText(120).refine((s) => s.trim().length > 0, 'Heading is required'),
+    homeHeading: plainText(160).refine((s) => s.trim().length > 0, 'Heading is required'),
     homeTagline: plainText(240),
     contactEmail: z.string().email().max(200).or(z.literal('')),
     abn: z.string().max(20).regex(/^[0-9 ]*$/, 'ABN should be digits'),

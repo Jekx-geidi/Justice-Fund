@@ -1,101 +1,42 @@
-# Plan: April's Oct 1 base template + colour themes
+# Plan: April's 6 Oct final edits (sign-off build)
 
-Source: April's email to Junrey, 1 Oct 2026 9:16 AM ("Re: First Draft - website"), forwarded in the
-IEJF Teams chat on 2 Oct. Attachment `iejf-design-2026-10-01.html` (Junrey's OneDrive, Teams Chat Files;
-not committed, client file). Its embedded `#iejf-design` JSON was exported 30 Sep 13:04 UTC from `/contact`.
+Source: April's email to Junrey, 6 Oct 2026 9:30 AM ("Re: First Draft - website"), forwarded to Reil 7 Oct 4:02 PM.
+She and Ange did a live edit and attached the latest export (`iejf-design-2026-10-06.html`, Reil's Downloads; not
+committed, client file). She asks for these changes "I couldn't manage to do", then "a final update [...] to sign off".
 
-> "Are you please able to upload the attached and save this as the base template to work from? [...]
-> I would still like to be able to toggle all the changes etc that are currently available.
-> Could you also please add more colour theme options."
+Previous plan (1 Oct base template + colour themes) is complete; see git history `09ca9dc..519017e`.
 
-Previous plan (April & Ange's 29-30 Sep feedback) is complete; see git history `405f311..33e82de`.
+## April's list
 
-## What April's Oct 1 design is (vs the current DEFAULT_DESIGN, her 29 Sep export)
+1. Home: remove the photo, fill its space with the green (the Home teal).
+2. Home: the heading holds the whole sentence, ending "...if left unaddressed" (the 120-character limit cut it).
+3. Home: remove the Get Involved and Learn More buttons.
+4. Home: replace "What We Do" and "Why Intergenerational Justice Matters" with the About page's content
+   (two intro paragraphs, "Our work is anchored in three complementary focus areas", the three focus cards).
+5. Remove the About tab and page.
+6. Remove the Insights tab and page ("we will add this tab in down the tract").
+7. Contact: delete the "Contact" title box.
 
-| Field | Now (29 Sep) | April, 1 Oct |
-|---|---|---|
-| background | white | colour `#1f2428` (Slate) |
-| bodyFont | Poppins | DM Sans |
-| headingSize / bodySize / menuSize | 80 / 16 / 13 | 115 / 19 / 15 |
-| headingColour | `#6b4a2e` Brown | `#1f6b6b` Teal |
-| buttonColour | `#1f6b6b` Teal | `#1f2428` Slate |
-| headerColour / footerColour | `#ffffff` / `#231f20` | `#231f20` Black / `#1f2428` Slate |
-| hoverColour | `#7b2d26` Maroon | `#1f2428` Slate |
-| home background | `#231f20` | `#1f6b6b` Teal |
-| about title/box | Black | Teal |
-| insights title/box | Black | Dark blue `#1f3a5f` |
-| contact background / title/box | Natural / Black | Slate / Maroon `#7b2d26` |
-| photos | first option each | earth-hurricane, sierra-leone-planting, rainforest-river, perth-skyline-night |
-| photoFrames y | defaults | home 55, about 70, insights 60, contact 50 |
-| text.homeHeading | HOME_HERO.heading | "Intergenerational Justice Fund" |
-| text.homeTagline | HOME_HERO.paragraph | "We use the law to drive systemic change, targeting issues that will cause escalating harm to future generations if left unaddressed" |
+## Decisions
 
-Unchanged: split/stacked layouts, Poppins headings, accent gold, split header, sticky header, no logo, SEO.
-`background.customUrl` holds an old Supabase upload URL; it is unused (uploads retired) and is reset to `''`.
-
-## Architecture decisions
-
-- **"Base template" = DEFAULT_DESIGN + the stored live/draft design.** Same path as task 2 and task 7 of
-  the previous plan: the code default changes (so "Restore original design" returns to her Oct 1 look),
-  and the Supabase `site_content.design` row is set to it (so staging shows it now). Old row backed up first.
-- **Every existing control stays.** No control is removed or hidden; she asked to keep toggling everything.
-- **Colour themes are presets, not a new schema field.** A theme is a named set of values for fields that
-  already exist (`headerColour`, `footerColour`, `buttonColour`, `accentColour`, `hoverColour`,
-  `headingColour`, Home background, and every page's `title`/`box`). Picking one writes those fields; she
-  can fine-tune any of them afterwards. No migration, no validation change, the publish/draft/export flow
-  works unchanged. The active theme is derived (design matches every theme value), otherwise "Custom".
-- **Themes only use colours already in the whitelists** (PAGE_COLOURS / DARK_COLOURS / ACCENT_COLOURS /
-  HEADING_COLOURS), so `siteDesignSchema` accepts them and white-on-dark contrast stays at least 4.5:1.
-  Themes leave fonts, sizes, layouts, photos, and the About/Insights/Contact page background and text alone.
-
-### Proposed themes (names and values for review)
-
-| Theme | Header | Footer | Button | Accent | Hover | Headings | Home bg | Title/box (all pages) |
-|---|---|---|---|---|---|---|---|---|
-| April's pick | Black | Slate | Slate | Gold | Slate | Teal | Teal | per April's export (Teal/Dark blue/Maroon) |
-| Classic | White | Black | Teal | Gold | Maroon | Brown | Black | Black |
-| Navy & Gold | White | Dark blue | Dark blue | Gold | Dark blue | Dark blue | Dark blue | Dark blue |
-| Earth | Natural | Dark brown | Dark brown | Gold | Maroon | Brown | Dark brown | Dark brown |
-| Ocean | White | Teal | Teal | Dark blue | Teal | Teal | Teal | Teal |
-| Charcoal | Charcoal | Black | Maroon | Gold | Maroon | Black | Charcoal | Charcoal |
+- **Her 6 Oct export becomes `DEFAULT_DESIGN`** (as on 1 Oct), with the full heading. Differences from 1 Oct:
+  body font Poppins, heading 96%, body 18px, site background Black `#231f20`, Contact title/box Teal.
+- **Site settings stays**; only controls that change the page are shown (Home photo, Get Involved button colour and
+  Contact title box go; "Homepage boxes" is new, for the focus cards now on Home).
+- **Focus cards on Home use the Home box colour** (`pageColours.home.box`, unused until now). Default Teal, as in the
+  About page picture she pasted (her export has Black there, but nothing showed it).
+- **About and Insights are hidden, not deleted**: a `live` flag on `SITE_PAGES`. Hidden pages leave the menu, the
+  offline export and Site settings, and their URLs redirect to Home (307, temporary). Insights comes back by setting
+  `live: true`. Their admin editors stay (the About editor still edits the text now on Home).
+- **Contact keeps an `<h1>`** for screen readers and search, visually hidden.
+- The stored live/draft design (Supabase) and the deploy each need Reil's OK.
 
 ## Tasks
 
-See `tasks/todo.md` for the checklist with acceptance criteria.
-
-### Phase 1: April's base template
-- [x] Task 1: Make April's Oct 1 export the default design
-- [x] Task 2: Set April's Oct 1 design as the stored live and draft design (staging)
-
-### Checkpoint A
-- [ ] Unit tests, typecheck, lint, build green; `npm run test:ui` green
-- [ ] Staging shows the Oct 1 look on all four pages; every Site settings control still changes the page
-
-### Phase 2: Colour themes
-- [x] Task 3: Theme presets (data + apply + active-theme detection)
-- [x] Task 4: "Colour theme" row in Site settings
-
-### Checkpoint B
-- [ ] All checks green; QA covers clicking every theme
-- [ ] Offline export of a themed design shows the theme
-- [ ] Review the six themes on staging with Reil before telling Junrey
-
-### Phase 3: Hand-off
-- [ ] Task 5: Deploy to staging and reply to Junrey
-
-## Risks and mitigations
-
-| Risk | Impact | Mitigation |
-|---|---|---|
-| Overwriting the stored design loses something April set after 30 Sep 13:04 | Med | Back up the current row first; compare it to her export and flag any difference to Junrey before writing |
-| Contact page: Slate background with Black page text | Low | Contact has `pageText: false` (no text outside its card), so it reads fine; QA a11y contrast check confirms |
-| Picking a theme silently overwrites her hand-tuned colours | Med | Theme row sits above the colour pickers, "Undo preview" reverts it, nothing is published until she publishes |
-| "Colour theme options" meant something else | Med | Reil chose preset themes (2 Oct); the theme list above is a proposal and easy to change |
-| Larger heading/body sizes (115% / 19px) overflow on phones | Med | `test:ui` overflow checks at phone width on all four pages after Task 1 |
-
-## Open questions
-
-- Are the six theme names and colours above right, or should some use new colours (e.g. a forest green)?
-  New colours mean adding them to the whitelists and checking contrast; not in this plan unless asked.
-- Task 2 writes to the shared Supabase project: OK to do it directly, as on 30 Sep, or should Junrey/April
-  publish from the panel instead?
+- [x] Task 1: April's 6 Oct export is the default design; heading limit 160
+- [ ] Task 2: Home: no photo, no buttons, About content and focus cards
+- [ ] Task 3: Hide About and Insights (menu, redirect, export, Site settings)
+- [ ] Task 4: Contact: no title box
+- [ ] Task 5: Site settings shows only the controls that still change the page
+- [ ] Task 6: QA script follows the two-page site; all checks green
+- [ ] Task 7: Stored live/draft design = the new default (needs OK), deploy, reply to Junrey

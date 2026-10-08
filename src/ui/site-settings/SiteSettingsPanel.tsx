@@ -738,7 +738,7 @@ export function SiteSettingsPanel({
               <>
                 <label className="ss-field">
                   Homepage heading
-                  <input value={draft.text.homeHeading} maxLength={120} onChange={(e) => setText('homeHeading', e.target.value)} />
+                  <input value={draft.text.homeHeading} maxLength={160} onChange={(e) => setText('homeHeading', e.target.value)} />
                 </label>
                 <label className="ss-field">
                   Homepage tagline <small>(optional)</small>
