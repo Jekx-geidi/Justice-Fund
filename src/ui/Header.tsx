@@ -64,7 +64,9 @@ export default function Header({ navigation, logo }: { navigation: NavItem[]; lo
       <div className="mobile-panel">
         <div className="flex items-center justify-between"><span className="eyebrow">IEJF · NAVIGATION</span><button className="icon-button" aria-label="Close navigation" onClick={() => setOpen(false)}><X aria-hidden="true" /></button></div>
         <nav aria-label="Mobile navigation">{navigation.map((item, index) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} onClick={() => setOpen(false)}><span className="nav-number">0{index + 1}</span>{item.label}</Link>)}</nav>
-        <p className="mobile-caption">Intergenerational Justice Fund Limited</p>
+        <Link href="/" className="mobile-caption" onClick={() => setOpen(false)}>
+          Intergenerational Justice Fund Limited
+        </Link>
       </div>
     </dialog>
   </header>;
