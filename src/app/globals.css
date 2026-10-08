@@ -55,6 +55,9 @@ h3 { font-size:1.2rem; font-weight:600; line-height:1.3; }
 /* April (8 Oct): heading fills the Home green, left-aligned at the page edge, lines balanced.
    Phones are sized by width; elsewhere by the screen height left under the header and padding (280px) over six
    lines, so the last line never runs to the bottom of the first screen. */
+/* Junrey (8 Oct): green all the way to the bottom of the first screen, no dark strip under it (header 104px, 86px on phones). */
+[data-home-layout="left"] .home-stage { min-height:calc(100dvh - 104px); }
+@media (max-width:899px) { [data-home-layout="left"] .home-stage { min-height:calc(100dvh - 86px); } }
 [data-home-layout="left"] .home-box { align-items:flex-start; text-align:left; padding-inline:clamp(20px,4vw,72px); }
 [data-home-layout="left"] .home-title { font-size:min(calc(max(1.4rem,6.5vw) * var(--heading-scale,1)),calc((100dvh - 280px) / 6.4)); max-width:14em; line-height:1.05; }
 [data-home-layout="split"] .home-stage { padding:0; }
