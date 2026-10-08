@@ -2,10 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { offlineDocument, offlineHref, stripWoffFallbacks } from './offline.ts';
 
-test('menu links to the four pages point inside the file', () => {
+test('menu links to the live pages point inside the file', () => {
   assert.equal(offlineHref('/'), '#home');
-  assert.equal(offlineHref('/about'), '#about');
-  assert.equal(offlineHref('/insights'), '#insights');
   assert.equal(offlineHref('/contact'), '#contact');
 });
 
@@ -68,4 +66,12 @@ test('the title is escaped', () => {
 test('woff fallbacks are dropped so only the woff2 fonts get embedded', () => {
   const css = '@font-face{src:url(a.woff2) format("woff2"),url(a.woff) format("woff")}';
   assert.equal(stripWoffFallbacks(css), '@font-face{src:url(a.woff2) format("woff2")}');
+});
+
+// April (6 Oct): About and Insights are hidden, so the offline copy has no anchor for them.
+test('links to hidden pages are left out of the offline copy', async () => {
+  const { offlineHref } = await import('./offline.ts');
+  assert.equal(offlineHref('/about'), null);
+  assert.equal(offlineHref('/insights'), null);
+  assert.equal(offlineHref('/contact'), '#contact');
 });

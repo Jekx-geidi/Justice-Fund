@@ -3,6 +3,7 @@ import type { ContentVersion, SitePage, SiteContent } from './types';
 import { localFileStorage } from './storage-local';
 import { supabaseStorage, isSupabaseConfigured } from './storage-supabase';
 import { resolveMediaReferences } from './resolveMedia';
+import { isLivePage } from '@/lib/design/types';
 import { recordRevisionsForPublish } from './revisions';
 import { withDefaults, type SiteDesign } from '@/lib/design/types';
 
@@ -93,7 +94,7 @@ export interface NavItem {
 
 export function deriveNavigation(content: SiteContent): NavItem[] {
   return content.pages
-    .filter((page) => page.status === 'published' && page.showInNavigation)
+    .filter((page) => page.status === 'published' && page.showInNavigation && isLivePage(page.coreKey))
     .sort((a, b) => a.navOrder - b.navOrder)
     .map((page) => ({ id: page.id, label: page.navLabel, href: pageRoute(page) }));
 }

@@ -1,17 +1,17 @@
 /**
- * The offline copy of the site that Export design downloads: one .html file holding all four pages with the
+ * The offline copy of the site that Export design downloads: one .html file holding every live page with the
  * visitor's picks applied, so Ange can open it without internet and approve the look. Pure string work here;
  * gathering the pages, styles and images happens in the browser (src/ui/site-settings/export-files.ts).
  */
 
-import { SITE_PAGES } from './types.ts';
+import { LIVE_PAGES } from './types.ts';
 
-// The file holds every page in SITE_PAGES, in menu order; each page's `id` is its in-file anchor.
+// The file holds every live page, in menu order; each page's `id` is its in-file anchor.
 
 /** Where a link should go inside the file: a page anchor, unchanged if it leaves the site, or null for a page that isn't included. */
 export function offlineHref(href: string): string | null {
   if (!href.startsWith('/') || href.startsWith('//')) return href;
-  const page = SITE_PAGES.find((p) => p.path === href.split(/[?#]/)[0]);
+  const page = LIVE_PAGES.find((p) => p.path === href.split(/[?#]/)[0]);
   return page ? `#${page.id}` : null;
 }
 

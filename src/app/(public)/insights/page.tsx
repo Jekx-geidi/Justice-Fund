@@ -1,13 +1,17 @@
+import { redirect } from 'next/navigation';
 import { getSiteContent } from '@/lib/content/content';
 import { getViewerDesign } from '@/lib/design/viewer';
 import { resolveVersion } from '@/lib/content/preview';
 import { PreviewBanner } from '@/ui/PreviewBanner';
 import { InsightsPageView } from '@/ui/pages/InsightsPageView';
 import { corePageMetadata } from '@/lib/design/seo';
+import { isLivePage } from '@/lib/design/types';
 
 export const generateMetadata = () => corePageMetadata('insights', 'Insights');
 
 export default async function Insights({ searchParams }: { searchParams: Promise<{ preview?: string }> }) {
+  // Hidden since April's email of 6 Oct; set `live: true` in SITE_PAGES to bring it back.
+  if (!isLivePage('insights')) redirect('/');
   const version = await resolveVersion(await searchParams);
   const [content, { design }] = await Promise.all([getSiteContent(version), getViewerDesign()]);
   const entries = content.insights

@@ -135,15 +135,25 @@ export const PAGE_COLOURS: { name: string; value: string; light?: boolean }[] = 
 /**
  * The site's pages, in menu order: their own colours, photo and offline-export section. Each page view marks its content
  * with data-page="<id>". The flags say what Site settings can change there, so it only offers controls that visibly work:
- * `pageText` (text outside dark boxes, for the page text colour) and `colouredHeading` (a section heading for Heading colour).
+ * `pageText` (text outside dark boxes, for the page text colour), `colouredHeading` (a section heading for Heading colour),
+ * `photo` (a page photo) and `titleBox` (the coloured box behind the page title).
+ * `live: false` hides a page (April, 6 Oct: About and Insights): out of the menu and the offline export, its address
+ * redirects to Home, and its colours and photo stay saved. Setting it back to true brings the page back.
  */
 export const SITE_PAGES = [
-  { id: 'home', path: '/', label: 'Home', pageText: true, colouredHeading: true },
-  { id: 'about', path: '/about', label: 'About', pageText: true, colouredHeading: true },
-  { id: 'insights', path: '/insights', label: 'Insights', pageText: false, colouredHeading: false },
-  { id: 'contact', path: '/contact', label: 'Contact', pageText: false, colouredHeading: false },
+  { id: 'home', path: '/', label: 'Home', live: true, pageText: true, colouredHeading: true, photo: false, titleBox: false },
+  { id: 'about', path: '/about', label: 'About', live: false, pageText: true, colouredHeading: true, photo: true, titleBox: true },
+  { id: 'insights', path: '/insights', label: 'Insights', live: false, pageText: false, colouredHeading: false, photo: true, titleBox: true },
+  { id: 'contact', path: '/contact', label: 'Contact', live: true, pageText: false, colouredHeading: false, photo: true, titleBox: false },
 ] as const;
 export type SitePage = (typeof SITE_PAGES)[number]['id'];
+
+export const LIVE_PAGES = SITE_PAGES.filter((p) => p.live);
+
+/** False for a hidden core page; custom pages (no core key) are always live. */
+export function isLivePage(coreKey: string | undefined): boolean {
+  return SITE_PAGES.find((p) => p.id === coreKey)?.live ?? true;
+}
 /** `title` is the page title box, `box` the dark content boxes (focus cards, Insights entries, Contact card): DARK_COLOURS. */
 export type PageColours = Record<SitePage, { background: string; text: string; title: string; box: string }>;
 

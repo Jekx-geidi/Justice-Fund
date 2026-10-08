@@ -251,3 +251,22 @@ test('the focus cards on Home use the Home box colour', () => {
   const design = { ...DEFAULT_DESIGN, pageColours: { ...DEFAULT_DESIGN.pageColours, home: { ...DEFAULT_DESIGN.pageColours.home, box: '#7b2d26' } } };
   assert.ok(designCss(design).includes('.home-sections{--page-box:#7b2d26;}'));
 });
+
+// April (6 Oct): "Remove 'About' tab and contents", "Remove 'Insights' tab [...] we will add this tab in down the tract".
+import { LIVE_PAGES, isLivePage } from './types.ts';
+
+test('only Home and Contact are live; About and Insights are hidden, not deleted', () => {
+  assert.deepEqual(LIVE_PAGES.map((p) => p.id), ['home', 'contact']);
+  assert.equal(isLivePage('about'), false);
+  assert.equal(isLivePage('insights'), false);
+  assert.equal(isLivePage('home'), true);
+  // Custom pages (no core key) are never hidden by this.
+  assert.equal(isLivePage(undefined), true);
+});
+
+// April (6 Oct): no Home photo, no Contact title box. Site settings reads these flags.
+test('Home has no photo and no title box; Contact keeps its photo but not its title box', () => {
+  const page = (id: string) => SITE_PAGES.find((p) => p.id === id)!;
+  assert.deepEqual([page('home').photo, page('home').titleBox], [false, false]);
+  assert.deepEqual([page('contact').photo, page('contact').titleBox], [true, false]);
+});

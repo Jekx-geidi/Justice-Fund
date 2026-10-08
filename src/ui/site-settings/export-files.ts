@@ -1,4 +1,4 @@
-import { designCss, SITE_PAGES, type SiteDesign } from '@/lib/design/types';
+import { designCss, LIVE_PAGES, type SiteDesign } from '@/lib/design/types';
 import { applyDesignContent } from './apply-design';
 import { designJson, exportFilename } from '@/lib/design/export';
 import { offlineDocument, offlineHref, stripWoffFallbacks } from '@/lib/design/offline';
@@ -117,7 +117,7 @@ export async function buildOfflineSite(design: SiteDesign, page: string, now = n
   };
   const [pages, css, header, menu, footer] = await Promise.all([
     Promise.all(
-      SITE_PAGES.map(async (p) => {
+      LIVE_PAGES.map(async (p) => {
         const main = parser.parseFromString(await (await fetchOk(p.path)).text(), 'text/html').querySelector('main');
         if (!main) throw new Error(`${p.path}: no <main>`);
         return { id: p.id, html: (await prepare(main, design, inline)).innerHTML };
